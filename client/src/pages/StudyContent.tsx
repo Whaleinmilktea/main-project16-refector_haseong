@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import {
   getStudyGroupInfo,
-  deleteStudyGroupInfo,
+  // deleteStudyGroupInfo,
   StudyInfoDto,
 } from "../apis/StudyGroupApi";
 import { CommentDto } from "../apis/CommentApi";
@@ -71,21 +71,26 @@ const StudyContent = () => {
     fetchData();
   }, [parsedId]);
 
-  const handleDeleteButton = async () => {
-    try {
-      if (!window.confirm("스터디를 삭제하시겠습니까?")) return;
-      await deleteStudyGroupInfo(parsedId, isLoggedIn);
-      alert("스터디가 삭제되었습니다!");
-      navigate("/studylist");
-    } catch (error) {
-      alert("스터디 삭제가 실패했습니다!");
-      // 당신의 스터디가 아닙니다?
-    }
-  };
+  // const handleDeleteButton = async () => {
+  //   try {
+  //     if (!window.confirm("스터디를 삭제하시겠습니까?")) return;
+  //     await deleteStudyGroupInfo(parsedId, isLoggedIn);
+  //     alert("스터디가 삭제되었습니다!");
+  //     navigate("/studylist");
+  //   } catch (error) {
+  //     alert("스터디 삭제가 실패했습니다!");
+  //     // 당신의 스터디가 아닙니다?
+  //   }
+  // };
 
-  const handleEditButton = async () => {
-    navigate(`/studycontent/${id}/edit`);
-  };
+  // const handleEditButton = async () => {
+  //   // navigate(`/studycontent/${id}/edit`);
+  //   if (!content?.leaderNickName) {
+  //     alert("스터디 수정은 스터디 리더만 가능합니다!")
+  //   }
+  //   alert("스터디 수정은 스터디 관리 페이지에서 가능합니다!")
+  //   navigate(`profile/${id}/`)
+  // };
 
   const handleJoinButton = async () => {
     try {
@@ -119,12 +124,12 @@ const StudyContent = () => {
                 <StudyContentTitle>
                   <h2>{content?.studyName}</h2>
                   <StudyContentEdit>
-                    <button type="button" onClick={handleEditButton}>
+                    {/* <button type="button" onClick={handleEditButton}>
                       수정
-                    </button>
-                    <button type="button" onClick={handleDeleteButton}>
+                    </button> */}
+                    {/* <button type="button" onClick={handleDeleteButton}>
                       삭제
-                    </button>
+                    </button> */}
                   </StudyContentEdit>
                 </StudyContentTitle>
               </StudyContentTop>

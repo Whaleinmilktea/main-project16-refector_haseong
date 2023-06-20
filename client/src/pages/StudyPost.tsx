@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-// import dayjs from "dayjs";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import tokenRequestApi from "../apis/TokenRequestApi";
@@ -27,8 +26,8 @@ const StudyPost = () => {
     useState<string>("프론트엔드");
   const [selectedPeriodStart, setSelectedPeriodStart] = useState<string>("");
   const [selectedPeriodEnd, setSelectedPeriodEnd] = useState<string>("");
-  const [selectedTimeStart, setSelectedTimeStart] = useState<string>("12:00");
-  const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("12:00");
+  const [selectedTimeStart, setSelectedTimeStart] = useState<string>("");
+  const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("");
   const isLoggedIn = useRecoilValue(LogInState);
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -43,35 +42,32 @@ const StudyPost = () => {
 
   const handleStudyPeriodStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startDateValue = e.target.value;
-    const timeValue = "00:00";
 
-    const formattedDate = `${startDateValue}T${timeValue}:00`;
+    const formattedDate = `${startDateValue}T00:00:00`;
     setSelectedPeriodStart(startDateValue);
     setStudyPeriodStart(formattedDate);
   };
 
   const handleStudyPeriodEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const endDateValue = e.target.value;
-    const timeValue = "00:00";
 
-    const formattedDate = `${endDateValue}T${timeValue}:00`;
+    const formattedDate = `${endDateValue}T00:00:00`;
     setSelectedPeriodEnd(endDateValue);
     setStudyPeriodEnd(formattedDate);
   };
   const handleStudyTimeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startTimeValue = e.target.value;
-    const dateValue = "2023-05-04"; // 이 코드에서는 의미가 없기 때문에 임의로 지정
-    let formattedDate = `${dateValue}T${startTimeValue}:00`;
+    let formattedDate = `2023-05-04T${startTimeValue}:00`;
     if (formattedDate === "2023-05-04T00:00:00") {
       formattedDate = "2023-05-04T00:01:00";
     }
     setSelectedTimeStart(startTimeValue);
     setStudyTimeStart(formattedDate);
+    console.log(studyTimeStart);
   };
   const handleStudyTimeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const endTimeValue = e.target.value;
-    const dateValue = "2023-05-04"; // 이 코드에서는 의미가 없기 때문에 임의로 지정
-    let formattedDate = `${dateValue}T${endTimeValue}:00`;
+    let formattedDate = `2023-05-04T${endTimeValue}:00`;
     if (formattedDate === "2023-05-04T00:00:00") {
       formattedDate = "2023-05-04T00:00:00";
     }
@@ -89,6 +85,15 @@ const StudyPost = () => {
   };
 
   const handlePostButton = async () => {
+    if (studyTimeStart === "00:00:00") {
+      alert("시작 시간을 입력해주세요!");
+      return;
+    }
+    if (studyTimeEnd === "00:00:00") {
+      alert("종료 시간을 입력해주세요!");
+      return;
+    }
+
     const StudyPostDto = {
       studyName,
       studyPeriodStart,
@@ -132,6 +137,7 @@ const StudyPost = () => {
       await tokenRequestApi.post("/studygroup", StudyPostDto);
       alert("스터디 등록이 완료되었습니다!");
       navigate("/studylist");
+      console.log(StudyPostDto);
     } catch (error) {
       alert("스터디 등록이 실패했습니다!");
     }
