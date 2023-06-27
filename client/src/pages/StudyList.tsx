@@ -29,7 +29,6 @@ const StudyList = () => {
 
   const handleScroll = () => {
     const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-    console.log(`스크롤 이벤트 발생. 현재 페이지는 ${currentPage}입니다.`);
     if (scrollTop + clientHeight >= scrollHeight) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
@@ -52,7 +51,6 @@ const StudyList = () => {
         return;
       }
       setList([...data]);
-      console.log(list);
     } catch (error) {
       throw new Error("스터디 리스트 로딩에 실패했습니다.");
     } finally {
