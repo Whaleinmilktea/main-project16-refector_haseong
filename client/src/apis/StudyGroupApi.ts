@@ -320,7 +320,7 @@ export interface StudyListOrderDto {
 
 export async function getStudyListOrder(order: string, isAscending: boolean) {
   const response = await eduApi.get<StudyListOrderDto>(
-    `/studygroups/order?page=1&size=1000&order=${order}&isAscending=${isAscending}`
+    `/studygroups/order?page=1&size=3&order=${order}&isAscending=${isAscending}`
   );
   return response.data.data;
 }

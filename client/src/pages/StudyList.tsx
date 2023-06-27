@@ -5,7 +5,6 @@ import axios from "axios";
 import StudyListTag from "../components/StudyListTag";
 import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 const StudyList = () => {
   interface StudyListDto {
@@ -22,30 +21,54 @@ const StudyList = () => {
     },
   ];
 
-  const [fetching, setFetching] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [list, setList] = useState<StudyListDto[]>(initialState);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filterData, setFilterData] = useState<StudyListDto[]>(initialState);
   const navigate = useNavigate();
 
-  // 페이지 ref 상태에 따른 데이터 가져오기
+  const handleScroll = () => {
+    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+    console.log(`스크롤 이벤트 발생. 현재 페이지는 ${currentPage}입니다.`);
+    if (scrollTop + clientHeight >= scrollHeight) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const fetchData = async () => {
     setFetching(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_URL}/studygroups?page=1&size=3`
+        `${import.meta.env.VITE_APP_API_URL}/studygroups?page=${currentPage}&size=6`
       );
-      setList(response.data?.data);
-      setFetching(false); // 데이터를 가져왔다는 걸 표시하는 플래그 함수, 렌더링했으면 undefined가 아니다
+      const data = response.data.data;
+      if (data.length === 0) {
+        alert("마지막 페이지입니다.");
+        return;
+      }
+      setList([...data]);
+      console.log(list);
     } catch (error) {
       throw new Error("스터디 리스트 로딩에 실패했습니다.");
+    } finally {
+      setFetching(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage]);
 
   useEffect(() => {
     setFetching(true);
     setList(filterData);
     setFetching(false);
-  }, ["", filterData]);
+  }, [filterData]);
 
   return (
     <StudyListContainer>
@@ -62,35 +85,26 @@ const StudyList = () => {
         <ListFilterWrapper>
           <ListFilter setFilterData={setFilterData} />
         </ListFilterWrapper>
-
-        <InfiniteScroll
-          dataLength={list?.length}
-          next={fetchData}
-          hasMore={true}
-          loader={<h4>Loading...</h4>}
-          endMessage={<p>더 이상 데이터가 없습니다</p>}
-        >
-          {!fetching && (
-            <StudyBoxContainer>
-              {list?.map((item: StudyListDto) => (
-                <StudyBox
-                  key={item?.id}
-                  onClick={() => navigate(`/studycontent/${item?.id}`)}
-                >
-                  <StudyListImage></StudyListImage>
-                  <div>
-                    <div className="studylist-title">
-                      <h3>{item?.title}</h3>
-                    </div>
-                    <div className="studylist-tag">
-                      <StudyListTag item={item.tagValues} />
-                    </div>
+        {!fetching && (
+          <StudyBoxContainer>
+            {list?.map((item: StudyListDto) => (
+              <StudyBox
+                key={item?.id}
+                onClick={() => navigate(`/studycontent/${item?.id}`)}
+              >
+                <StudyListImage></StudyListImage>
+                <div>
+                  <div className="studylist-title">
+                    <h3>{item?.title}</h3>
                   </div>
-                </StudyBox>
-              ))}
-            </StudyBoxContainer>
-          )}
-        </InfiniteScroll>
+                  <div className="studylist-tag">
+                    <StudyListTag item={item.tagValues} />
+                  </div>
+                </div>
+              </StudyBox>
+            ))}
+          </StudyBoxContainer>
+        )}
       </StudyListBody>
     </StudyListContainer>
   );
