@@ -1,6 +1,7 @@
 import axios from "axios";
 import tokenRequestApi from "./TokenRequestApi";
 import { eduApi } from "./EduApi";
+import { Base64 } from "js-base64";
 
 // ====================== 마이 스터디 리스트 조회 (GET) ===========================
 export interface StudyGroup {
@@ -79,7 +80,10 @@ export interface StudyInfoDto {
 // TODO : StudyGroup의 정보를 조회하는 코드
 export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인하세요");
-  const response = await tokenRequestApi.get<StudyInfoDto>(`/studygroup/${id}`);
+  const stringId = id.toString()
+  const encodeId = Base64.encode(stringId)
+  console.log(encodeId)
+  const response = await tokenRequestApi.get<StudyInfoDto>(`/studygroup/${encodeId}`);
   const studyInfo = response.data;
   studyInfo.studyTimeStart = studyInfo.studyTimeStart
     .split("T")[1]
