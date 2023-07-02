@@ -80,9 +80,7 @@ export interface StudyInfoDto {
 // TODO : StudyGroup의 정보를 조회하는 코드
 export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인하세요");
-  const stringId = id.toString()
-  const encodeId = Base64.encode(stringId)
-  console.log(encodeId)
+  const encodeId = Base64.encode(id.toString())
   const response = await tokenRequestApi.get<StudyInfoDto>(`/studygroup/${encodeId}`);
   const studyInfo = response.data;
   studyInfo.studyTimeStart = studyInfo.studyTimeStart

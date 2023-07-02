@@ -17,6 +17,7 @@ const ProfileImg = ({ profileImage }: Props) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file: File | undefined = e.target.files?.[0];
     if (file) {
+      console.log(e.target.files);
       const reader: FileReader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
@@ -44,6 +45,7 @@ const ProfileImg = ({ profileImage }: Props) => {
 
   return (
     <ProfileImgWrapper>
+      <form onClick={updateImg} encType="form-data">
       <ProfileImgSection>
         {!isEditing ? (
           <label htmlFor="profile-image">
@@ -52,23 +54,24 @@ const ProfileImg = ({ profileImage }: Props) => {
         ) : (
           <img src={imageUrl} alt="Profile image" />
         )}
-        <input
-          ref={fileInputRef}
-          id="profile-image"
-          type="file"
-          accept=".png,.jpg,.jpeg"
-          onChange={handleFileChange}
-          style={{ display: "none" }}
-        />
+          <input
+            ref={fileInputRef}
+            id="profile-image"
+            type="file"
+            accept=".png,.jpg,.jpeg"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
       </ProfileImgSection>
       {isEditing && (
         <>
           <ButtonGroup>
             <CancelButton onClick={cancelUpload}>Cancel</CancelButton>
-            <ConfirmButton onClick={updateImg}>Upload</ConfirmButton>
+            <ConfirmButton type="submit">Upload</ConfirmButton>
           </ButtonGroup>
         </>
       )}
+      </form>
     </ProfileImgWrapper>
   );
 };

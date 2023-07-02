@@ -51,9 +51,10 @@ export interface MemberProfileUpdateImageDto {
 }
 // TODO : Member의 프로필 사진의 수정 요청을 보내는 코드
 export const updateMemberProfileImage = async (
-  data: MemberProfileUpdateImageDto
+  data: MemberProfileUpdateImageDto,
 ) => {
-  await tokenRequestApi.patch("/members/profile-image", data);
+  // await tokenRequestApi.patch("/members/image", data);
+  console.log(data);
 };
 
 // =============== 유저 자기소개 / 선호하는 사람 업데이트(PATCH) ===============
