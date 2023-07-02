@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./GlobalStyle";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import Profile from "./pages/Profile";
+import Mypage from "./pages/MyPage";
 import StudyPost from "./pages/StudyPost";
 import "./App.css";
 import StudyList from "./pages/StudyList";
@@ -53,7 +53,7 @@ function AppContent() {
                 </>
               }
             />
-            <Route path="/profile/*" element={<Profile />} />
+            <Route path="/profile/*" element={<Mypage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/oauth/redirect" element={<Redirect />} />
