@@ -13,11 +13,14 @@ const ProfileImg = ({ profileImage }: Props) => {
   const [imageUrl, setImageUrl] = useState<string>(profileImage || "");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isRendering, setIsRendering] = useRecoilState(RenderingState);
+  // const formData = new FormData();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file: File | undefined = e.target.files?.[0];
     if (file) {
-      console.log(e.target.files);
+      // console.log(e.target.files?.[0]);
+      // formData.append("image", file);
+      // setImageUrl(URL.createObjectURL(file));
       const reader: FileReader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
@@ -28,14 +31,14 @@ const ProfileImg = ({ profileImage }: Props) => {
     }
   };
 
-  const cancelUpload = (): void => {
+  const cancelUpload =  (): void => {
     setIsEditing(false);
     setImageUrl(profileImage || "");
   };
 
   const updateImg = async (): Promise<void> => {
     try {
-      await updateMemberProfileImage({ profileImage: imageUrl });
+      await updateMemberProfileImage({ image: fileInputRef.current?.files?.[0] });
       setIsEditing(false);
       setIsRendering(!isRendering);
     } catch (error) {
@@ -45,7 +48,6 @@ const ProfileImg = ({ profileImage }: Props) => {
 
   return (
     <ProfileImgWrapper>
-      <form onClick={updateImg} encType="form-data">
       <ProfileImgSection>
         {!isEditing ? (
           <label htmlFor="profile-image">
@@ -67,11 +69,10 @@ const ProfileImg = ({ profileImage }: Props) => {
         <>
           <ButtonGroup>
             <CancelButton onClick={cancelUpload}>Cancel</CancelButton>
-            <ConfirmButton type="submit">Upload</ConfirmButton>
+            <ConfirmButton onClick={updateImg}>Upload</ConfirmButton>
           </ButtonGroup>
         </>
       )}
-      </form>
     </ProfileImgWrapper>
   );
 };
