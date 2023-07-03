@@ -46,7 +46,7 @@ export const updateMember = async (
   await tokenRequestApi.patch("/members", data);
 };
 
-// TODO =============== 유저 프로필 사진 업데이트(PATCH) ===============
+// =============== 유저 프로필 사진 업데이트(PATCH) ===============
 export interface MemberProfileUpdateImageDto {
   // image: FormData;
   image: File | undefined;
