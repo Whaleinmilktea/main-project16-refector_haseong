@@ -8,27 +8,8 @@ let tokenRequestApi = axios.create({
   headers: {
     "Content-Type": "application/json", // 요청 헤더(content type) 설정
   },
+  data: {},
 }) as AxiosInstance & { setAccessToken: (token: string | null) => void };
-
-tokenRequestApi.setAccessToken = (token: string | null): void => {
-  if (token) {
-    accessToken = token;
-    extendAccessToken();
-  }
-};
-
-tokenRequestApi.interceptors.request.use(
-  (config) => {
-    config.headers = config.headers || {};
-    if (accessToken) {
-      config.headers.authorization = `${accessToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 const extendAccessToken = async () => {
   const expirationTime = 4 * 60 * 1000;
@@ -51,5 +32,25 @@ const extendAccessToken = async () => {
     } catch (error) {}
   }, timeToExpire);
 };
+
+tokenRequestApi.setAccessToken = (token: string | null): void => {
+  if (token) {
+    accessToken = token;
+    extendAccessToken();
+  }
+};
+
+tokenRequestApi.interceptors.request.use(
+  (config) => {
+    config.headers = config.headers || {};
+    if (accessToken) {
+      config.headers.authorization = `${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default tokenRequestApi;

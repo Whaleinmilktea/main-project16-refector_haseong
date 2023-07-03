@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import tokenRequestApi from "./TokenRequestApi";
+
 // * recoil에서 전역 LogInState를 가져와서 isLogin 변수에 할당
 // =============== 유저정보 요청(GET) ===============
 
@@ -47,14 +48,27 @@ export const updateMember = async (
 
 // =============== 유저 프로필 사진 업데이트(PATCH) ===============
 export interface MemberProfileUpdateImageDto {
-  profileImage: string;
+  // image: FormData;
+  image: File | undefined;
 }
+
 // TODO : Member의 프로필 사진의 수정 요청을 보내는 코드
 export const updateMemberProfileImage = async (
-  data: MemberProfileUpdateImageDto,
+  image: MemberProfileUpdateImageDto,
 ) => {
-  // await tokenRequestApi.patch("/members/image", data);
-  console.log(data);
+  if (!image.image) throw new Error("이미지를 확인해주세요.")
+  try {
+    const formData = new FormData();
+    formData.append("image", image.image);
+    const response = await tokenRequestApi.patch("/members/image", formData, {
+      headers : {
+        "Content-Type" : "multipart/form-data"
+      }
+    });
+    console.log(response);
+  } catch (error) {
+    console.error(error)
+  }
 };
 
 // =============== 유저 자기소개 / 선호하는 사람 업데이트(PATCH) ===============
