@@ -32,6 +32,12 @@ const SignUp = () => {
     );
   };
 
+  const passwordTest = (data: string) => {
+  // 비밀번호는 8~25자리의 영문 대소문자, 숫자, 특수문자 조합이어야 합니다.
+    return /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/g.test(data);
+  };
+
+
   const handleSignUpButton = () => {
     if (
       validateEmptyInput(nickName) ||
@@ -40,6 +46,7 @@ const SignUp = () => {
     )
       alert("닉네임과 이메일, 패스워드를 모두 입력해주세요!");
     else if (emailTest(email) === false) alert("이메일 형식이 잘못되었습니다.");
+    else if (passwordTest(password) === false) alert("비밀번호는 8~25자리의 영문 대소문자, 숫자, 특수문자 조합이어야 합니다.");
     else {
       eduApi
         .post(`/members`, {
