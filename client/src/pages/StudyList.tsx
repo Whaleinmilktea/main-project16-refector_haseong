@@ -1,4 +1,3 @@
-debugger;
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,55 +21,86 @@ const StudyList = () => {
     },
   ];
 
-  const [fetching, setFetching] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [list, setList] = useState<StudyListDto[]>(initialState);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterData, setFilterData] = useState<StudyListDto[]>(initialState);
   const navigate = useNavigate();
 
-  const handleScroll = () => {
-    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    }
-  };
-
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    fetchMoreList();
   }, []);
 
-  const fetchData = async () => {
-    setFetching(true);
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_URL}/studygroups?page=${currentPage}&size=6`
-      );
-      const data = response.data.data;
-      if (data.length === 0) {
-        alert("마지막 페이지입니다.");
-        return;
-      }
-      setList([...data]);
-    } catch (error) {
-      throw new Error("스터디 리스트 로딩에 실패했습니다.");
-    } finally {
-      setFetching(false);
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
+
+  const fetchMoreList = async () => {
+    const response = await axios.get(
+      `${
+        import.meta.env.VITE_APP_API_URL
+      }/studygroups?page=${currentPage}&size=6`
+    );
+    const data = response.data.data;
+    setList([...list, ...data]);
+    setCurrentPage((prevPage) => prevPage + 1);
+    setLoading(false);
+    if (data.length === 0) {
+      return <p>마지막 페이지입니다.</p>;
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [currentPage]);
+  // setTimeout(() => {
+  //   if (loading) {
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   fetchMoreList();
+  // }, 500);
+
+  const srollLogic = () => {
+    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight) {
+      console.log("scroll");
+      // fetchMoreList();
+    }
+  };
+
+
+
+  // try {
+  //     const response = await axios.get(
+  //       `${import.meta.env.VITE_APP_API_URL}/studygroups?page=${currentPage}&size=6`
+  //     );
+  //     const data = response.data.data;
+  //     if (data.length === 0) {
+  //       alert("마지막 페이지입니다.");
+  //       return;
+  //     }
+  //     setList([...data]);
+  //   } catch (error) {
+  //     throw new Error("스터디 리스트 로딩에 실패했습니다.");
+  //   } finally {
+  //     setFetching(false);
+  //   }
+  // };
+
+  // const handleScroll = () => {
+  //   const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+  //   if (scrollTop + clientHeight >= scrollHeight) {
+  //     setCurrentPage((prevPage) => prevPage + 1);
+  //   }
+  // };
 
   useEffect(() => {
-    setFetching(true);
+    setLoading(true);
     setList(filterData);
-    setFetching(false);
+    setLoading(false);
   }, [filterData]);
 
   return (
-    <StudyListContainer>
+    <StudyListContainer onScroll={srollLogic}>
       <StudyListBody>
         <StudyListTop>
           <div>
@@ -85,7 +115,7 @@ const StudyList = () => {
           <ListFilter setFilterData={setFilterData} />
         </ListFilterWrapper>
 
-        {!fetching && (
+        {!loading && (
           <StudyBoxContainer>
             {list?.map((item: StudyListDto) => (
               <StudyBox

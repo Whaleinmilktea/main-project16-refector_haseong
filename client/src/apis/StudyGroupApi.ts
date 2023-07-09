@@ -3,7 +3,6 @@ import tokenRequestApi from "./TokenRequestApi";
 import { eduApi } from "./EduApi";
 import { Base64 } from "js-base64";
 
-// ====================== 마이 스터디 리스트 조회 (GET) ===========================
 export interface StudyGroup {
   id: number;
   title: string;
@@ -22,7 +21,6 @@ export const getStudyGroupList = async () => {
   return response;
 };
 
-// ====================== 가입 대기중인 스터디 리스트 조회 (GET) ===========================
 export interface WaitingStudyGroupItemDto {
   id: number;
   title: string;
@@ -41,7 +39,6 @@ export const getWaitingStudyGroupList =
     return data;
   };
 
-// ====================== 스터디원 가입 신청 철회 ===========================
 // TODO : StudyGroup의 가입 신청을 철회하는 코드
 export async function cancelStudyGroupApplication(
   id: number,
@@ -316,6 +313,8 @@ export async function changeStudyGroupRecruitmentStatus(
   await tokenRequestApi.patch(`/studygroup/${id}/status`, config);
   alert("스터디 모집 상태를 변경했습니다");
 }
+
+// ====================== 스터디 그룹 리스트 조회 (READ) ===========================
 export interface StudyListOrderDto {
   data: StudyGroup[];
 }
