@@ -20,7 +20,6 @@ export interface MemberProfileUpdateImageDto {
 
 export interface MemberDetailDto {
   aboutMe: string;
-  withMe: string;
 }
 
 export interface MemberPasswordCheckDto {

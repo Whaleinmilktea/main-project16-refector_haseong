@@ -82,8 +82,8 @@ export default ProfileImg;
 const ProfileImgWrapper = styled.div``;
 
 const ProfileImgSection = styled.div`
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;

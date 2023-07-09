@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-
 import { TbUsers } from "react-icons/tb";
 import { TbNotebook } from "react-icons/tb";
 import { TbCalendar } from "react-icons/tb";
