@@ -1,7 +1,8 @@
 import { ChangeEvent, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import { updateMember, MemberUpdateDto } from "../../apis/MemberApi";
+import { updateMember } from "../../apis/MemberApi";
+import { MemberUpdateDto } from "../../types/MemberInterfaces";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useRecoilValue } from "recoil";
 

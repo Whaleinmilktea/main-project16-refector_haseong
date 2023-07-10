@@ -48,7 +48,9 @@ export const requestWithdrawal = async () => {
 export const checkMemberPassword = async (
   memberPasswordCheckDto: MemberPasswordCheckDto
 ) => {
-  await tokenRequestApi.post("/members/password", memberPasswordCheckDto);
+  const response = await tokenRequestApi.post("/members/password", memberPasswordCheckDto);
+  const data = response.data;
+  return data;
 };
 
 export const checkOauth2Member = async (isLoggedIn: boolean) => {
