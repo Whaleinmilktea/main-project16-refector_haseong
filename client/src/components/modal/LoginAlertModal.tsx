@@ -29,12 +29,10 @@ const LoginAlertModal = ({ isOpen, closeModal }: ModalProps) => {
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(LogInState);
 
-  // useEffect(() => {
   setTimeout(() => {
     closeModal();
     if (!isLoggedIn) navigate("/login");
   }, 1500);
-  //}, []);
 
   return (
     <>

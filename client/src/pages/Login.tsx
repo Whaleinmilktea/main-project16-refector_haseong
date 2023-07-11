@@ -19,7 +19,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
   const setIsLoggedIn = useSetRecoilState(LogInState);
-
   const navigate = useNavigate();
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,10 +68,6 @@ const Login = () => {
       handleLoginButton();
     }
   };
-
-  //  const handleGoogleLogin = () => {
-  // Google 로그인 처리
-  // };
 
   return (
     <Container>

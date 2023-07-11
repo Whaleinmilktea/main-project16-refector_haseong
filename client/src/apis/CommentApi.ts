@@ -1,8 +1,4 @@
 import tokenRequestApi from "./TokenRequestApi";
-// import { eduApi } from "./EduApi";
-
-// ====================== 댓글 등록 (post) ===========================
-
 export interface CommentDto {
   content: string;
   studygroupId: number;
@@ -20,7 +16,6 @@ export const postComment = async (studyGroupId: number, data: string) => {
   }
 };
 
-// ====================== 댓글 수정 (patch) ===========================
 export const patchComment = async (
   studyGroupId: number,
   patchId: number,
@@ -34,9 +29,8 @@ export const patchComment = async (
   } catch (error) {
     throw new Error("댓글 수정 실패");
   }
-}; //31 -> 변수로 나중에 바꿔야 함
+};
 
-// ====================== 댓글 전부 조회 (get) ===========================
 export const getComments = async (
   studyGroupId: number
 ): Promise<CommentDto[]> => {
@@ -50,7 +44,6 @@ export const getComments = async (
   }
 };
 
-// ====================== 댓글 삭제 (DELETE) ===========================
 export const deleteComment = async (studyGroupId: number, patchId: number) => {
   try {
     await tokenRequestApi.delete(
