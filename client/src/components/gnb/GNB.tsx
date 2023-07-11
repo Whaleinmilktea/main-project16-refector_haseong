@@ -18,7 +18,7 @@ const GNB = () => {
     setIsLoading(true);
     if (isLoggedIn) {
       tokenRequestApi.get("/members").then((res) => {
-        setProfileImage(res.data.profileImage);
+        setProfileImage(res.data.image);
         setIsLoading(false);
       });
     }

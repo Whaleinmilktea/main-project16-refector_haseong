@@ -1,21 +1,21 @@
 import styled from "styled-components";
 import ProfileImg from "../components/ProfileImg";
+import { useState, useEffect, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { RenderingState } from "../recoil/atoms/RenderingState";
+import { LogInState } from "../recoil/atoms/LogInState";
+import tokenRequestApi from "../apis/TokenRequestApi";
+import { removeTokens } from "./utils/Auth";
+import UserInfoEditModal from "../components/modal/UserInfoEditModal";
+import CheckPasswordModal from "../components/modal/CheckPasswordModal";
 import {
   getMemberInfo,
   updateMemberDetail,
   checkOauth2Member,
-  requestWithdrawal,
+  leaveMembership,
 } from "../apis/MemberApi";
-import { useState, useEffect, ChangeEvent } from "react";
-import UserInfoEditModal from "../components/modal/UserInfoEditModal";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { LogInState } from "../recoil/atoms/LogInState";
-import { useNavigate } from "react-router-dom";
-import CheckPasswordModal from "../components/modal/CheckPasswordModal";
-import tokenRequestApi from "../apis/TokenRequestApi";
-import { removeTokens } from "./utils/Auth";
-import { RenderingState } from "../recoil/atoms/RenderingState";
-import { MemberDetailDto, MemberInfoResponseDto } from "../types/MemberInterfaces";
+import { MemberDetailDto, MemberInfoResponseDto } from "../types/MemberApiInterfaces";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
@@ -23,16 +23,16 @@ const ProfileInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
     null
-  );
+  ); // 멤버 정보의 조회 (서버 원천 데이터)
   const [introduceInfo, setIntroduceInfo] = useState<MemberDetailDto>({
     aboutMe: memberInfo?.aboutMe || "",
   });
+  // 멤버 정보 수정 (클라이언트에서 수정된 데이터)
   const [isIntroduceEdit, setIsIntroduceEdit] = useState<boolean>(false);
   const [passowrdCheckModalOpen, setPasswordCheckModalOpen] =
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  // TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login");
@@ -47,7 +47,9 @@ const ProfileInfo = () => {
     fetchMemberInfo();
   }, [isModalOpen, isRendering]);
 
-
+  // TODO Edit 버튼을 클릭 시, 유저의 닉네임, 비밀번호를 수정할 수 있도록 상태를 변경하는 코드
+  // 현재 Modal 구현은 완료했으나 비동기 처리로 인해 계속된 오류 발생. 추가적인 최적화 작업 요함
+  // Jest로 테스트할 필요! : why? 소셜 로그인은 자동으로 배포 서버로 리다이렉션 함!
   const handleEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
     if (data.provider !== "LOCAL") {
@@ -57,12 +59,13 @@ const ProfileInfo = () => {
     }
   };
 
+  // TODO Edit 버튼을 클릭 시, 유저의 자기소개, 원하는 동료상을 수정할 수 있도록 상태를 변경하는 코드
   const handleIntroduceEditClick = () => {
     setIsIntroduceEdit(true);
   };
   const handleIntroduceChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setIntroduceInfo((prevIntroduceInfo: any) => ({
+    setIntroduceInfo((prevIntroduceInfo) => ({
       ...prevIntroduceInfo,
       [name]: value,
     }));
@@ -92,7 +95,7 @@ const ProfileInfo = () => {
       );
       if (confirmed) {
         navigate("/");
-        await requestWithdrawal();
+        await leaveMembership();
         alert("회원탈퇴가 완료되었습니다.");
         tokenRequestApi.setAccessToken(null);
         removeTokens();
@@ -106,7 +109,7 @@ const ProfileInfo = () => {
     <ProfileInfoContainer>
       <ProfileBaseWrapper>
         <ProfileImage>
-          <ProfileImg profileImage={memberInfo?.profileImage} />
+          <ProfileImg profileImage={memberInfo?.image} />
         </ProfileImage>
         <ProfileBaseInfo>
           <ProfileInput
@@ -131,6 +134,12 @@ const ProfileInfo = () => {
             <IntroduceAndDesiredTextarea
               name="aboutMe"
               placeholder="자기소개를 입력해주세요"
+              onChange={handleIntroduceChange}
+            />
+            <h4>함께하고 싶은 동료</h4>
+            <IntroduceAndDesiredTextarea
+              name="withMe"
+              placeholder="함께하고 싶은 동료상을 입력해주세요"
               onChange={handleIntroduceChange}
             />
           </>
@@ -183,7 +192,6 @@ const ProfileBaseWrapper = styled.div`
 
 const ProfileImage = styled.div`
   margin-right: 20px;
-  margin-left: 30px;
 `;
 
 const ProfileInput = styled.input`
@@ -232,7 +240,7 @@ const IntroduceAndDesiredTextarea = styled.textarea`
   margin-bottom: 10px;
   padding: 8px;
   width: 90%;
-  height: 400px;
+  height: 200px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f5f5f5;

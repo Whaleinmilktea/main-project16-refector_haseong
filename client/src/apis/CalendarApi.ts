@@ -1,18 +1,11 @@
+import { AxiosResponse } from "axios";
 import tokenRequestApi from "./TokenRequestApi";
-
 import {
   StudyInfoDto,
   getStudyGroupInfo,
   getStudyGroupList,
 } from "./StudyGroupApi";
-import { AxiosResponse } from "axios";
 
-// ====================== 개인이 속한 스터디의 스케줄을 가져오는 로직  ===========================
-// 1. 개인이 속한 스터디 조회
-// 2. 조회 데이터의 id 추출
-// 3. id를 인자로 전달하여 각 스터디의 상세정보를 추출하고, 변수에 담기
-// 4. 변수에 담은 스터디 정보를 fullCalendar 라이브러리에 맞게 맵핑
-// 5. fullCalendar 라이브러리에 전달하여 이벤트 생성
 export interface StudyEvent {
   id: string;
   title: string;
@@ -29,23 +22,19 @@ export interface StudyEvent {
 export const generateStudyEvents = async (
   isLoggedIn: boolean
 ): Promise<StudyEvent[]> => {
-  // 1. 개인이 속한 스터디 조회
   const myStudyGroups = await getStudyGroupList();
-  // 2. 조회 데이터의 id 추출
   const studyGroupIds: number[] = [];
 
   for (const member of myStudyGroups.data.members) {
     studyGroupIds.push(member.id);
   }
 
-  // 3. id를 인자로 전달하여 각 스터디의 상세정보를 추출하고, 변수에 담기
   const studyGroupInfos: StudyInfoDto[] = [];
   for (const id of studyGroupIds) {
     const studyGroupInfo = await getStudyGroupInfo(id, isLoggedIn);
     studyGroupInfos.push(studyGroupInfo);
   }
 
-  // 4. 변수에 담은 스터디 정보를 fullCalendar 라이브러리에 맞게 맵핑
   const events: StudyEvent[] = studyGroupInfos.map(
     (studyGroupInfo: StudyInfoDto) => {
       const mappedDaysOfWeek: string[] = studyGroupInfo.daysOfWeek.map(
