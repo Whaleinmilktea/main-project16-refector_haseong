@@ -6,13 +6,10 @@ import tokenRequestApi from "./TokenRequestApi";
 
 // TODO : 유저정보 get 요청 DTO 타입 정의
 export interface MemberInfoResponseDto {
-  uuid: string;
   email: string;
-  profileImage: string;
+  image: string;
   nickName: string;
   aboutMe: string;
-  withMe: string;
-  memberStatus: "MEMBER_ACTIVE" | "MEMBER_INACTIVE";
   roles: string[];
 }
 
@@ -74,7 +71,6 @@ export const updateMemberProfileImage = async (
 // =============== 유저 자기소개 / 선호하는 사람 업데이트(PATCH) ===============
 export interface MemberDetailDto {
   aboutMe: string;
-  withMe: string;
 }
 // TODO : Member의 자기소개, 선호하는 사람 수정 요청을 보내는 코드
 export const updateMemberDetail = async (memberDetailDto: MemberDetailDto) => {

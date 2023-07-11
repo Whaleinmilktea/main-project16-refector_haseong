@@ -27,7 +27,6 @@ const ProfileInfo = () => {
   ); // 멤버 정보의 조회 (서버 원천 데이터)
   const [introduceInfo, setIntroduceInfo] = useState<MemberDetailDto>({
     aboutMe: memberInfo?.aboutMe || "",
-    withMe: memberInfo?.withMe || "",
   });
   // 멤버 정보 수정 (클라이언트에서 수정된 데이터)
   const [isIntroduceEdit, setIsIntroduceEdit] = useState<boolean>(false);
@@ -35,7 +34,6 @@ const ProfileInfo = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  // TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login");
@@ -44,7 +42,7 @@ const ProfileInfo = () => {
       try {
         const info = await getMemberInfo(isLoggedIn);
         setMemberInfo(info);
-        setIntroduceInfo({ aboutMe: info.aboutMe, withMe: info.withMe });
+        setIntroduceInfo({ aboutMe: info.aboutMe });
       } catch (error) {}
     };
     fetchMemberInfo();
@@ -79,7 +77,6 @@ const ProfileInfo = () => {
     try {
       const memberDetailDto: MemberDetailDto = {
         aboutMe: introduceInfo?.aboutMe,
-        withMe: introduceInfo?.withMe,
       };
       await updateMemberDetail(memberDetailDto);
       setIsIntroduceEdit(false);
@@ -113,7 +110,7 @@ const ProfileInfo = () => {
     <ProfileInfoContainer>
       <ProfileBaseWrapper>
         <ProfileImage>
-          <ProfileImg profileImage={memberInfo?.profileImage} />
+          <ProfileImg profileImage={memberInfo?.image} />
         </ProfileImage>
         <ProfileBaseInfo>
           <ProfileInput
@@ -131,8 +128,6 @@ const ProfileInfo = () => {
           <>
             <h4>자기소개</h4>
             <IntroduceAndDesiredTextarea value={memberInfo?.aboutMe} disabled />
-            <h4>함께하고 싶은 동료</h4>
-            <IntroduceAndDesiredTextarea value={memberInfo?.withMe} disabled />
           </>
         ) : (
           <>
