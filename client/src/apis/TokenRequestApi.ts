@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { eduApi } from "./EduApi";
+import { baseApi } from "./EduApi";
 import { getRefreshToken } from "../pages/utils/Auth";
 
 let accessToken: string | null = null;
@@ -22,7 +22,7 @@ const extendAccessToken = async () => {
     if (!refreshToken) return;
 
     try {
-      const response = await eduApi.post(`/refresh`, null, {
+      const response = await baseApi.post(`/refresh`, null, {
         headers: {
           Refresh: `${refreshToken}`,
         },

@@ -1,22 +1,21 @@
 import styled from "styled-components";
 import ProfileImg from "../components/ProfileImg";
-import {
-  getMemberInfo,
-  MemberInfoResponseDto,
-  updateMemberDetail,
-  MemberDetailDto,
-  deleteMember,
-  checkOauth2Member,
-} from "../apis/MemberApi";
 import { useState, useEffect, ChangeEvent } from "react";
-import UserInfoEditModal from "../components/modal/UserInfoEditModal";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { LogInState } from "../recoil/atoms/LogInState";
 import { useNavigate } from "react-router-dom";
-import CheckPasswordModal from "../components/modal/CheckPasswordModal";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { RenderingState } from "../recoil/atoms/RenderingState";
+import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
-import { RenderingState } from "../recoil/atoms/RenderingState";
+import UserInfoEditModal from "../components/modal/UserInfoEditModal";
+import CheckPasswordModal from "../components/modal/CheckPasswordModal";
+import {
+  getMemberInfo,
+  updateMemberDetail,
+  checkOauth2Member,
+  leaveMembership,
+} from "../apis/MemberApi";
+import { MemberDetailDto, MemberInfoResponseDto } from "../types/MemberApiInterfaces";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
@@ -96,7 +95,7 @@ const ProfileInfo = () => {
       );
       if (confirmed) {
         navigate("/");
-        await deleteMember();
+        await leaveMembership();
         alert("회원탈퇴가 완료되었습니다.");
         tokenRequestApi.setAccessToken(null);
         removeTokens();
