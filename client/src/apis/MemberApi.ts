@@ -10,12 +10,11 @@ import {
 } from "../types/MemberApiInterfaces";
 // * recoil에서 전역 LogInState를 가져와서 isLogin 변수에 할당
 
-// TODO: 유저정보 get 요청하는 axios 코드
 export const getMemberInfo = async (isLoggedIn: boolean) => {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
   const response = await tokenRequestApi.get<MemberInfoResponseDto>("/members");
   const data = response.data;
-  return data; // 데이터 반환
+  return data;
 };
 
 export const updateMember = async (
