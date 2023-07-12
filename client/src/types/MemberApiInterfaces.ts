@@ -6,11 +6,6 @@ export interface MemberInfoResponseDto {
   roles: string[];
 }
 
-export interface MemberUpdateDto {
-  nickName: string;
-  password: string;
-}
-
 export interface EditPasswordDto {
   password: string;
 }
@@ -18,7 +13,6 @@ export interface EditPasswordDto {
 export interface EditNicknameDto {
   nickName: string;
 }
-
 
 export interface MemberProfileUpdateImageDto {
   // image: FormData;
@@ -36,3 +30,10 @@ export interface MemberPasswordCheckDto {
 export interface Oauth2MemberCheckDto {
   provider: string;
 }
+
+// 리팩토링 이후 더 이상 사용하지 않는 코드
+// export interface MemberUpdateDto {
+//   nickName: string;
+//   password: string;
+// }
+
