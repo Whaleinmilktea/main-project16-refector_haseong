@@ -2,13 +2,12 @@ import { useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import {
-  StudyInfoDto,
   updateStudyGroupInfo,
-  StudyGroupUpdateDto,
 } from "../../apis/StudyGroupApi";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
+import { StudyGroupUpdateDto, StudyInfoDto } from "../../types/StudyGroupApiInterfaces";
 
 const customStyles = {
   content: {

@@ -2,9 +2,9 @@ import { ChangeEvent, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { updateMember } from "../../apis/MemberApi";
-import { MemberUpdateDto } from "../../types/MemberInterfaces";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useRecoilValue } from "recoil";
+import { MemberUpdateDto } from "../../types/MemberApiInterfaces";
 
 const customStyles = {
   content: {
