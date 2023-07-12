@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { eduApi } from "../../apis/EduApi";
+import { baseApi } from "../../apis/EduApi";
 import { validateEmptyInput } from "../../pages/utils/loginUtils";
 
 const customStyles = {
@@ -41,7 +41,7 @@ const MemberRestoreModal = ({ isOpen, closeModal, email }: ModalProps) => {
     if (validateEmptyInput(email) || validateEmptyInput(password))
       alert("닉네임과 이메일, 패스워드를 모두 입력해주세요!");
     else {
-      eduApi
+      baseApi
         .patch("/members/reactive", {
           email,
           password,

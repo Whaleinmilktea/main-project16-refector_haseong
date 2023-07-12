@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { eduApi } from "../apis/EduApi";
+import { baseApi } from "../apis/EduApi";
 import logo from "../assets/edusync-logo.png";
 import GoogleButton from "../components/social-login-button/GoogleButton";
 import KakaoButton from "../components/social-login-button/KakaoButton";
@@ -48,7 +48,7 @@ const SignUp = () => {
     else if (emailTest(email) === false) alert("이메일 형식이 잘못되었습니다.");
     else if (passwordTest(password) === false) alert("비밀번호는 8~25자리의 영문 대소문자, 숫자, 특수문자 조합이어야 합니다.");
     else {
-      eduApi
+      baseApi
         .post(`/members`, {
           email,
           password,

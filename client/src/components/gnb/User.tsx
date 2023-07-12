@@ -3,7 +3,7 @@ import styled from "styled-components";
 import tokenRequestApi from "../../apis/TokenRequestApi";
 import { useNavigate } from "react-router-dom";
 import { getRefreshToken, removeTokens } from "../../pages/utils/Auth";
-import { eduApi } from "../../apis/EduApi";
+import { baseApi } from "../../apis/EduApi";
 
 type GNB = {
   profileImage: string;
@@ -17,7 +17,7 @@ const User = ({ profileImage, isLoggedIn, setIsLoggedIn }: GNB) => {
   const handleLogout = (): void => {
     const refreshToken = getRefreshToken();
 
-    eduApi
+    baseApi
       .delete("/refresh", {
         headers: {
           Refresh: `${refreshToken}`,

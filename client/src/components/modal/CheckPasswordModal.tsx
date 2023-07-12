@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Modal from "react-modal";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { checkMemberPassword } from "../../apis/MemberApi";
-import { MemberPasswordCheckDto } from "../../types/MemberInterfaces"
+import { MemberPasswordCheckDto } from "../../types/MemberApiInterfaces";
 
 const customStyles = {
   content: {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import TagDropdown from "./TagDropdown";
-import { StudyInfoDto } from "../apis/StudyGroupApi";
-import { eduApi } from "../apis/EduApi";
+import { baseApi } from "../apis/EduApi";
+import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 
 const TagInput = ({
   selectedCategory,
@@ -50,7 +50,7 @@ const TagInput = ({
     setCreatedTag("");
     const fetchData = async () => {
       try {
-        const response = await eduApi.get<StudyInfoDto>(
+        const response = await baseApi.get<StudyInfoDto>(
           `/search?key=${selectedCategory}`
         );
         const result = response.data.tags;

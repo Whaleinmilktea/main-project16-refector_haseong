@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import tokenRequestApi from "../apis/TokenRequestApi";
-import { eduApi } from "../apis/EduApi";
+import { baseApi } from "../apis/EduApi";
 import { useState } from "react";
 import { getRefreshToken } from "../pages/utils/Auth";
 import { useNavigate } from "react-router-dom";
@@ -31,7 +31,7 @@ function useRefreshToken() {
       setFetched(true);
       navigate("/login");
     } else if (refreshToken) {
-      eduApi
+      baseApi
         .post("/refresh", null, {
           headers: {
             refresh: `${refreshToken}`,
