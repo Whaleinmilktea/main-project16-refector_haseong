@@ -59,8 +59,6 @@ export async function updateStudyGroupInfo(
   id: number
 ) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
-
-  // studyPeriodStart 및 studyPeriodEnd 값을 ISO 8601 형식으로 변환
   const formattedData = {
     ...data,
     studyPeriodStart: `${data.studyPeriodStart}T${data.studyTimeStart}:00`,
@@ -68,7 +66,6 @@ export async function updateStudyGroupInfo(
     studyTimeStart: `${data.studyPeriodStart}T${data.studyTimeStart}:00`,
     studyTimeEnd: `${data.studyPeriodEnd}T${data.studyTimeEnd}:00`,
   };
-
   const response = await tokenRequestApi.patch(
     `/studygroup/${id}`,
     formattedData
