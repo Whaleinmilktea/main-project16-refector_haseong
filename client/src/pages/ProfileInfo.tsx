@@ -7,7 +7,6 @@ import { RenderingState } from "../recoil/atoms/RenderingState";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
-import UserInfoEditModal from "../components/modal/PasswordEditModal";
 import CheckPasswordModal from "../components/modal/CheckPasswordModal";
 import {
   getMemberInfo,
@@ -20,6 +19,7 @@ import {
   MemberInfoResponseDto,
 } from "../types/MemberApiInterfaces";
 import NicknameEditModal from "../components/modal/NicknameEditModal";
+import PasswordEditModal from "../components/modal/PasswordEditModal";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
@@ -169,10 +169,9 @@ const ProfileInfo = () => {
           )}
         </ButtonWrapper>
       </IntroduceWrapper>
-      <UserInfoEditModal
+      <PasswordEditModal
         isOpen={isPasswordEditModalOpen}
         closeModal={() => setIsPasswordEditModalOpen(false)}
-        userNickname={memberInfo?.nickName}
       />
       <NicknameEditModal
         isOpen={isNicknameEditModalOpen}

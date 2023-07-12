@@ -5,7 +5,6 @@ import {
   MemberInfoResponseDto,
   MemberPasswordCheckDto,
   MemberProfileUpdateImageDto,
-  MemberUpdateDto,
   Oauth2MemberCheckDto,
 } from "../types/MemberApiInterfaces";
 // * recoil에서 전역 LogInState를 가져와서 isLogin 변수에 할당
@@ -15,15 +14,6 @@ export const getMemberInfo = async (isLoggedIn: boolean) => {
   const response = await tokenRequestApi.get<MemberInfoResponseDto>("/members");
   const data = response.data;
   return data;
-};
-
-export const updateMember = async (
-  isLoggedIn: boolean,
-  data: MemberUpdateDto
-) => {
-  if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
-  if (!data) throw new Error("입력값을 확인해주세요.");
-  await tokenRequestApi.patch("/members", data);
 };
 
 export const updateMemberProfileImage = async (
@@ -70,10 +60,22 @@ export const checkOauth2Member = async (isLoggedIn: boolean) => {
 };
 
 // refector 이후 코드
-export const updateUserNickname = async (nickname: string) => {
-  await tokenRequestApi.patch("/members/name", { nickname });
+export const updateUserNickname = async (isLoggedIn : boolean, nickname: string) => {
+  if(!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
+  await tokenRequestApi.patch("/members/name", nickname);
 };
 
-export const updateUserPassword = async (password: string) => {
-  await tokenRequestApi.patch("/members/password", { password });
+export const updateUserPassword = async (isLoggedIn : boolean, password: string) => {
+  if(!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
+  await tokenRequestApi.patch("/members/pass", password );
 }
+
+// 리팩토링 이후 더 이상 사용하지 않는 코드
+// export const updateMember = async (
+//   isLoggedIn: boolean,
+//   data: MemberUpdateDto
+// ) => {
+//   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
+//   if (!data) throw new Error("입력값을 확인해주세요.");
+//   await tokenRequestApi.patch("/members", data);
+// };

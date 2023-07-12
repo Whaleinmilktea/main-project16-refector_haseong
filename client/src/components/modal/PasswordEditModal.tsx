@@ -1,10 +1,9 @@
 import { ChangeEvent, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import { updateMember } from "../../apis/MemberApi";
+import { updateUserPassword } from "../../apis/MemberApi";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useRecoilValue } from "recoil";
-import { MemberUpdateDto } from "../../types/MemberApiInterfaces";
 
 const customStyles = {
   content: {
@@ -20,18 +19,14 @@ const customStyles = {
 interface PasswordEditModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  userNickname: string | undefined;
 }
 
 const UserInfoEditModal = ({
   isOpen,
   closeModal,
-  userNickname,
 }: PasswordEditModalProps) => {
   const isLoggedIn = useRecoilValue(LogInState);
-
   const [modalState, setModalState] = useState({
-    nickname: "",
     password: "",
     passwordCheck: "",
   });
@@ -42,29 +37,29 @@ const UserInfoEditModal = ({
       ...prevState,
       [name]: value,
     }));
+    console.log(modalState);
   };
+
+  const passwordTest = (data: string) => {
+      return /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/g.test(data);
+    };
 
   const handleSaveClick = async () => {
     if (
-      modalState.nickname === "" ||
       modalState.password === "" ||
       modalState.passwordCheck === ""
     ) {
       alert("입력되지 않은 정보가 있습니다.");
+    } else if (passwordTest(modalState.password) === false) {
+      alert("비밀번호는 8~25자리의 영문 대소문자, 숫자, 특수문자 조합이어야 합니다.")
     } else {
       if (modalState.password !== modalState.passwordCheck) {
         alert("새로운 비밀번호와 비밀번호 확인이 서로 일치하지 않습니다.");
         return;
-      }
-
-      try {
-        const updateDto: MemberUpdateDto = {
-          nickName: modalState.nickname,
-          password: modalState.password,
-        };
-        await updateMember(isLoggedIn, updateDto); // Await the updateMember function call
+      } try {
+        await updateUserPassword(isLoggedIn, modalState.password);
         closeModal();
-      } catch (error: any) {
+      } catch (error : any) {
         alert(error.response.data.message);
       }
     }
@@ -73,7 +68,6 @@ const UserInfoEditModal = ({
   const handleCancelClick = () => {
     closeModal();
     setModalState({
-      nickname: "",
       password: "",
       passwordCheck: "",
     });
@@ -85,17 +79,9 @@ const UserInfoEditModal = ({
         isOpen={isOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="UserInfoEditModal"
+        contentLabel="PasswordEditModal"
       >
         <form>
-          <ModalExplain>변경할 Nickname</ModalExplain>
-          <UserInfoEditInput
-            name="nickname"
-            value={modalState.nickname}
-            onChange={handleInputChange}
-            placeholder={userNickname}
-            required
-          />
           <ModalExplain>변경할 비밀번호</ModalExplain>
           <UserInfoEditInput
             name="password"

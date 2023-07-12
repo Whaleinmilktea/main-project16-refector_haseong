@@ -11,6 +11,15 @@ export interface MemberUpdateDto {
   password: string;
 }
 
+export interface EditPasswordDto {
+  password: string;
+}
+
+export interface EditNicknameDto {
+  nickName: string;
+}
+
+
 export interface MemberProfileUpdateImageDto {
   // image: FormData;
   image: File | undefined;

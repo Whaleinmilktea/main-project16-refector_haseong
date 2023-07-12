@@ -1,10 +1,9 @@
 import { ChangeEvent, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import { updateMember } from "../../apis/MemberApi";
+import { updateUserNickname } from "../../apis/MemberApi";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useRecoilValue } from "recoil";
-import { MemberUpdateDto } from "../../types/MemberApiInterfaces";
 
 const customStyles = {
   content: {
@@ -29,11 +28,8 @@ const UserInfoEditModal = ({
   userNickname,
 }: UserInfoEditModalProps) => {
   const isLoggedIn = useRecoilValue(LogInState);
-
   const [modalState, setModalState] = useState({
     nickname: "",
-    password: "",
-    passwordCheck: "",
   });
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -45,24 +41,13 @@ const UserInfoEditModal = ({
   };
 
   const handleSaveClick = async () => {
-    if (
-      modalState.nickname === "" ||
-      modalState.password === "" ||
-      modalState.passwordCheck === ""
-    ) {
+    if (modalState.nickname === "") {
       alert("입력되지 않은 정보가 있습니다.");
+    } else if (modalState.nickname.length < 2) {
+      alert("닉네임은 2자리 이상이어야 합니다.");
     } else {
-      if (modalState.password !== modalState.passwordCheck) {
-        alert("새로운 비밀번호와 비밀번호 확인이 서로 일치하지 않습니다.");
-        return;
-      }
-
       try {
-        const updateDto: MemberUpdateDto = {
-          nickName: modalState.nickname,
-          password: modalState.password,
-        };
-        await updateMember(isLoggedIn, updateDto); // Await the updateMember function call
+        await updateUserNickname(isLoggedIn, modalState.nickname);
         closeModal();
       } catch (error: any) {
         alert(error.response.data.message);
@@ -74,8 +59,6 @@ const UserInfoEditModal = ({
     closeModal();
     setModalState({
       nickname: "",
-      password: "",
-      passwordCheck: "",
     });
   };
 
@@ -85,32 +68,15 @@ const UserInfoEditModal = ({
         isOpen={isOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="UserInfoEditModal"
+        contentLabel="NicknameEditModal"
       >
         <form>
-          <div>닉네임 모달창 (test용)</div>
           <ModalExplain>변경할 Nickname</ModalExplain>
           <UserInfoEditInput
             name="nickname"
             value={modalState.nickname}
             onChange={handleInputChange}
             placeholder={userNickname}
-            required
-          />
-          <ModalExplain>변경할 비밀번호</ModalExplain>
-          <UserInfoEditInput
-            name="password"
-            type="password"
-            value={modalState.password}
-            onChange={handleInputChange}
-            required
-          />
-          <ModalExplain>변경할 비밀번호 확인</ModalExplain>
-          <UserInfoEditInput
-            name="passwordCheck"
-            type="password"
-            value={modalState.passwordCheck}
-            onChange={handleInputChange}
             required
           />
           <ModalButton type="button" onClick={handleSaveClick}>
