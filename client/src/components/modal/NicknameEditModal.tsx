@@ -88,6 +88,7 @@ const UserInfoEditModal = ({
         contentLabel="UserInfoEditModal"
       >
         <form>
+          <div>닉네임 모달창 (test용)</div>
           <ModalExplain>변경할 Nickname</ModalExplain>
           <UserInfoEditInput
             name="nickname"

@@ -7,7 +7,7 @@ import { RenderingState } from "../recoil/atoms/RenderingState";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
-import UserInfoEditModal from "../components/modal/UserInfoEditModal";
+import UserInfoEditModal from "../components/modal/PasswordEditModal";
 import CheckPasswordModal from "../components/modal/CheckPasswordModal";
 import {
   getMemberInfo,
@@ -19,12 +19,13 @@ import {
   MemberDetailDto,
   MemberInfoResponseDto,
 } from "../types/MemberApiInterfaces";
+import NicknameEditModal from "../components/modal/NicknameEditModal";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
   const [editingMode, setEditingMode] = useState<string>("")
   const isRendering = useRecoilValue(RenderingState);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isPasswordEditModalOpen, setIsPasswordEditModalOpen] = useState<boolean>(false);
   const [isNicknameEditModalOpen, setIsNicknameEditModalOpen] =
     useState<boolean>(false);
   const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
@@ -50,7 +51,7 @@ const ProfileInfo = () => {
       } catch (error) {}
     };
     fetchMemberInfo();
-  }, [isModalOpen, isRendering]);
+  }, [isRendering]);
 
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
@@ -169,14 +170,19 @@ const ProfileInfo = () => {
         </ButtonWrapper>
       </IntroduceWrapper>
       <UserInfoEditModal
-        isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
+        isOpen={isPasswordEditModalOpen}
+        closeModal={() => setIsPasswordEditModalOpen(false)}
         userNickname={memberInfo?.nickName}
       />
+      <NicknameEditModal
+        isOpen={isNicknameEditModalOpen}
+        closeModal={() => setIsNicknameEditModalOpen(false)}
+        userNickname={memberInfo?.nickName}
+        />
       <CheckPasswordModal
         isOpen={passowrdCheckModalOpen}
         closeModal={() => setPasswordCheckModalOpen(false)}
-        setIsModalOpen={setIsModalOpen}
+        setIsPasswordEditModalOpen={setIsPasswordEditModalOpen}
         setIsNicknameEditModalOpen={setIsNicknameEditModalOpen}
         editingMode={editingMode}
       />

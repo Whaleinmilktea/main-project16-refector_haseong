@@ -17,7 +17,7 @@ const customStyles = {
   },
 };
 
-interface UserInfoEditModalProps {
+interface PasswordEditModalProps {
   isOpen: boolean;
   closeModal: () => void;
   userNickname: string | undefined;
@@ -27,7 +27,7 @@ const UserInfoEditModal = ({
   isOpen,
   closeModal,
   userNickname,
-}: UserInfoEditModalProps) => {
+}: PasswordEditModalProps) => {
   const isLoggedIn = useRecoilValue(LogInState);
 
   const [modalState, setModalState] = useState({

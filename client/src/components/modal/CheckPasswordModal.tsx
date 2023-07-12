@@ -18,13 +18,16 @@ const customStyles = {
 interface CheckPasswordModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  setIsModalOpen: (isOpen: boolean) => void;
+  setIsPasswordEditModalOpen: (isOpen: boolean) => void;
+  setIsNicknameEditModalOpen: (isOpen: boolean) => void;
   editingMode: string;
 }
+
 const CheckPasswordModal = ({
   isOpen,
   closeModal,
-  setIsModalOpen,
+  setIsPasswordEditModalOpen,
+  setIsNicknameEditModalOpen,
   editingMode,
 }: CheckPasswordModalProps) => {
   const [passwordState, setPasswordState] = useState("");
@@ -38,11 +41,18 @@ const CheckPasswordModal = ({
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const passwordCheckResult: MemberPasswordCheckDto = { password: passwordState };
+    const passwordCheckResult: MemberPasswordCheckDto = {
+      password: passwordState,
+    };
     const result = checkMemberPassword(passwordCheckResult);
-    if (await result === true) {
-      closeModal();
-      setIsModalOpen(true);
+    if ((await result) === true) {
+      if (editingMode === "nickname") {
+        closeModal();
+        setIsNicknameEditModalOpen(true);
+      } else if (editingMode === "password") {
+        closeModal();
+        setIsPasswordEditModalOpen(true);
+      }
     } else {
       alert("비밀번호가 일치하지 않습니다.");
       closeModal();
