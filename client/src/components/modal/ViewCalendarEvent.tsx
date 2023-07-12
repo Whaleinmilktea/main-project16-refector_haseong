@@ -2,7 +2,8 @@ import Modal from "react-modal";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useEffect, useState } from "react";
-import { StudyInfoDto, getStudyGroupInfo } from "../../apis/StudyGroupApi";
+import { getStudyGroupInfo } from "../../apis/StudyGroupApi";
+import { StudyInfoDto } from "../../types/StudyGroupApiInterfaces";
 import { useNavigate } from "react-router-dom";
 
 const customStyles = {

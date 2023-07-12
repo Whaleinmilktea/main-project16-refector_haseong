@@ -7,7 +7,6 @@ import { RenderingState } from "../recoil/atoms/RenderingState";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
-import UserInfoEditModal from "../components/modal/UserInfoEditModal";
 import CheckPasswordModal from "../components/modal/CheckPasswordModal";
 import {
   getMemberInfo,
@@ -15,19 +14,26 @@ import {
   checkOauth2Member,
   leaveMembership,
 } from "../apis/MemberApi";
-import { MemberDetailDto, MemberInfoResponseDto } from "../types/MemberApiInterfaces";
+import {
+  MemberDetailDto,
+  MemberInfoResponseDto,
+} from "../types/MemberApiInterfaces";
+import NicknameEditModal from "../components/modal/NicknameEditModal";
+import PasswordEditModal from "../components/modal/PasswordEditModal";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
+  const [editingMode, setEditingMode] = useState<string>("")
   const isRendering = useRecoilValue(RenderingState);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isPasswordEditModalOpen, setIsPasswordEditModalOpen] = useState<boolean>(false);
+  const [isNicknameEditModalOpen, setIsNicknameEditModalOpen] =
+    useState<boolean>(false);
   const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
     null
-  ); // 멤버 정보의 조회 (서버 원천 데이터)
+  );
   const [introduceInfo, setIntroduceInfo] = useState<MemberDetailDto>({
     aboutMe: memberInfo?.aboutMe || "",
   });
-  // 멤버 정보 수정 (클라이언트에서 수정된 데이터)
   const [isIntroduceEdit, setIsIntroduceEdit] = useState<boolean>(false);
   const [passowrdCheckModalOpen, setPasswordCheckModalOpen] =
     useState<boolean>(false);
@@ -45,24 +51,32 @@ const ProfileInfo = () => {
       } catch (error) {}
     };
     fetchMemberInfo();
-  }, [isModalOpen, isRendering]);
+  }, [isRendering]);
 
-  // TODO Edit 버튼을 클릭 시, 유저의 닉네임, 비밀번호를 수정할 수 있도록 상태를 변경하는 코드
-  // 현재 Modal 구현은 완료했으나 비동기 처리로 인해 계속된 오류 발생. 추가적인 최적화 작업 요함
-  // Jest로 테스트할 필요! : why? 소셜 로그인은 자동으로 배포 서버로 리다이렉션 함!
-  const handleEditClick = async () => {
+  const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
     if (data.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
+      setEditingMode("nickname")
       setPasswordCheckModalOpen(true);
     }
   };
 
-  // TODO Edit 버튼을 클릭 시, 유저의 자기소개, 원하는 동료상을 수정할 수 있도록 상태를 변경하는 코드
+  const handlePasswordEditClick = async () => {
+    const data = await checkOauth2Member(isLoggedIn);
+    if (data.provider !== "LOCAL") {
+      alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
+    } else {
+      setEditingMode("password")
+      setPasswordCheckModalOpen(true);
+    }
+  };
+
   const handleIntroduceEditClick = () => {
     setIsIntroduceEdit(true);
   };
+
   const handleIntroduceChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setIntroduceInfo((prevIntroduceInfo) => ({
@@ -71,7 +85,6 @@ const ProfileInfo = () => {
     }));
   };
 
-  // TODO Save 버튼을 클릭 시, 유저의 자기소개 및 원하는 동료상을 서버에 PATCH하는 코드
   const handleSaveClick = async () => {
     try {
       const memberDetailDto: MemberDetailDto = {
@@ -85,7 +98,6 @@ const ProfileInfo = () => {
     }
   };
 
-  // TODO DELETE 버튼을 클릭 시, 유저의 자기소개 및 원하는 동료상을 서버에서 DELETE하는 코드
   const handleDeleteClick = async () => {
     try {
       const confirmed = window.confirm(
@@ -119,27 +131,24 @@ const ProfileInfo = () => {
           />
           <ProfileInput disabled value={memberInfo?.email || ""} />
           <ProfileInput disabled value={memberInfo?.roles || ""} />
-          <EditButton onClick={handleEditClick}>Edit</EditButton>
+          <EditButtonWrapper>
+            <EditButton onClick={handleNicknameEditClick}>닉네임 변경</EditButton>
+            <EditButton onClick={handlePasswordEditClick}>비밀번호 변경</EditButton>
+          </EditButtonWrapper>
         </ProfileBaseInfo>
       </ProfileBaseWrapper>
-      <IntroduceAndDesired>
+      <IntroduceWrapper>
         {!isIntroduceEdit ? (
           <>
             <h4>자기소개</h4>
-            <IntroduceAndDesiredTextarea value={memberInfo?.aboutMe} disabled />
+            <IntroduceTextarea value={memberInfo?.aboutMe} disabled />
           </>
         ) : (
           <>
             <h4>자기소개</h4>
-            <IntroduceAndDesiredTextarea
+            <IntroduceTextarea
               name="aboutMe"
               placeholder="자기소개를 입력해주세요"
-              onChange={handleIntroduceChange}
-            />
-            <h4>함께하고 싶은 동료</h4>
-            <IntroduceAndDesiredTextarea
-              name="withMe"
-              placeholder="함께하고 싶은 동료상을 입력해주세요"
               onChange={handleIntroduceChange}
             />
           </>
@@ -159,16 +168,22 @@ const ProfileInfo = () => {
             </EditButton>
           )}
         </ButtonWrapper>
-      </IntroduceAndDesired>
-      <UserInfoEditModal
-        isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        userNickname={memberInfo?.nickName}
+      </IntroduceWrapper>
+      <PasswordEditModal
+        isOpen={isPasswordEditModalOpen}
+        closeModal={() => setIsPasswordEditModalOpen(false)}
       />
+      <NicknameEditModal
+        isOpen={isNicknameEditModalOpen}
+        closeModal={() => setIsNicknameEditModalOpen(false)}
+        userNickname={memberInfo?.nickName}
+        />
       <CheckPasswordModal
         isOpen={passowrdCheckModalOpen}
         closeModal={() => setPasswordCheckModalOpen(false)}
-        setIsModalOpen={setIsModalOpen}
+        setIsPasswordEditModalOpen={setIsPasswordEditModalOpen}
+        setIsNicknameEditModalOpen={setIsNicknameEditModalOpen}
+        editingMode={editingMode}
       />
     </ProfileInfoContainer>
   );
@@ -218,7 +233,38 @@ const ProfileBaseInfo = styled.div`
   }
 `;
 
-const IntroduceAndDesired = styled.div`
+const EditButtonWrapper = styled.div``;
+
+const EditButton = styled.button`
+  width: 100px;
+  height: 40px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  padding: 2px 6px;
+  background-color: ${(props) =>
+    props.id === "introduceEditButton"
+      ? "#4d74b1"
+      : props.id === "introduceSaveButton"
+      ? "#868DAA"
+      : "#4d74b1"};
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover {
+    background-color: ${(props) =>
+      props.id === "introduceEditButton"
+        ? "#4d74b1"
+        : props.id === "introduceSaveButton"
+        ? "#868DAA"
+        : "#4d74b1"};
+  }
+`;
+
+const IntroduceWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -236,11 +282,11 @@ const IntroduceAndDesired = styled.div`
   }
 `;
 
-const IntroduceAndDesiredTextarea = styled.textarea`
+const IntroduceTextarea = styled.textarea`
   margin-bottom: 10px;
   padding: 8px;
   width: 90%;
-  height: 200px;
+  height: 500px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f5f5f5;
@@ -260,33 +306,6 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 90%;
-`;
-
-const EditButton = styled.button`
-  width: 100px;
-  height: 40px;
-  margin-bottom: 10px;
-  padding: 8px 16px;
-  background-color: ${(props) =>
-    props.id === "introduceEditButton"
-      ? "#4d74b1"
-      : props.id === "introduceSaveButton"
-      ? "#868DAA"
-      : "#4d74b1"};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-
-  &:hover {
-    background-color: ${(props) =>
-      props.id === "introduceEditButton"
-        ? "#4d74b1"
-        : props.id === "introduceSaveButton"
-        ? "#868DAA"
-        : "#4d74b1"};
-  }
 `;
 
 const ExitEditButton = styled.button`
