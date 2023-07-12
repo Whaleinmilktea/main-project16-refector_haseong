@@ -25,6 +25,8 @@ const ProfileInfo = () => {
   const [editingMode, setEditingMode] = useState<string>("")
   const isRendering = useRecoilValue(RenderingState);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isNicknameEditModalOpen, setIsNicknameEditModalOpen] =
+    useState<boolean>(false);
   const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
     null
   );
@@ -175,6 +177,7 @@ const ProfileInfo = () => {
         isOpen={passowrdCheckModalOpen}
         closeModal={() => setPasswordCheckModalOpen(false)}
         setIsModalOpen={setIsModalOpen}
+        setIsNicknameEditModalOpen={setIsNicknameEditModalOpen}
         editingMode={editingMode}
       />
     </ProfileInfoContainer>

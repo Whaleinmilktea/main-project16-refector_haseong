@@ -21,9 +21,6 @@ interface CheckPasswordModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
   editingMode: string;
 }
-
-
-
 const CheckPasswordModal = ({
   isOpen,
   closeModal,
