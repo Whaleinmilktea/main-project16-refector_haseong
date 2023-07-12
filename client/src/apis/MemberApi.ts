@@ -52,7 +52,7 @@ export const checkMemberPassword = async (
 ) => {
   try {
     const response: AxiosResponse = await tokenRequestApi.post(
-      "/members/password",
+      "/members/pass-auth",
       memberPasswordCheckDto
     );
     if (response.status <= 299) return true;
