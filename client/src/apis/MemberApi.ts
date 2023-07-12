@@ -68,3 +68,12 @@ export const checkOauth2Member = async (isLoggedIn: boolean) => {
   const data = response.data;
   return data;
 };
+
+// refector 이후 코드
+export const updateUserNickname = async (nickname: string) => {
+  await tokenRequestApi.patch("/members/name", { nickname });
+};
+
+export const updateUserPassword = async (password: string) => {
+  await tokenRequestApi.patch("/members/password", { password });
+}

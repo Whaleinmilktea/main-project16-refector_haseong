@@ -50,7 +50,16 @@ const ProfileInfo = () => {
     fetchMemberInfo();
   }, [isModalOpen, isRendering]);
 
-  const handleEditClick = async () => {
+  const handleNicknameEditClick = async () => {
+    const data = await checkOauth2Member(isLoggedIn);
+    if (data.provider !== "LOCAL") {
+      alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
+    } else {
+      setPasswordCheckModalOpen(true);
+    }
+  };
+
+  const handlePasswordEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
     if (data.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
@@ -62,6 +71,7 @@ const ProfileInfo = () => {
   const handleIntroduceEditClick = () => {
     setIsIntroduceEdit(true);
   };
+
   const handleIntroduceChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setIntroduceInfo((prevIntroduceInfo) => ({
@@ -117,8 +127,8 @@ const ProfileInfo = () => {
           <ProfileInput disabled value={memberInfo?.email || ""} />
           <ProfileInput disabled value={memberInfo?.roles || ""} />
           <EditButtonWrapper>
-            <EditButton onClick={handleEditClick}>닉네임 변경</EditButton>
-            <EditButton onClick={handleEditClick}>비밀번호 변경</EditButton>
+            <EditButton onClick={handleNicknameEditClick}>닉네임 변경</EditButton>
+            <EditButton onClick={handlePasswordEditClick}>비밀번호 변경</EditButton>
           </EditButtonWrapper>
         </ProfileBaseInfo>
       </ProfileBaseWrapper>
