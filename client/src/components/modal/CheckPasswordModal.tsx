@@ -19,14 +19,20 @@ interface CheckPasswordModalProps {
   isOpen: boolean;
   closeModal: () => void;
   setIsModalOpen: (isOpen: boolean) => void;
+  editingMode: string;
 }
+
+
 
 const CheckPasswordModal = ({
   isOpen,
   closeModal,
   setIsModalOpen,
+  editingMode,
 }: CheckPasswordModalProps) => {
   const [passwordState, setPasswordState] = useState("");
+
+  console.log(editingMode);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;

@@ -22,6 +22,7 @@ import {
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
+  const [editingMode, setEditingMode] = useState<string>("")
   const isRendering = useRecoilValue(RenderingState);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
@@ -30,7 +31,6 @@ const ProfileInfo = () => {
   const [introduceInfo, setIntroduceInfo] = useState<MemberDetailDto>({
     aboutMe: memberInfo?.aboutMe || "",
   });
-
   const [isIntroduceEdit, setIsIntroduceEdit] = useState<boolean>(false);
   const [passowrdCheckModalOpen, setPasswordCheckModalOpen] =
     useState<boolean>(false);
@@ -55,6 +55,7 @@ const ProfileInfo = () => {
     if (data.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
+      setEditingMode("nickname")
       setPasswordCheckModalOpen(true);
     }
   };
@@ -64,6 +65,7 @@ const ProfileInfo = () => {
     if (data.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
+      setEditingMode("password")
       setPasswordCheckModalOpen(true);
     }
   };
@@ -173,6 +175,7 @@ const ProfileInfo = () => {
         isOpen={passowrdCheckModalOpen}
         closeModal={() => setPasswordCheckModalOpen(false)}
         setIsModalOpen={setIsModalOpen}
+        editingMode={editingMode}
       />
     </ProfileInfoContainer>
   );
