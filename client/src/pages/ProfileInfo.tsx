@@ -20,12 +20,15 @@ import {
 } from "../types/MemberApiInterfaces";
 import NicknameEditModal from "../components/modal/NicknameEditModal";
 import PasswordEditModal from "../components/modal/PasswordEditModal";
+import { Tooltip } from "react-tooltip";
+import { AiFillExclamationCircle } from "react-icons/ai";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
-  const [editingMode, setEditingMode] = useState<string>("")
+  const [editingMode, setEditingMode] = useState<string>("");
   const isRendering = useRecoilValue(RenderingState);
-  const [isPasswordEditModalOpen, setIsPasswordEditModalOpen] = useState<boolean>(false);
+  const [isPasswordEditModalOpen, setIsPasswordEditModalOpen] =
+    useState<boolean>(false);
   const [isNicknameEditModalOpen, setIsNicknameEditModalOpen] =
     useState<boolean>(false);
   const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
@@ -58,7 +61,7 @@ const ProfileInfo = () => {
     if (data.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
-      setEditingMode("nickname")
+      setEditingMode("nickname");
       setPasswordCheckModalOpen(true);
     }
   };
@@ -68,7 +71,7 @@ const ProfileInfo = () => {
     if (data.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
-      setEditingMode("password")
+      setEditingMode("password");
       setPasswordCheckModalOpen(true);
     }
   };
@@ -132,23 +135,51 @@ const ProfileInfo = () => {
           <ProfileInput disabled value={memberInfo?.email || ""} />
           <ProfileInput disabled value={memberInfo?.roles || ""} />
           <EditButtonWrapper>
-            <EditButton onClick={handleNicknameEditClick}>닉네임 변경</EditButton>
-            <EditButton onClick={handlePasswordEditClick}>비밀번호 변경</EditButton>
+            <EditButton onClick={handleNicknameEditClick}>
+              닉네임 변경
+            </EditButton>
+            <EditButton onClick={handlePasswordEditClick}>
+              비밀번호 변경
+            </EditButton>
           </EditButtonWrapper>
         </ProfileBaseInfo>
       </ProfileBaseWrapper>
       <IntroduceWrapper>
         {!isIntroduceEdit ? (
           <>
+          <IntroduceTitleSection>
             <h4>자기소개</h4>
+            <a data-tooltip-id="my-tooltip">
+              <AiFillExclamationCircle color="#2759a2" />
+            </a>
+            <Tooltip id="my-tooltip" openOnClick>
+              <ul>
+                <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
+                <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
+                <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
+              </ul>
+            </Tooltip>
+            </IntroduceTitleSection>
             <IntroduceTextarea value={memberInfo?.aboutMe} disabled />
           </>
         ) : (
           <>
+          <IntroduceTitleSection>
             <h4>자기소개</h4>
+            <a data-tooltip-id="my-tooltip">
+              <AiFillExclamationCircle color="#2759a2" />
+            </a>
+            <Tooltip id="my-tooltip" openOnClick>
+              <ul>
+                <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
+                <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
+                <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
+              </ul>
+            </Tooltip>
+            </IntroduceTitleSection>
             <IntroduceTextarea
               name="aboutMe"
-              placeholder="자기소개를 입력해주세요"
+              placeholder="자기소개 옆의 느낌표 아이콘을 눌러서 자기소개에 대한 가이드를 확인해주세요."
               onChange={handleIntroduceChange}
             />
           </>
@@ -177,7 +208,7 @@ const ProfileInfo = () => {
         isOpen={isNicknameEditModalOpen}
         closeModal={() => setIsNicknameEditModalOpen(false)}
         userNickname={memberInfo?.nickName}
-        />
+      />
       <CheckPasswordModal
         isOpen={passowrdCheckModalOpen}
         closeModal={() => setPasswordCheckModalOpen(false)}
@@ -272,15 +303,20 @@ const IntroduceWrapper = styled.div`
   margin-top: 20px;
   width: 900px;
 
+`;
+
+const IntroduceTitleSection = styled.div`
+  display: flex;
+  width: 90%;
   h4 {
-    width: 90%;
-    text-align: left;
     color: #2759a2;
     font-size: 21px;
     font-weight: 700;
-    margin: 12px 0;
   }
-`;
+  a {
+    margin-left: 5px;
+  }
+`
 
 const IntroduceTextarea = styled.textarea`
   margin-bottom: 10px;
