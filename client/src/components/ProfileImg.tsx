@@ -82,14 +82,15 @@ export default ProfileImg;
 const ProfileImgWrapper = styled.div``;
 
 const ProfileImgSection = styled.div`
-  width: 180px;
-  height: 180px;
+  width: 150px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   border-radius: 50%;
   border: 2px solid #ccc;
+  margin-left: 40px;
   margin-bottom: 10px;
   position: relative;
   cursor: pointer;

@@ -30,7 +30,7 @@ export const updateMemberProfileImage = async (
 };
 
 export const updateMemberDetail = async (memberDetailDto: MemberDetailDto) => {
-  await tokenRequestApi.patch("/members/detail", memberDetailDto);
+  await tokenRequestApi.patch("/members/aboutme", memberDetailDto);
 };
 
 export const leaveMembership = async () => {
