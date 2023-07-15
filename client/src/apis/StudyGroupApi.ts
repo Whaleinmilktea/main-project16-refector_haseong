@@ -199,3 +199,5 @@ export async function getStudyListOrder(order: string, isAscending: boolean) {
   );
   return response.data.data;
 }
+
+export { StudyInfoDto };

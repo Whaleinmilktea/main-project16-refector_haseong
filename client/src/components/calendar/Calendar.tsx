@@ -9,7 +9,7 @@ import {
   getCustomEvent,
   FullCalendarEvent,
 } from "../../apis/CalendarApi";
-import AddEventModal from "../modal/AddEvent";
+import AddEventModal from "../modal/AddEventModal";
 import ViewCalendarModal from "../modal/ViewCalendarEvent";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";

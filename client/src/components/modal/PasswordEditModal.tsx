@@ -37,7 +37,6 @@ const UserInfoEditModal = ({
       ...prevState,
       [name]: value,
     }));
-    console.log(modalState);
   };
 
   const passwordTest = (data: string) => {

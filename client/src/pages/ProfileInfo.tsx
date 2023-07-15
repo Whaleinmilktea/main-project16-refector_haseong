@@ -120,6 +120,7 @@ const ProfileInfo = () => {
       }
     } catch (error) {}
   };
+
   return (
     <ProfileInfoContainer>
       <ProfileBaseWrapper>

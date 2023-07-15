@@ -37,7 +37,7 @@ export const getComments = async (
   try {
     const response = await tokenRequestApi.get<CommentDto[]>(
       `/studygroup/${studyGroupId}/comments`
-    ); //31 -> 변수로 나중에 바꿔야 함
+    );
     return response.data;
   } catch (error) {
     throw new Error("댓글 전부 조회 실패");
