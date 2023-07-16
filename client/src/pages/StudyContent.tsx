@@ -5,8 +5,7 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import {
   getStudyGroupInfo,
-  // deleteStudyGroupInfo,
-  StudyInfoDto,
+
 } from "../apis/StudyGroupApi";
 import { CommentDto } from "../apis/CommentApi";
 import StudyComment from "../components/StudyComment";
@@ -14,6 +13,7 @@ import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
 import StudyListTag from "../components/StudyListTag";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
+import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyContent = () => {
   const initialTag = { [""]: [""] };

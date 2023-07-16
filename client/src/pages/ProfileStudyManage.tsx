@@ -4,7 +4,6 @@ import {
   deleteStudyGroupInfo,
   exitStudyGroup,
   getStudyGroupInfo,
-  StudyInfoDto,
 } from "../apis/StudyGroupApi";
 import styled from "styled-components";
 import StudyInfoEditModal from "../components/modal/StudyInfoEditModal";
@@ -15,6 +14,7 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import MemberManage from "../components/studyManage/MemberManage";
 import CandidateManage from "../components/studyManage/CandidateManage";
 import { getMemberInfo } from "../apis/MemberApi";
+import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 
 const ProfileStudyManage = () => {
   const [studyInfo, setStudyInfo] = useState<StudyInfoDto | null>(null);

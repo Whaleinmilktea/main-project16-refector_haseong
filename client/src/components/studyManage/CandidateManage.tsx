@@ -6,11 +6,11 @@ import {
   approveStudyGroupApplication,
   getStudyGroupMemberWaitingList,
   rejectStudyGroupApplication,
-  StudyGroupMemberWaitingListDto,
 } from "../../apis/StudyGroupApi";
 import { useParams } from "react-router-dom";
 import { BsCheckCircle, BsFillXCircleFill } from "react-icons/bs";
 import { MemberManageContainer, MemberManageTitle } from "./MemberManage";
+import { StudyGroupMemberWaitingListDto } from "../../types/StudyGroupApiInterfaces";
 
 interface CandidateManageProps {
   studyLeader: string | undefined;
