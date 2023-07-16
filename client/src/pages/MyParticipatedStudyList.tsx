@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import WaitingList from "../components/WaitingList";
-import {
-  getStudyGroupList,
-  StudyGroup,
-  StudyGroupListDto,
-} from "../apis/StudyGroupApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import studyImage from "../assets/studyImage.webp";
+import WaitingList from "../components/WaitingList";
+import {
+  getStudyGroupList,
+} from "../apis/StudyGroupApi";
+import { StudyGroup, StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+
 
 const ProfileStudyList = () => {
   const isLoggedIn = useRecoilValue(LogInState);

@@ -1,8 +1,8 @@
 import { RestRequest, rest } from "msw";
-import { MemberPasswordCheckDto } from "../apis/MemberApi";
 import { getStudyGroupInfo } from "../apis/StudyGroupApi";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
+import { MemberPasswordCheckDto } from "../types/MemberApiInterfaces";
 
 const isLoggedIn = useRecoilValue(LogInState);
 

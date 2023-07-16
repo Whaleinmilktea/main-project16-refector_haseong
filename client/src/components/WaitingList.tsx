@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import {
-  WaitingStudyGroupItemDto,
   getWaitingStudyGroupList,
   cancelStudyGroupApplication,
 } from "../apis/StudyGroupApi";
 import { FiDelete } from "react-icons/fi";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
+import { WaitingStudyGroupItemDto } from "../types/StudyGroupApiInterfaces";
 
 const WaitingList = () => {
   const [waitingList, setWaitingList] = useState<WaitingStudyGroupItemDto[]>(

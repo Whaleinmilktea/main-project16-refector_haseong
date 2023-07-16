@@ -32,7 +32,7 @@ const MemberRestoreModal = ({ isOpen, closeModal, email }: ModalProps) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handlePassword = (e: ChangeEvent<HTMLInputElement>) => {
+const handlePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 

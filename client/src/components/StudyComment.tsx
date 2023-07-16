@@ -25,9 +25,7 @@ const StudyComment = ({
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !isEnterPressed) {
       setIsEnterPressed(true);
-
       handleCommentButton();
-
       setTimeout(() => {
         setIsEnterPressed(false);
       }, 1000); // enter로 입력시 발생하는 이중 입력 방지

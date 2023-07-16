@@ -7,10 +7,10 @@ import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import TagInput from "../components/TagInput";
 import {
-  StudyGroupUpdateDto,
   getStudyGroupInfo,
   updateStudyGroupContentsInfo,
 } from "../apis/StudyGroupApi";
+import { StudyGroupUpdateDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyUpdate = () => {
   const { id } = useParams();

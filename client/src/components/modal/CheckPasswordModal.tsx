@@ -32,8 +32,6 @@ const CheckPasswordModal = ({
 }: CheckPasswordModalProps) => {
   const [passwordState, setPasswordState] = useState("");
 
-  console.log(editingMode);
-
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setPasswordState(value);

@@ -55,7 +55,6 @@ const StudyCommentList = ({
 
   const handleUpdateButton = async () => {
     if (!isLoggedIn) navigate("/login");
-
     if (validateEmptyInput(comment)) {
       alert("댓글 내용을 입력해주세요.");
     } else {
