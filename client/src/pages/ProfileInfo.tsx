@@ -22,7 +22,6 @@ import NicknameEditModal from "../components/modal/NicknameEditModal";
 import PasswordEditModal from "../components/modal/PasswordEditModal";
 import { Tooltip } from "react-tooltip";
 import { AiFillExclamationCircle } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
@@ -43,32 +42,19 @@ const ProfileInfo = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  const getinfo = () => {
-    setTimeout(async () => {
-      const data = await getMemberInfo(isLoggedIn);
-      console.log(data);
-      setMemberInfo(data);
-      setIntroduceInfo({ aboutMe: data.aboutMe });
-    }, 3000); // 1초 후에 실행되도록 설정 (원하는 시간(ms)으로 변경 가능)
-  };
-
-  const { data, isLoading, isError } = useQuery(["memberInfo"], getinfo);
-
-  console.log(data);
-
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigate("/login");
-  //   }
-  //   const fetchMemberInfo = async () => {
-  //     try {
-  //       const info = await getMemberInfo(isLoggedIn);
-  //       setMemberInfo(info);
-  //       setIntroduceInfo({ aboutMe: info.aboutMe });
-  //     } catch (error) {}
-  //   };
-  //   fetchMemberInfo();
-  // }, [isRendering]);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+    const fetchMemberInfo = async () => {
+      try {
+        const info = await getMemberInfo(isLoggedIn);
+        setMemberInfo(info);
+        setIntroduceInfo({ aboutMe: info.aboutMe });
+      } catch (error) {}
+    };
+    fetchMemberInfo();
+  }, [isRendering]);
 
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
