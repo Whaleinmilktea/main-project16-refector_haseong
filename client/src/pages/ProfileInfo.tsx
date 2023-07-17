@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { RenderingState } from "../recoil/atoms/RenderingState";
 import { LogInState } from "../recoil/atoms/LogInState";
+import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
 import CheckPasswordModal from "../components/modal/CheckPasswordModal";
-import tokenRequestApi from "../apis/TokenRequestApi";
 import {
   getMemberInfo,
   updateMemberDetail,
@@ -22,6 +22,7 @@ import NicknameEditModal from "../components/modal/NicknameEditModal";
 import PasswordEditModal from "../components/modal/PasswordEditModal";
 import { Tooltip } from "react-tooltip";
 import { AiFillExclamationCircle } from "react-icons/ai";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
@@ -42,19 +43,28 @@ const ProfileInfo = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-    const fetchMemberInfo = async () => {
-      try {
-        const info = await getMemberInfo(isLoggedIn);
-        setMemberInfo(info);
-        setIntroduceInfo({ aboutMe: info.aboutMe });
-      } catch (error) {}
-    };
-    fetchMemberInfo();
-  }, [isRendering]);
+  const { data, isLoading, isError } = useQuery(["memberInfo"], ()=>{
+    return getMemberInfo(isLoggedIn);
+  })
+
+  if(isLoading) return <div>로딩중...</div>
+  if(isError) return <div>에러가 발생했습니다.</div>
+
+  console.log(data, isLoading, isError)
+
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     navigate("/login");
+  //   }
+  //   const fetchMemberInfo = async () => {
+  //     try {
+  //       const info = await getMemberInfo(isLoggedIn);
+  //       setMemberInfo(info);
+  //       setIntroduceInfo({ aboutMe: info.aboutMe });
+  //     } catch (error) {}
+  //   };
+  //   fetchMemberInfo();
+  // }, [isRendering]);
 
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
@@ -67,8 +77,8 @@ const ProfileInfo = () => {
   };
 
   const handlePasswordEditClick = async () => {
-    const data = await checkOauth2Member(isLoggedIn);
-    if (data.provider !== "LOCAL") {
+    const isApprove = await checkOauth2Member(isLoggedIn);
+    if (isApprove.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
       setEditingMode("password");
@@ -125,7 +135,7 @@ const ProfileInfo = () => {
     <ProfileInfoContainer>
       <ProfileBaseWrapper>
         <ProfileImage>
-          <ProfileImg profileImage={memberInfo?.image} />
+          <ProfileImg profileImage={data?.image} />
         </ProfileImage>
         <ProfileBaseInfo>
           <ProfileInput
@@ -347,14 +357,13 @@ const ButtonWrapper = styled.div`
 const ExitEditButton = styled.button`
   margin-bottom: 10px;
   padding: 8px 16px;
-  background-color: rgb(230, 230, 230);
-  color: black;
+  background-color: #666;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    color: white;
     background-color: #5a0202;
   }
 `;
