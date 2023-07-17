@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { RenderingState } from "../recoil/atoms/RenderingState";
 import { LogInState } from "../recoil/atoms/LogInState";
-import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
 import CheckPasswordModal from "../components/modal/CheckPasswordModal";
+import tokenRequestApi from "../apis/TokenRequestApi";
 import {
   getMemberInfo,
   updateMemberDetail,
@@ -42,19 +42,20 @@ const ProfileInfo = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-    const fetchMemberInfo = async () => {
-      try {
-        const info = await getMemberInfo(isLoggedIn);
-        setMemberInfo(info);
-        setIntroduceInfo({ aboutMe: info.aboutMe });
-      } catch (error) {}
-    };
-    fetchMemberInfo();
-  }, [isRendering]);
+
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     navigate("/login");
+  //   }
+  //   const fetchMemberInfo = async () => {
+  //     try {
+  //       const info = await getMemberInfo(isLoggedIn);
+  //       setMemberInfo(info);
+  //       setIntroduceInfo({ aboutMe: info.aboutMe });
+  //     } catch (error) {}
+  //   };
+  //   fetchMemberInfo();
+  // }, [isRendering]);
 
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
@@ -148,35 +149,35 @@ const ProfileInfo = () => {
       <IntroduceWrapper>
         {!isIntroduceEdit ? (
           <>
-          <IntroduceTitleSection>
-            <h4>자기소개</h4>
-            <a data-tooltip-id="my-tooltip">
-              <AiFillExclamationCircle color="#2759a2" />
-            </a>
-            <Tooltip id="my-tooltip" openOnClick>
-              <ul>
-                <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
-                <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
-                <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
-              </ul>
-            </Tooltip>
+            <IntroduceTitleSection>
+              <h4>자기소개</h4>
+              <a data-tooltip-id="my-tooltip">
+                <AiFillExclamationCircle color="#2759a2" />
+              </a>
+              <Tooltip id="my-tooltip" openOnClick>
+                <ul>
+                  <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
+                  <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
+                  <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
+                </ul>
+              </Tooltip>
             </IntroduceTitleSection>
             <IntroduceTextarea value={memberInfo?.aboutMe} disabled />
           </>
         ) : (
           <>
-          <IntroduceTitleSection>
-            <h4>자기소개</h4>
-            <a data-tooltip-id="my-tooltip">
-              <AiFillExclamationCircle color="#2759a2" />
-            </a>
-            <Tooltip id="my-tooltip" openOnClick>
-              <ul>
-                <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
-                <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
-                <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
-              </ul>
-            </Tooltip>
+            <IntroduceTitleSection>
+              <h4>자기소개</h4>
+              <a data-tooltip-id="my-tooltip">
+                <AiFillExclamationCircle color="#2759a2" />
+              </a>
+              <Tooltip id="my-tooltip" openOnClick>
+                <ul>
+                  <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
+                  <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
+                  <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
+                </ul>
+              </Tooltip>
             </IntroduceTitleSection>
             <IntroduceTextarea
               name="aboutMe"
@@ -303,7 +304,6 @@ const IntroduceWrapper = styled.div`
   align-items: center;
   margin-top: 20px;
   width: 900px;
-
 `;
 
 const IntroduceTitleSection = styled.div`
@@ -317,7 +317,7 @@ const IntroduceTitleSection = styled.div`
   a {
     margin-left: 5px;
   }
-`
+`;
 
 const IntroduceTextarea = styled.textarea`
   margin-bottom: 10px;
@@ -348,13 +348,14 @@ const ButtonWrapper = styled.div`
 const ExitEditButton = styled.button`
   margin-bottom: 10px;
   padding: 8px 16px;
-  background-color: #666;
-  color: white;
+  background-color: rgb(230, 230, 230);
+  color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
+    color: white;
     background-color: #5a0202;
   }
 `;
