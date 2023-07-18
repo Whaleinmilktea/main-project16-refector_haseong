@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import ProfileImg from "../components/ProfileImg";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { RenderingState } from "../recoil/atoms/RenderingState";
+import { useRecoilState} from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
@@ -16,7 +15,6 @@ import {
 } from "../apis/MemberApi";
 import {
   MemberDetailDto,
-  MemberInfoResponseDto,
 } from "../types/MemberApiInterfaces";
 import NicknameEditModal from "../components/modal/NicknameEditModal";
 import PasswordEditModal from "../components/modal/PasswordEditModal";
@@ -27,28 +25,26 @@ import { useQuery } from "@tanstack/react-query";
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
   const [editingMode, setEditingMode] = useState<string>("");
-  const isRendering = useRecoilValue(RenderingState);
   const [isPasswordEditModalOpen, setIsPasswordEditModalOpen] =
     useState<boolean>(false);
   const [isNicknameEditModalOpen, setIsNicknameEditModalOpen] =
     useState<boolean>(false);
-  const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
-    null
-  );
   const [introduceInfo, setIntroduceInfo] = useState<MemberDetailDto>({
-    aboutMe: memberInfo?.aboutMe || "",
+    aboutMe: "",
   });
   const [isIntroduceEdit, setIsIntroduceEdit] = useState<boolean>(false);
   const [passowrdCheckModalOpen, setPasswordCheckModalOpen] =
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery(["memberInfo"], ()=>{
+  const { data, isLoading, isError } = useQuery(["userInfo"], ()=>{
     return getMemberInfo(isLoggedIn);
   })
+  const userInfo = data;
 
-  if(isLoading) return <div>로딩중...</div>
-  if(isError) return <div>에러가 발생했습니다.</div>
+  if (!isLoggedIn) navigate("/login");
+  if (isLoading) return <div>로딩중...</div>
+  if (isError) return <div>에러가 발생했습니다.</div>
 
   console.log(data, isLoading, isError)
 
@@ -135,16 +131,16 @@ const ProfileInfo = () => {
     <ProfileInfoContainer>
       <ProfileBaseWrapper>
         <ProfileImage>
-          <ProfileImg profileImage={data?.image} />
+          <ProfileImg profileImage={userInfo?.image} />
         </ProfileImage>
         <ProfileBaseInfo>
           <ProfileInput
             className="nickname-input"
             disabled
-            value={memberInfo?.nickName || ""}
+            value={data?.nickName || ""}
           />
-          <ProfileInput disabled value={memberInfo?.email || ""} />
-          <ProfileInput disabled value={memberInfo?.roles || ""} />
+          <ProfileInput disabled value={userInfo?.email || ""} />
+          <ProfileInput disabled value={userInfo?.roles || ""} />
           <EditButtonWrapper>
             <EditButton onClick={handleNicknameEditClick}>
               닉네임 변경
@@ -171,7 +167,7 @@ const ProfileInfo = () => {
                 </ul>
               </Tooltip>
             </IntroduceTitleSection>
-            <IntroduceTextarea value={memberInfo?.aboutMe} disabled />
+            <IntroduceTextarea value={userInfo?.aboutMe} disabled />
           </>
         ) : (
           <>
@@ -218,7 +214,7 @@ const ProfileInfo = () => {
       <NicknameEditModal
         isOpen={isNicknameEditModalOpen}
         closeModal={() => setIsNicknameEditModalOpen(false)}
-        userNickname={memberInfo?.nickName}
+        userNickname={userInfo?.nickName}
       />
       <CheckPasswordModal
         isOpen={passowrdCheckModalOpen}
