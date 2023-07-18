@@ -7,6 +7,7 @@ import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import TagInput from "../components/TagInput";
+import { DatePick } from "../components/DatePicker";
 
 const StudyPost = () => {
   const [studyName, setStudyName] = useState<string>("");
@@ -29,6 +30,30 @@ const StudyPost = () => {
   const [selectedTimeStart, setSelectedTimeStart] = useState<string>("");
   const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("");
   const isLoggedIn = useRecoilValue(LogInState);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
+
+  const StudyPostDto = {
+    studyName,
+    studyPeriodStart,
+    studyPeriodEnd,
+    daysOfWeek: checked,
+    studyTimeStart,
+    studyTimeEnd,
+    memberCountMin,
+    memberCountMax,
+    platform,
+    introduction,
+    tags: {
+      [selectedCategory]: tags,
+    },
+  };
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
@@ -94,22 +119,6 @@ const StudyPost = () => {
       return;
     }
 
-    const StudyPostDto = {
-      studyName,
-      studyPeriodStart,
-      studyPeriodEnd,
-      daysOfWeek: checked,
-      studyTimeStart,
-      studyTimeEnd,
-      memberCountMin,
-      memberCountMax,
-      platform,
-      introduction,
-      tags: {
-        [selectedCategory]: tags,
-      },
-    };
-
     if (studyName === "") {
       alert("제목을 입력해주세요!");
       return;
@@ -143,13 +152,6 @@ const StudyPost = () => {
     }
   };
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, []);
 
   return (
     <StudyPostContainer>
@@ -203,6 +205,7 @@ const StudyPost = () => {
               <DaysOfWeek checked={checked} setChecked={setChecked} />
             </div>
           </StudyPostInfo>
+          <DatePick />
           <StudyPostInfo>
             <span>시간</span>
             <input
