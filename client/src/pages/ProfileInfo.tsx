@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import ProfileImg from "../components/ProfileImg";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { RenderingState } from "../recoil/atoms/RenderingState";
+import { useRecoilState} from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
@@ -16,45 +15,52 @@ import {
 } from "../apis/MemberApi";
 import {
   MemberDetailDto,
-  MemberInfoResponseDto,
 } from "../types/MemberApiInterfaces";
 import NicknameEditModal from "../components/modal/NicknameEditModal";
 import PasswordEditModal from "../components/modal/PasswordEditModal";
 import { Tooltip } from "react-tooltip";
 import { AiFillExclamationCircle } from "react-icons/ai";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfileInfo = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
   const [editingMode, setEditingMode] = useState<string>("");
-  const isRendering = useRecoilValue(RenderingState);
   const [isPasswordEditModalOpen, setIsPasswordEditModalOpen] =
     useState<boolean>(false);
   const [isNicknameEditModalOpen, setIsNicknameEditModalOpen] =
     useState<boolean>(false);
-  const [memberInfo, setMemberInfo] = useState<MemberInfoResponseDto | null>(
-    null
-  );
   const [introduceInfo, setIntroduceInfo] = useState<MemberDetailDto>({
-    aboutMe: memberInfo?.aboutMe || "",
+    aboutMe: "",
   });
   const [isIntroduceEdit, setIsIntroduceEdit] = useState<boolean>(false);
   const [passowrdCheckModalOpen, setPasswordCheckModalOpen] =
     useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-    const fetchMemberInfo = async () => {
-      try {
-        const info = await getMemberInfo(isLoggedIn);
-        setMemberInfo(info);
-        setIntroduceInfo({ aboutMe: info.aboutMe });
-      } catch (error) {}
-    };
-    fetchMemberInfo();
-  }, [isRendering]);
+  const { data, isLoading, isError } = useQuery(["userInfo"], ()=>{
+    return getMemberInfo(isLoggedIn);
+  })
+  const userInfo = data;
+
+  if (!isLoggedIn) navigate("/login");
+  if (isLoading) return <div>로딩중...</div>
+  if (isError) return <div>에러가 발생했습니다.</div>
+
+  console.log(data, isLoading, isError)
+
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     navigate("/login");
+  //   }
+  //   const fetchMemberInfo = async () => {
+  //     try {
+  //       const info = await getMemberInfo(isLoggedIn);
+  //       setMemberInfo(info);
+  //       setIntroduceInfo({ aboutMe: info.aboutMe });
+  //     } catch (error) {}
+  //   };
+  //   fetchMemberInfo();
+  // }, [isRendering]);
 
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
@@ -67,8 +73,8 @@ const ProfileInfo = () => {
   };
 
   const handlePasswordEditClick = async () => {
-    const data = await checkOauth2Member(isLoggedIn);
-    if (data.provider !== "LOCAL") {
+    const isApprove = await checkOauth2Member(isLoggedIn);
+    if (isApprove.provider !== "LOCAL") {
       alert("소셜 로그인 유저는 개인정보를 수정할 수 없습니다.");
     } else {
       setEditingMode("password");
@@ -125,16 +131,16 @@ const ProfileInfo = () => {
     <ProfileInfoContainer>
       <ProfileBaseWrapper>
         <ProfileImage>
-          <ProfileImg profileImage={memberInfo?.image} />
+          <ProfileImg profileImage={userInfo?.image} />
         </ProfileImage>
         <ProfileBaseInfo>
           <ProfileInput
             className="nickname-input"
             disabled
-            value={memberInfo?.nickName || ""}
+            value={data?.nickName || ""}
           />
-          <ProfileInput disabled value={memberInfo?.email || ""} />
-          <ProfileInput disabled value={memberInfo?.roles || ""} />
+          <ProfileInput disabled value={userInfo?.email || ""} />
+          <ProfileInput disabled value={userInfo?.roles || ""} />
           <EditButtonWrapper>
             <EditButton onClick={handleNicknameEditClick}>
               닉네임 변경
@@ -148,35 +154,35 @@ const ProfileInfo = () => {
       <IntroduceWrapper>
         {!isIntroduceEdit ? (
           <>
-          <IntroduceTitleSection>
-            <h4>자기소개</h4>
-            <a data-tooltip-id="my-tooltip">
-              <AiFillExclamationCircle color="#2759a2" />
-            </a>
-            <Tooltip id="my-tooltip" openOnClick>
-              <ul>
-                <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
-                <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
-                <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
-              </ul>
-            </Tooltip>
+            <IntroduceTitleSection>
+              <h4>자기소개</h4>
+              <a data-tooltip-id="my-tooltip">
+                <AiFillExclamationCircle color="#2759a2" />
+              </a>
+              <Tooltip id="my-tooltip" openOnClick>
+                <ul>
+                  <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
+                  <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
+                  <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
+                </ul>
+              </Tooltip>
             </IntroduceTitleSection>
-            <IntroduceTextarea value={memberInfo?.aboutMe} disabled />
+            <IntroduceTextarea value={userInfo?.aboutMe} disabled />
           </>
         ) : (
           <>
-          <IntroduceTitleSection>
-            <h4>자기소개</h4>
-            <a data-tooltip-id="my-tooltip">
-              <AiFillExclamationCircle color="#2759a2" />
-            </a>
-            <Tooltip id="my-tooltip" openOnClick>
-              <ul>
-                <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
-                <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
-                <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
-              </ul>
-            </Tooltip>
+            <IntroduceTitleSection>
+              <h4>자기소개</h4>
+              <a data-tooltip-id="my-tooltip">
+                <AiFillExclamationCircle color="#2759a2" />
+              </a>
+              <Tooltip id="my-tooltip" openOnClick>
+                <ul>
+                  <ol>1. 자신의 직무와 관심분야에 대해 작성해주세요.</ol>
+                  <ol>2. 스터디 그룹에 기대하는 바에 대해 작성해주세요.</ol>
+                  <ol>3. 스터디 그룹을 통해 얻고자 하는 바를 작성해주세요.</ol>
+                </ul>
+              </Tooltip>
             </IntroduceTitleSection>
             <IntroduceTextarea
               name="aboutMe"
@@ -208,7 +214,7 @@ const ProfileInfo = () => {
       <NicknameEditModal
         isOpen={isNicknameEditModalOpen}
         closeModal={() => setIsNicknameEditModalOpen(false)}
-        userNickname={memberInfo?.nickName}
+        userNickname={userInfo?.nickName}
       />
       <CheckPasswordModal
         isOpen={passowrdCheckModalOpen}
@@ -303,7 +309,6 @@ const IntroduceWrapper = styled.div`
   align-items: center;
   margin-top: 20px;
   width: 900px;
-
 `;
 
 const IntroduceTitleSection = styled.div`
@@ -317,7 +322,7 @@ const IntroduceTitleSection = styled.div`
   a {
     margin-left: 5px;
   }
-`
+`;
 
 const IntroduceTextarea = styled.textarea`
   margin-bottom: 10px;

@@ -1,10 +1,10 @@
 import { AxiosResponse } from "axios";
 import tokenRequestApi from "./TokenRequestApi";
 import {
-  StudyInfoDto,
   getStudyGroupInfo,
   getStudyGroupList,
 } from "./StudyGroupApi";
+import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 
 export interface StudyEvent {
   id: string;

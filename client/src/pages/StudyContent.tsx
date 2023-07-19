@@ -5,8 +5,7 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import {
   getStudyGroupInfo,
-  // deleteStudyGroupInfo,
-  StudyInfoDto,
+
 } from "../apis/StudyGroupApi";
 import { CommentDto } from "../apis/CommentApi";
 import StudyComment from "../components/StudyComment";
@@ -14,6 +13,7 @@ import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
 import StudyListTag from "../components/StudyListTag";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
+import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyContent = () => {
   const initialTag = { [""]: [""] };
@@ -57,7 +57,7 @@ const StudyContent = () => {
       try {
         const content = await getStudyGroupInfo(parsedId, isLoggedIn);
         setContent(content);
-        setFetching(false); // 데이터를 가져왔다는 걸 표시하는 플래그 함수, 렌더링했으면 undefined가 아니다
+        setFetching(false);
       } catch (error) {
         if (!isLoggedIn) setLoginAlertModalOpen(true);
         else {
@@ -70,27 +70,6 @@ const StudyContent = () => {
     };
     fetchData();
   }, [parsedId]);
-
-  // const handleDeleteButton = async () => {
-  //   try {
-  //     if (!window.confirm("스터디를 삭제하시겠습니까?")) return;
-  //     await deleteStudyGroupInfo(parsedId, isLoggedIn);
-  //     alert("스터디가 삭제되었습니다!");
-  //     navigate("/studylist");
-  //   } catch (error) {
-  //     alert("스터디 삭제가 실패했습니다!");
-  //     // 당신의 스터디가 아닙니다?
-  //   }
-  // };
-
-  // const handleEditButton = async () => {
-  //   // navigate(`/studycontent/${id}/edit`);
-  //   if (!content?.leaderNickName) {
-  //     alert("스터디 수정은 스터디 리더만 가능합니다!")
-  //   }
-  //   alert("스터디 수정은 스터디 관리 페이지에서 가능합니다!")
-  //   navigate(`profile/${id}/`)
-  // };
 
   const handleJoinButton = async () => {
     try {
@@ -124,12 +103,6 @@ const StudyContent = () => {
                 <StudyContentTitle>
                   <h2>{content?.studyName}</h2>
                   <StudyContentEdit>
-                    {/* <button type="button" onClick={handleEditButton}>
-                      수정
-                    </button> */}
-                    {/* <button type="button" onClick={handleDeleteButton}>
-                      삭제
-                    </button> */}
                   </StudyContentEdit>
                 </StudyContentTitle>
               </StudyContentTop>

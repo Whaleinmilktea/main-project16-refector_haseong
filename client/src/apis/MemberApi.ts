@@ -12,8 +12,7 @@ import {
 export const getMemberInfo = async (isLoggedIn: boolean) => {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
   const response = await tokenRequestApi.get<MemberInfoResponseDto>("/members");
-  const data = response.data;
-  return data;
+  return response.data;
 };
 
 export const updateMemberProfileImage = async (

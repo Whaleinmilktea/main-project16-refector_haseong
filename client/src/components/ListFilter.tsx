@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { StudyGroup, getStudyListOrder } from "../apis/StudyGroupApi";
+import { getStudyListOrder } from "../apis/StudyGroupApi";
+import { StudyGroup } from "../types/StudyGroupApiInterfaces";
 const ListFilter = ({
   setFilterData,
 }: {

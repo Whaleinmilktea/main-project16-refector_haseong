@@ -6,11 +6,11 @@ import {
   approveStudyGroupApplication,
   getStudyGroupMemberWaitingList,
   rejectStudyGroupApplication,
-  StudyGroupMemberWaitingListDto,
 } from "../../apis/StudyGroupApi";
 import { useParams } from "react-router-dom";
 import { BsCheckCircle, BsFillXCircleFill } from "react-icons/bs";
 import { MemberManageContainer, MemberManageTitle } from "./MemberManage";
+import { StudyGroupMemberWaitingListDto } from "../../types/StudyGroupApiInterfaces";
 
 interface CandidateManageProps {
   studyLeader: string | undefined;
@@ -34,7 +34,6 @@ const CandidateManage = ({ studyLeader }: CandidateManageProps) => {
   }, [id]);
 
   const handleApproveCandidate = async (nickname: string) => {
-    // 스터디 원에게는 아예 대기리스트가 보이지 않기 때문에 예외처리 불필요
     if (nickname === studyLeader) {
       alert("스터디원은 새로운 스터디원의 허가여부를 결정할 수 없습니다");
     }
@@ -46,7 +45,6 @@ const CandidateManage = ({ studyLeader }: CandidateManageProps) => {
     if (nickname === studyLeader) {
       alert("스터디원은 새로운 스터디원의 허가여부를 결정할 수 없습니다");
     }
-    // 스터디 원에게는 아예 대기리스트가 보이지 않기 때문에 예외처리 불필요
     await rejectStudyGroupApplication(Number(id), nickname);
     location.reload();
   };

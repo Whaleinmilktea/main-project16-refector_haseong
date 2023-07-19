@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useParams } from "react-router-dom";
 import {
-  StudyGroupMemberApprovalDto,
   delegateStudyGroupLeader,
   forceExitStudyGroup,
   getStudyGroupMemberList,
 } from "../../apis/StudyGroupApi";
 import { AiOutlineCrown, AiOutlineUserDelete } from "react-icons/ai";
 import { getMemberInfo } from "../../apis/MemberApi";
+import { StudyGroupMemberApprovalDto } from "../../types/StudyGroupApiInterfaces";
 
 // TODO: 스터디 그룹에 가입된 회원 리스트 타입
 export interface StudyGroupMemberListDto {
