@@ -4,21 +4,21 @@
 - [백엔드 배포 Link](http://ec2-3-36-48-195.ap-northeast-2.compute.amazonaws.com)
 
 ## 👋 Introduce Repository
-> **_소개_** : 코드스테이츠에서 2023.04.28 ~ 2023.05.25 기간동안 진행했던 메인프로젝트의 리팩토링을 진행한 레포지토리입니다.
-> **_주요 개선점_** : 코드의 캡슐화+모듈화, React-query 및 React-Testing-Library 적용
+> - **_소개_** : 코드스테이츠에서 2023.04.28 ~ 2023.05.25 기간동안 진행했던 메인프로젝트의 리팩토링을 진행한 레포지토리입니다.
+> - **_주요 개선점_** : 코드의 캡슐화+모듈화, React-query 및 React-Testing-Library 적용
 
 ## 🧑‍🤝‍🧑 Participants
 <table>
 <thead>
 <tr>
-<th align="center">BE(팀장)</th>
-<th align="center">FE(팀장)</th>
+<th align="center">FE 담당</th>
+<th align="center">BE 담당</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="center"><a href="https://github.com/yeori316"><img src="https://avatars.githubusercontent.com/u/78740368?v=4" alt="양도열" style="max-width: 75%;"></a></td>
-<td align="center"><a href="https://github.com/Whaleinmilktea"><img src="https://avatars.githubusercontent.com/u/109408848?v=4" alt="강하성" style="max-width: 75%;"></a></td>
+<td align="center"><a href="https://github.com/Whaleinmilktea"><img src="https://avatars.githubusercontent.com/u/109408848?v=4" alt="강하성" style="width: 50%;"></a></td>
+<td align="center"><a href="https://github.com/yeori316"><img src="https://avatars.githubusercontent.com/u/78740368?v=4" alt="양도열" style="width: 50%;"></a></td>
 </tr>
 <tr>
 <td align="center"><a href="https://velog.io/@yeori316">양도열</a></td>
@@ -31,11 +31,11 @@
 
 ## ⚒️ 주요 개선 내용
 
-> - [useQuery-Hook 적용](#usequery-hook-적용)
-> - [쿼리스트링 난독화](#쿼리스트링-난독화)
-> - [image 업로드 요청 형식 변경 ( json -> form-data )](#이미지-업로드-시-json-형식에서-form-data-형식으로-변경)
-> - [인터페이스 모듈화 및 분리 + 구체적인 기능을 명시하는 변수 명으로 변경](#인터페이스-모듈화-및-분리)
-> - [비밀번호 유효성 검사 정규화](#비밀번호-유효성-검사-정규화)
+- [useQuery-Hook 적용](#usequery-hook-적용)
+- [쿼리스트링 난독화](#쿼리스트링-난독화)
+- [image 업로드 요청 형식 변경 ( json -> form-data )](#이미지-업로드-시-json-형식에서-form-data-형식으로-변경)
+- [인터페이스 모듈화 및 분리 + 구체적인 기능을 명시하는 변수 명으로 변경](#인터페이스-모듈화-및-분리)
+- [비밀번호 유효성 검사 정규화](#비밀번호-유효성-검사-정규화)
 
 ### useQuery Hook 적용
 - isLoading, isError 상태를 각 axios 요청 함수별로 따로 리팩토링이 요구되는데, 다수의 반복작업 예상
