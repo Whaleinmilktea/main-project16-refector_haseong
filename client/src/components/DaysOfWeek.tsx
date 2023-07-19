@@ -42,13 +42,13 @@ const DaysOfWeek = ({ checked, setChecked }: DaysOfWeekProps) => {
 };
 
 const DaysOfWeekContainer = styled.div`
-  width: 640px;
+  /* width: 640px; */
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
   .checkbox {
-    width: 42px;
+    margin-right: 3px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -57,7 +57,7 @@ const DaysOfWeekContainer = styled.div`
   .checkbox > label {
     font-size: 15px;
     color: #1f1f1f;
-    padding-left: 4px;
+    margin-left: 3px;
   }
 
   .checkbox > input {

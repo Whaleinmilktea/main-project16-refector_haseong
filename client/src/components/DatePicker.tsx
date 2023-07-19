@@ -1,6 +1,6 @@
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const DatePick = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -9,8 +9,6 @@ export const DatePick = () => {
     <DatePicker
       selected={startDate}
       onChange={(date) => date && setStartDate(date)}
-      isClearable
-      placeholderText="I have been cleared!"
     />
   );
 };
