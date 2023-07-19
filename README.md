@@ -4,21 +4,23 @@
 - [백엔드 배포 Link](http://ec2-3-36-48-195.ap-northeast-2.compute.amazonaws.com)
 
 ## 👋 Introduce Repository
-> - **_소개_** : 코드스테이츠에서 2023.04.28 ~ 2023.05.25 기간동안 진행했던 메인프로젝트의 리팩토링을 진행한 레포지토리입니다.
-> - **_주요 개선점_** : 코드의 캡슐화+모듈화, React-query 및 React-Testing-Library 적용
+
+- **_소개_** : 코드스테이츠에서 2023.04.28 ~ 2023.05.25 기간동안 진행했던 메인프로젝트의 리팩토링을 진행한 레포지토리입니다.
+- **_주요 개선점_** : 코드의 캡슐화+모듈화, React-query 및 React-Testing-Library 적용
 
 ## 🧑‍🤝‍🧑 Participants
 <table>
 <thead>
 <tr>
-<th align="center">FE 담당</th>
-<th align="center">BE 담당</th>
+
+<th align="center">FE</th>
+<th align="center">BE</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="center"><a href="https://github.com/Whaleinmilktea"><img src="https://avatars.githubusercontent.com/u/109408848?v=4" alt="강하성" style="width: 50%;"></a></td>
-<td align="center"><a href="https://github.com/yeori316"><img src="https://avatars.githubusercontent.com/u/78740368?v=4" alt="양도열" style="width: 50%;"></a></td>
+<td align="center"><a href="https://github.com/Whaleinmilktea"><img src="https://avatars.githubusercontent.com/u/109408848?v=4" alt="강하성" style="max-width: 40%;"></a></td>
+<td align="center"><a href="https://github.com/yeori316"><img src="https://avatars.githubusercontent.com/u/78740368?v=4" alt="양도열" style="max-width: 40%;"></a></td>
 </tr>
 <tr>
 <td align="center"><a href="https://velog.io/@yeori316">양도열</a></td>
