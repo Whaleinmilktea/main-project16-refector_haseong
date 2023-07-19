@@ -7,6 +7,8 @@ import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import TagInput from "../components/TagInput";
+import { DatePick } from "../components/DatePicker";
+import { TimePick } from "../components/TimePicker";
 
 const StudyPost = () => {
   const [studyName, setStudyName] = useState<string>("");
@@ -24,11 +26,31 @@ const StudyPost = () => {
   const [introduction, setIntroduction] = useState<string>("");
   const [selectedCategory, setSelectedCategory] =
     useState<string>("프론트엔드");
-  const [selectedPeriodStart, setSelectedPeriodStart] = useState<string>("");
-  const [selectedPeriodEnd, setSelectedPeriodEnd] = useState<string>("");
-  const [selectedTimeStart, setSelectedTimeStart] = useState<string>("");
-  const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("");
   const isLoggedIn = useRecoilValue(LogInState);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
+
+  const StudyPostDto = {
+    studyName,
+    studyPeriodStart,
+    studyPeriodEnd,
+    daysOfWeek: checked,
+    studyTimeStart,
+    studyTimeEnd,
+    memberCountMin,
+    memberCountMax,
+    platform,
+    introduction,
+    tags: {
+      [selectedCategory]: tags,
+    },
+  };
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
@@ -40,40 +62,6 @@ const StudyPost = () => {
     setStudyName(e.target.value);
   };
 
-  const handleStudyPeriodStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const startDateValue = e.target.value;
-
-    const formattedDate = `${startDateValue}T00:00:00`;
-    setSelectedPeriodStart(startDateValue);
-    setStudyPeriodStart(formattedDate);
-  };
-
-  const handleStudyPeriodEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const endDateValue = e.target.value;
-
-    const formattedDate = `${endDateValue}T00:00:00`;
-    setSelectedPeriodEnd(endDateValue);
-    setStudyPeriodEnd(formattedDate);
-  };
-  const handleStudyTimeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const startTimeValue = e.target.value;
-    let formattedDate = `2023-05-04T${startTimeValue}:00`;
-    if (formattedDate === "2023-05-04T00:00:00") {
-      formattedDate = "2023-05-04T00:01:00";
-    }
-    setSelectedTimeStart(startTimeValue);
-    setStudyTimeStart(formattedDate);
-    console.log(studyTimeStart);
-  };
-  const handleStudyTimeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const endTimeValue = e.target.value;
-    let formattedDate = `2023-05-04T${endTimeValue}:00`;
-    if (formattedDate === "2023-05-04T00:00:00") {
-      formattedDate = "2023-05-04T00:00:00";
-    }
-    setSelectedTimeEnd(endTimeValue);
-    setStudyTimeEnd(formattedDate);
-  };
   const handleMemberCountMin = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMemberCountMin(+e.target.value);
   };
@@ -93,22 +81,6 @@ const StudyPost = () => {
       alert("종료 시간을 입력해주세요!");
       return;
     }
-
-    const StudyPostDto = {
-      studyName,
-      studyPeriodStart,
-      studyPeriodEnd,
-      daysOfWeek: checked,
-      studyTimeStart,
-      studyTimeEnd,
-      memberCountMin,
-      memberCountMax,
-      platform,
-      introduction,
-      tags: {
-        [selectedCategory]: tags,
-      },
-    };
 
     if (studyName === "") {
       alert("제목을 입력해주세요!");
@@ -143,14 +115,6 @@ const StudyPost = () => {
     }
   };
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, []);
-
   return (
     <StudyPostContainer>
       <StudyPostBody>
@@ -158,110 +122,96 @@ const StudyPost = () => {
           <span>스터디 등록</span>
           <input
             type="text"
-            placeholder="제목을 입력하세요"
+            placeholder="스터디 이름을 입력하세요"
             value={studyName}
             onChange={handleTitle}
             required
           />
+
         </StudyPostTop>
-
+        <TimePick />
         <StudyPostMain>
-          <StudyPostInfo>
-            <span>분야</span>
-            <select
-              name="category"
-              value={selectedCategory}
-              onChange={handleCategory}
-            >
-              <option value="프론트엔드">프론트엔드</option>
-              <option value="백엔드">백엔드</option>
-              <option value="알고리즘">알고리즘</option>
-              <option value="인공지능">인공지능</option>
-              <option value="기타">기타</option>
-            </select>
-          </StudyPostInfo>
+          <StudyPostInfoWrapper>
+            <StudyPostInfo>
+              <span>분야</span>
+              <select
+                name="category"
+                value={selectedCategory}
+                onChange={handleCategory}
+              >
+                <option value="프론트엔드">프론트엔드</option>
+                <option value="백엔드">백엔드</option>
+                <option value="알고리즘">알고리즘</option>
+                <option value="인공지능">인공지능</option>
+                <option value="기타">기타</option>
+              </select>
+            </StudyPostInfo>
 
-          <StudyPostInfo>
-            <span>날짜</span>
-            <input
-              type="date"
-              value={selectedPeriodStart}
-              onChange={handleStudyPeriodStart}
-              required
-            />
-            <p>~</p>
-            <input
-              type="date"
-              value={selectedPeriodEnd}
-              onChange={handleStudyPeriodEnd}
-              required
-            />
-          </StudyPostInfo>
-          <StudyPostInfo>
-            <span>요일</span>
-            <div>
-              <DaysOfWeek checked={checked} setChecked={setChecked} />
-            </div>
-          </StudyPostInfo>
-          <StudyPostInfo>
-            <span>시간</span>
-            <input
-              type="time"
-              value={selectedTimeStart}
-              onChange={handleStudyTimeStart}
-              required
-            />
-            <p>~</p>
-            <input
-              type="time"
-              value={selectedTimeEnd}
-              onChange={handleStudyTimeEnd}
-              required
-            />
-          </StudyPostInfo>
-          <StudyPostInfo>
-            <span>인원</span>
-            <input
-              type="number"
-              min="2"
-              value={memberCountMin}
-              onChange={handleMemberCountMin}
-              required
-            />
-            <p>~</p>
-            <input
-              type="number"
-              min={memberCountMin}
-              value={memberCountMax}
-              onChange={handleMemberCountMax}
-              required
-            />
-          </StudyPostInfo>
-          <StudyPostInfo>
-            <span>플랫폼</span>
-            <input type="url" value={platform} onChange={handlePlatform} />
-          </StudyPostInfo>
-          <StudyPostInfo>
-            <span>태그</span>
-            <TagInput
-              selectedCategory={selectedCategory}
-              tags={tags}
-              setTags={setTags}
-              viewTag={viewTag}
-              setViewTag={setViewTag}
-              isInput={isInput}
-              setIsInput={setIsInput}
-            />
-          </StudyPostInfo>
-          <StudyPostInput>
-            <TextEditor handleContentChange={setIntroduction} />
-          </StudyPostInput>
-          <StudyPostButtonWrapper>
-            <StudyPostButton onClick={handlePostButton}>
-              스터디 등록
-            </StudyPostButton>
-          </StudyPostButtonWrapper>
+            <StudyPostInfo>
+              <span>날짜</span>
+              <DatePick />
+              <p>~</p>
+              <DatePick />
+            </StudyPostInfo>
+            <StudyPostInfo>
+              <span>요일</span>
+              <div>
+                <DaysOfWeek checked={checked} setChecked={setChecked} />
+              </div>
+            </StudyPostInfo>
+            <StudyPostInfo>
+              <span>시간</span>
+              <TimePick />
+              <p>~</p>
+              <TimePick />
+            </StudyPostInfo>
+            <StudyPostInfo>
+              <span>인원</span>
+              <input
+                type="number"
+                min="2"
+                value={memberCountMin}
+                onChange={handleMemberCountMin}
+                required
+              />
+              <p>~</p>
+              <input
+                type="number"
+                min={memberCountMin}
+                value={memberCountMax}
+                onChange={handleMemberCountMax}
+                required
+              />
+            </StudyPostInfo>
+            <StudyPostInfo>
+              <span>플랫폼</span>
+              <input type="url" value={platform} onChange={handlePlatform} placeholder="ex) Zoom"/>
+            </StudyPostInfo>
+            <StudyPostInfo>
+              <span>태그</span>
+              <TagInput
+                selectedCategory={selectedCategory}
+                tags={tags}
+                setTags={setTags}
+                viewTag={viewTag}
+                setViewTag={setViewTag}
+                isInput={isInput}
+                setIsInput={setIsInput}
+              />
+            </StudyPostInfo>
+          </StudyPostInfoWrapper>
+          <StudyPostInputWrapper>
+            <StudyPostInput>
+              <TextEditor handleContentChange={setIntroduction} />
+            </StudyPostInput>
+          </StudyPostInputWrapper>
         </StudyPostMain>
+
+        <StudyPostButtonWrapper>
+          <StudyPostButton onClick={handlePostButton}>
+            스터디 등록
+          </StudyPostButton>
+        </StudyPostButtonWrapper>
       </StudyPostBody>
     </StudyPostContainer>
   );
@@ -277,22 +227,22 @@ const StudyPostContainer = styled.div`
 `;
 
 const StudyPostBody = styled.div`
-  width: 960px;
+  width: 1200px;
   padding: 120px 0 100px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
 `;
 
 const StudyPostTop = styled.div`
-  width: 800px;
+  width: 1050px;
   padding-bottom: 5px;
   margin-bottom: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: left;
   align-items: flex-start;
   border-bottom: 1px solid #ccc;
 
@@ -319,13 +269,14 @@ const StudyPostMain = styled.div`
   width: 800px;
   margin: 15px 0;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
 `;
 
+const StudyPostInfoWrapper = styled.div``;
+
 const StudyPostInfo = styled.form`
-  width: 800px;
+  width: 400px;
   margin-bottom: 20px;
   display: flex;
   justify-content: flex-start;
@@ -334,13 +285,12 @@ const StudyPostInfo = styled.form`
   span {
     width: 90px;
     text-align: left;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #2759a2;
-    margin-right: 15px;
   }
   input {
-    width: 240px;
+    width: 100px;
     height: 40px;
     border: 1px solid #ccc;
     border-radius: 0;
@@ -356,6 +306,20 @@ const StudyPostInfo = styled.form`
     background-color: #e9e9e9;
     font-size: 0.8rem;
   }
+  select {
+  font-weight: 400;
+  line-height: 1.5;
+  color: #444;
+  background-color: #fff;
+
+  padding: 0.6em 1.4em 0.5em 0.8em;
+  margin: 0;
+  border: 1px solid #ccc;
+}
+
+`;
+
+const StudyPostInputWrapper = styled.div`
 `;
 
 const StudyPostInput = styled.div`
@@ -370,9 +334,9 @@ const StudyPostButtonWrapper = styled.div`
 `;
 
 const StudyPostButton = styled.button`
-  width: 150px;
-  height: 48px;
-  font-size: 1.2rem;
+  width: 140px;
+  height: 45px;
+  font-size: 1rem;
   color: #ffffff;
   background-color: #4994da;
 

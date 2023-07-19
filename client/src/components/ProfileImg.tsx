@@ -18,9 +18,6 @@ const ProfileImg = ({ profileImage }: Props) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file: File | undefined = e.target.files?.[0];
     if (file) {
-      // console.log(e.target.files?.[0]);
-      // formData.append("image", file);
-      // setImageUrl(URL.createObjectURL(file));
       const reader: FileReader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {

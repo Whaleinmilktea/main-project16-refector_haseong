@@ -1,0 +1,155 @@
+{
+  "hash": "b44a5430",
+  "browserHash": "f3240958",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f3c32fdb",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "58ebaca0",
+      "needsInterop": true
+    },
+    "@ckeditor/ckeditor5-build-classic": {
+      "src": "../../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js",
+      "file": "@ckeditor_ckeditor5-build-classic.js",
+      "fileHash": "f4b351c9",
+      "needsInterop": true
+    },
+    "@ckeditor/ckeditor5-react": {
+      "src": "../../node_modules/@ckeditor/ckeditor5-react/dist/index.js",
+      "file": "@ckeditor_ckeditor5-react.js",
+      "fileHash": "ce82ee5c",
+      "needsInterop": true
+    },
+    "@fullcalendar/interaction": {
+      "src": "../../node_modules/@fullcalendar/interaction/index.js",
+      "file": "@fullcalendar_interaction.js",
+      "fileHash": "53280548",
+      "needsInterop": false
+    },
+    "@fullcalendar/react": {
+      "src": "../../node_modules/@fullcalendar/react/dist/index.js",
+      "file": "@fullcalendar_react.js",
+      "fileHash": "66c5737f",
+      "needsInterop": false
+    },
+    "@fullcalendar/timegrid": {
+      "src": "../../node_modules/@fullcalendar/timegrid/index.js",
+      "file": "@fullcalendar_timegrid.js",
+      "fileHash": "ba8fa4a2",
+      "needsInterop": false
+    },
+    "@react-oauth/google": {
+      "src": "../../node_modules/@react-oauth/google/dist/index.esm.js",
+      "file": "@react-oauth_google.js",
+      "fileHash": "685372e9",
+      "needsInterop": false
+    },
+    "@tanstack/react-query": {
+      "src": "../../node_modules/@tanstack/react-query/build/lib/index.mjs",
+      "file": "@tanstack_react-query.js",
+      "fileHash": "15d107d7",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "defd9e9d",
+      "needsInterop": false
+    },
+    "js-base64": {
+      "src": "../../node_modules/js-base64/base64.mjs",
+      "file": "js-base64.js",
+      "fileHash": "5edf550b",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "a9809c86",
+      "needsInterop": true
+    },
+    "react-icons/ai": {
+      "src": "../../node_modules/react-icons/ai/index.esm.js",
+      "file": "react-icons_ai.js",
+      "fileHash": "0d3cd9f1",
+      "needsInterop": false
+    },
+    "react-icons/bs": {
+      "src": "../../node_modules/react-icons/bs/index.esm.js",
+      "file": "react-icons_bs.js",
+      "fileHash": "278543bc",
+      "needsInterop": false
+    },
+    "react-icons/fi": {
+      "src": "../../node_modules/react-icons/fi/index.esm.js",
+      "file": "react-icons_fi.js",
+      "fileHash": "38f2be23",
+      "needsInterop": false
+    },
+    "react-icons/tb": {
+      "src": "../../node_modules/react-icons/tb/index.esm.js",
+      "file": "react-icons_tb.js",
+      "fileHash": "97212938",
+      "needsInterop": false
+    },
+    "react-modal": {
+      "src": "../../node_modules/react-modal/lib/index.js",
+      "file": "react-modal.js",
+      "fileHash": "f902cbd8",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "ce1dbb3f",
+      "needsInterop": false
+    },
+    "react-tooltip": {
+      "src": "../../node_modules/react-tooltip/dist/react-tooltip.min.mjs",
+      "file": "react-tooltip.js",
+      "fileHash": "a9034155",
+      "needsInterop": false
+    },
+    "recoil": {
+      "src": "../../node_modules/recoil/es/index.js",
+      "file": "recoil.js",
+      "fileHash": "e8538331",
+      "needsInterop": false
+    },
+    "recoil-persist": {
+      "src": "../../node_modules/recoil-persist/dist/index.js",
+      "file": "recoil-persist.js",
+      "fileHash": "1c0d5155",
+      "needsInterop": true
+    },
+    "styled-components": {
+      "src": "../../node_modules/styled-components/dist/styled-components.browser.esm.js",
+      "file": "styled-components.js",
+      "fileHash": "2fbf9f1c",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-VJO7ZY2D": {
+      "file": "chunk-VJO7ZY2D.js"
+    },
+    "chunk-3W3WKI73": {
+      "file": "chunk-3W3WKI73.js"
+    },
+    "chunk-PRK46SJB": {
+      "file": "chunk-PRK46SJB.js"
+    },
+    "chunk-FLAVOKRJ": {
+      "file": "chunk-FLAVOKRJ.js"
+    },
+    "chunk-AC2VUBZ6": {
+      "file": "chunk-AC2VUBZ6.js"
+    }
+  }
+}
