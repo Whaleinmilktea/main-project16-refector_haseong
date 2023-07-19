@@ -36,7 +36,7 @@ function TextEditor({ onFocus, onBlur, handleContentChange }: Props) {
 export default TextEditor;
 
 const EditorContainer = styled.div`
-  width: 650px;
+  width: 720px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -44,7 +44,6 @@ const EditorContainer = styled.div`
 
 const Editor = styled.div`
   width: 100%;
-  height: 500px;
 
   &:focus-within {
     box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);

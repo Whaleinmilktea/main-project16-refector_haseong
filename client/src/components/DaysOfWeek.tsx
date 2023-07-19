@@ -15,11 +15,7 @@ const DaysOfWeek = ({ checked, setChecked }: DaysOfWeekProps) => {
     } else {
       updatedList.splice(checked.indexOf(e.target.value), 1);
     }
-    setChecked(
-      updatedList.sort(
-        (a, b) => daysOfWeekList.indexOf(a) - daysOfWeekList.indexOf(b)
-      )
-    );
+    setChecked(updatedList);
   };
 
   return (
@@ -42,13 +38,13 @@ const DaysOfWeek = ({ checked, setChecked }: DaysOfWeekProps) => {
 };
 
 const DaysOfWeekContainer = styled.div`
-  /* width: 640px; */
+  width: 640px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
   .checkbox {
-    margin-right: 3px;
+    width: 42px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -57,7 +53,7 @@ const DaysOfWeekContainer = styled.div`
   .checkbox > label {
     font-size: 15px;
     color: #1f1f1f;
-    margin-left: 3px;
+    padding-left: 4px;
   }
 
   .checkbox > input {
