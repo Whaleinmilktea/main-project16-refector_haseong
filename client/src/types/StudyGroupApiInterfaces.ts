@@ -22,6 +22,19 @@ export interface StudyTags {
   [key: string]: string[];
 }
 
+export interface StudyGroupCreateDto {
+  studyName: string;
+  startDate: string;
+  endDate: string;
+  dayOfWeek: number[];
+  startTime: string,
+  endTime: string,
+  memberMin: number,
+  memberMax: number,
+  platform: string,
+  introduction: string,
+}
+
 export interface StudyInfoDto {
   id: number;
   studyName: string;

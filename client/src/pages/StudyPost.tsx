@@ -8,8 +8,26 @@ import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import TagInput from "../components/TagInput";
+import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyPost = () => {
+  const [studyData, setStudyData] = useState<StudyGroupCreateDto>({
+    studyName: "",
+    startDate: "",
+    endDate: "",
+    dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
+    startTime: "10:00",
+    endTime: "11:00",
+    memberMin: 2,
+    memberMax: 2,
+    platform: "",
+    introduction: "",
+  })
+
+  // 카테고리는 tag의 카테고리를 설정해주기 때문에 서버에 요청하는 로직X -> useState
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("프론트엔드");
+
   const [studyName, setStudyName] = useState<string>("");
   const [studyPeriodStart, setStudyPeriodStart] = useState<string>("");
   const [studyPeriodEnd, setStudyPeriodEnd] = useState<string>("");
@@ -23,22 +41,11 @@ const StudyPost = () => {
   const [viewTag, setViewTag] = useState(false);
   const [isInput, setIsInput] = useState(false);
   const [introduction, setIntroduction] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("프론트엔드");
   const [selectedPeriodStart, setSelectedPeriodStart] = useState<string>("");
   const [selectedPeriodEnd, setSelectedPeriodEnd] = useState<string>("");
   const [selectedTimeStart, setSelectedTimeStart] = useState<string>("07:00");
   const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("08:00");
   const isLoggedIn = useRecoilValue(LogInState);
-
-  useEffect(() => {
-    if (selectedTimeStart === "") {
-      setSelectedTimeStart("08:00"); // 기본값으로 설정
-    }
-    if (selectedTimeEnd === "") {
-      setSelectedTimeEnd("07:00"); // 기본값으로 설정
-    }
-  }, []);
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
@@ -154,6 +161,8 @@ const StudyPost = () => {
     }
   }, []);
 
+  console.log(studyData);
+
   return (
     <StudyPostContainer>
       <StudyPostBody>
@@ -162,7 +171,7 @@ const StudyPost = () => {
           <input
             type="text"
             placeholder="제목을 입력하세요"
-            value={studyName}
+            value={studyData.studyName}
             onChange={handleTitle}
             required
           />
@@ -188,14 +197,14 @@ const StudyPost = () => {
             <span>날짜</span>
             <input
               type="date"
-              value={selectedPeriodStart}
+              value={studyData.startDate}
               onChange={handleStudyPeriodStart}
               required
             />
             <p>~</p>
             <input
               type="date"
-              value={selectedPeriodEnd}
+              value={studyData.endDate}
               onChange={handleStudyPeriodEnd}
               required
             />
@@ -203,21 +212,21 @@ const StudyPost = () => {
           <StudyPostInfo>
             <span>요일</span>
             <div>
-              <DaysOfWeek checked={checked} setChecked={setChecked} />
+              <DaysOfWeek />
             </div>
           </StudyPostInfo>
           <StudyPostInfo>
             <span>시간</span>
             <input
               type="time"
-              value={selectedTimeStart}
+              value={studyData.startTime}
               onChange={handleStudyTimeStart}
               required
             />
             <p>~</p>
             <input
               type="time"
-              value={selectedTimeEnd}
+              value={studyData.endTime}
               onChange={handleStudyTimeEnd}
               required
             />
@@ -227,7 +236,7 @@ const StudyPost = () => {
             <input
               type="number"
               min="2"
-              value={memberCountMin}
+              value={studyData.memberMin}
               onChange={handleMemberCountMin}
               required
             />
@@ -235,7 +244,7 @@ const StudyPost = () => {
             <input
               type="number"
               min={memberCountMin}
-              value={memberCountMax}
+              value={studyData.memberMax}
               onChange={handleMemberCountMax}
               required
             />
@@ -409,7 +418,6 @@ const StudyPostButton = styled.button`
   font-size: 1.2rem;
   color: #ffffff;
   background-color: #4994da;
-  box-shadow: inset 0 0 0 1px rgb(16 22 26 / 15%),;
 
   &:hover {
     opacity: 85%;
