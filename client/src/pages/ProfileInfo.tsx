@@ -46,22 +46,6 @@ const ProfileInfo = () => {
   if (isLoading) return <div>로딩중...</div>
   if (isError) return <div>에러가 발생했습니다.</div>
 
-  console.log(data, isLoading, isError)
-
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigate("/login");
-  //   }
-  //   const fetchMemberInfo = async () => {
-  //     try {
-  //       const info = await getMemberInfo(isLoggedIn);
-  //       setMemberInfo(info);
-  //       setIntroduceInfo({ aboutMe: info.aboutMe });
-  //     } catch (error) {}
-  //   };
-  //   fetchMemberInfo();
-  // }, [isRendering]);
-
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
     if (data.provider !== "LOCAL") {

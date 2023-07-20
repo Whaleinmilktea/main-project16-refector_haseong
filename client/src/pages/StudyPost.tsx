@@ -98,7 +98,6 @@ const StudyPost = () => {
   };
 
   const handlePostButton = async () => {
-
     const StudyPostDto = {
       studyName,
       studyPeriodStart,
@@ -274,7 +273,7 @@ const StudyPost = () => {
 const StudyPostContainer = styled.div`
   width: 100%;
   height: 100%;
-  background-color: #e9e9e9;
+  background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -288,6 +287,7 @@ const StudyPostBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
 `;
 
 const StudyPostTop = styled.div`
@@ -335,6 +335,25 @@ const StudyPostInfo = styled.form`
   justify-content: flex-start;
   align-items: center;
 
+  select {
+    width: 150px;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    outline: none;
+    appearance: none; /* 브라우저 기본 스타일 제거 */
+    -webkit-appearance: none; /* Safari 버전 지원 */
+
+    /* 드롭다운 화살표 스타일링 */
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6l-6-6l1.41-1.41z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
   span {
     width: 90px;
     text-align: left;
@@ -342,15 +361,17 @@ const StudyPostInfo = styled.form`
     font-weight: 700;
     color: #2759a2;
     margin-right: 15px;
+    border-radius: 5px;
   }
   input {
     width: 240px;
     height: 40px;
     border: 1px solid #ccc;
-    border-radius: 0;
+    border-radius: 5px;
   }
   p {
     padding: 0 10px;
+    border-radius: 5px;
   }
   ul {
     margin: 0 20px;
@@ -360,6 +381,15 @@ const StudyPostInfo = styled.form`
     background-color: #e9e9e9;
     font-size: 0.8rem;
   }
+
+  select:hover,
+  input:hover,
+  ul:hover {
+    transform: scale(1.05); /* Hover 시 요소를 확대 */
+  }
+
+  /* transition 속성 추가하여 부드러운 애니메이션 효과 */
+  transition: transform 0.5s ease;
 `;
 
 const StudyPostInput = styled.div`
@@ -379,6 +409,7 @@ const StudyPostButton = styled.button`
   font-size: 1.2rem;
   color: #ffffff;
   background-color: #4994da;
+  box-shadow: inset 0 0 0 1px rgb(16 22 26 / 15%),;
 
   &:hover {
     opacity: 85%;
