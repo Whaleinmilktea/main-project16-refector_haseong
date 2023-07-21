@@ -6,7 +6,7 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import tokenRequestApi from "../apis/TokenRequestApi";
-import TagInput from "../components/TagInput";
+// import TagInput from "../components/TagInput";
 import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyPost = () => {
@@ -116,8 +116,6 @@ const StudyPost = () => {
     // }
     console.log(StudyPostDto)
   };
-
-
 
   return (
     <StudyPostContainer>
