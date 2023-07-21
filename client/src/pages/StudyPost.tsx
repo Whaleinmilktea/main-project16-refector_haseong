@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-// import dayjs from "dayjs";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import tokenRequestApi from "../apis/TokenRequestApi";
@@ -11,6 +10,7 @@ import TagInput from "../components/TagInput";
 import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyPost = () => {
+  const isLoggedIn = useRecoilValue(LogInState);
   const [studyData, setStudyData] = useState<StudyGroupCreateDto>({
     studyName: "",
     startDate: "",
@@ -22,137 +22,16 @@ const StudyPost = () => {
     memberMax: 2,
     platform: "",
     introduction: "",
-  })
-
-  // 카테고리는 tag의 카테고리를 설정해주기 때문에 서버에 요청하는 로직X -> useState
+  });
+  // 카테고리 상태 => 여러 상태가 맞물려서 작동하기 때문에 별도의 상태로 관리 필요
   const [selectedCategory, setSelectedCategory] =
-    useState<string>("프론트엔드");
-
-  const [studyName, setStudyName] = useState<string>("");
-  const [studyPeriodStart, setStudyPeriodStart] = useState<string>("");
-  const [studyPeriodEnd, setStudyPeriodEnd] = useState<string>("");
-  const [checked, setChecked] = useState<string[]>([]);
-  const [studyTimeStart, setStudyTimeStart] = useState<string>("08:00:00");
-  const [studyTimeEnd, setStudyTimeEnd] = useState<string>("07:00:00");
-  const [memberCountMin, setMemberCountMin] = useState<number>(2);
-  const [memberCountMax, setMemberCountMax] = useState<number>(2);
-  const [platform, setPlatform] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
+  useState<string>("프론트엔드");
   const [viewTag, setViewTag] = useState(false);
   const [isInput, setIsInput] = useState(false);
+  // 스터디 소개 => TextEditor 컴포넌트에서 관리
   const [introduction, setIntroduction] = useState<string>("");
-  const [selectedPeriodStart, setSelectedPeriodStart] = useState<string>("");
-  const [selectedPeriodEnd, setSelectedPeriodEnd] = useState<string>("");
-  const [selectedTimeStart, setSelectedTimeStart] = useState<string>("07:00");
-  const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("08:00");
-  const isLoggedIn = useRecoilValue(LogInState);
-
-  const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-    setViewTag(false);
-    setIsInput(false);
-  };
-
-  const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStudyName(e.target.value);
-  };
-
-  const handleStudyPeriodStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const startDateValue = e.target.value;
-    const timeValue = "00:00";
-
-    const formattedDate = `${startDateValue}T${timeValue}:00`;
-    setSelectedPeriodStart(startDateValue);
-    setStudyPeriodStart(formattedDate);
-  };
-
-  const handleStudyPeriodEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const endDateValue = e.target.value;
-    const timeValue = "00:00";
-
-    const formattedDate = `${endDateValue}T${timeValue}:00`;
-    setSelectedPeriodEnd(endDateValue);
-    setStudyPeriodEnd(formattedDate);
-  };
-  const handleStudyTimeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const startTimeValue = e.target.value;
-    const dateValue = "2023-05-04"; // 이 코드에서는 의미가 없기 때문에 임의로 지정
-    let formattedDate = `${dateValue}T${startTimeValue}:00`;
-    if (formattedDate === "2023-05-04T00:00:00") {
-      formattedDate = "2023-05-04T00:01:00";
-    }
-    setSelectedTimeStart(startTimeValue);
-    setStudyTimeStart(formattedDate);
-  };
-  const handleStudyTimeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const endTimeValue = e.target.value;
-    const dateValue = "2023-05-04"; // 이 코드에서는 의미가 없기 때문에 임의로 지정
-    let formattedDate = `${dateValue}T${endTimeValue}:00`;
-    if (formattedDate === "2023-05-04T00:00:00") {
-      formattedDate = "2023-05-04T00:00:00";
-    }
-    setSelectedTimeEnd(endTimeValue);
-    setStudyTimeEnd(formattedDate);
-  };
-  const handleMemberCountMin = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemberCountMin(+e.target.value);
-  };
-  const handleMemberCountMax = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemberCountMax(+e.target.value);
-  };
-  const handlePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlatform(e.target.value);
-  };
-
-  const handlePostButton = async () => {
-    const StudyPostDto = {
-      studyName,
-      studyPeriodStart,
-      studyPeriodEnd,
-      daysOfWeek: checked,
-      studyTimeStart,
-      studyTimeEnd,
-      memberCountMin,
-      memberCountMax,
-      platform,
-      introduction,
-      tags: {
-        [selectedCategory]: tags,
-      },
-    };
-
-    if (studyName === "") {
-      alert("제목을 입력해주세요!");
-      return;
-    }
-    if (!isLoggedIn) {
-      alert("로그인한 사람만 스터디 등록이 가능합니다!");
-      return;
-    }
-    if (memberCountMin > memberCountMax) {
-      alert("최대 인원이 최소 인원보다 적습니다!");
-      return;
-    }
-
-    if (studyPeriodStart > studyPeriodEnd) {
-      alert("스터디 시작일이 종료일보다 늦습니다!");
-      return;
-    }
-
-    if (checked.length === 0) {
-      alert("요일을 선택해주세요!");
-      return;
-    }
-
-    try {
-      await tokenRequestApi.post("/studygroup", StudyPostDto);
-      alert("스터디 등록이 완료되었습니다!");
-      navigate("/studylist");
-    } catch (error) {
-      alert("스터디 등록이 실패했습니다!");
-    }
-  };
-
+  // 태그 => TagInput 컴포넌트에서 관리
+  const [tags, setTags] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -161,7 +40,84 @@ const StudyPost = () => {
     }
   }, []);
 
-  console.log(studyData);
+  const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+    setViewTag(false);
+    setIsInput(false);
+  };
+  const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, studyName: e.target.value });
+  };
+  const handleStartDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, startDate: e.target.value });
+  };
+  const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, endDate: e.target.value });
+  };
+  const handleStudyTimeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, startTime: e.target.value });
+  };
+  const handleStudyTimeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, endTime: e.target.value });
+  };
+  const handleMemberCountMin = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, memberMin: +e.target.value });
+  };
+  const handleMemberCountMax = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, memberMax: +e.target.value });
+    if(studyData.memberMin > +e.target.value) alert("최대 인원이 최소 인원보다 적습니다!");
+  };
+  const handlePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, platform: e.target.value });
+  };
+
+  const handlePostButton = async () => {
+    const StudyPostDto = {
+      studyName : studyData.studyName,
+      startDate : studyData.startDate,
+      endDate : studyData.endDate,
+      dayOfWeek : studyData.dayOfWeek,
+      startTime : studyData.startTime,
+      endTime : studyData.endTime,
+      memberMin : studyData.memberMin,
+      memberMax : studyData.memberMax,
+      platform : studyData.platform,
+      introduction : introduction,
+      tags: {
+        [selectedCategory]: tags,
+      },
+    };
+    if (!isLoggedIn) {
+      alert("로그인한 사람만 스터디 등록이 가능합니다!");
+      return;
+    }
+    if (studyData.studyName === "") {
+      alert("제목을 입력해주세요!");
+      return;
+    }
+    if (studyData.memberMin > studyData.memberMax) {
+      alert("최대 인원이 최소 인원보다 적습니다!");
+      return;
+    }
+    if (studyData.startDate > studyData.endDate) {
+      alert("스터디 시작일이 종료일보다 늦습니다!");
+      return;
+    }
+    if (studyData.dayOfWeek.indexOf(1) === -1) {
+      alert("요일을 선택해주세요!");
+      return;
+    }
+    // try {
+    //   await tokenRequestApi.post("/study", StudyPostDto);
+    //   alert("스터디 등록이 완료되었습니다!");
+    //   navigate("/studylist");
+    // } catch (error) {
+    //   alert("스터디 등록이 실패했습니다!");
+    // }
+    console.log(StudyPostDto)
+  };
+
+
 
   return (
     <StudyPostContainer>
@@ -198,21 +154,21 @@ const StudyPost = () => {
             <input
               type="date"
               value={studyData.startDate}
-              onChange={handleStudyPeriodStart}
+              onChange={handleStartDate}
               required
             />
             <p>~</p>
             <input
               type="date"
               value={studyData.endDate}
-              onChange={handleStudyPeriodEnd}
+              onChange={handleEndDate}
               required
             />
           </StudyPostInfo>
           <StudyPostInfo>
             <span>요일</span>
             <div>
-              <DaysOfWeek />
+              <DaysOfWeek setStudyData={setStudyData} />
             </div>
           </StudyPostInfo>
           <StudyPostInfo>
@@ -243,7 +199,7 @@ const StudyPost = () => {
             <p>~</p>
             <input
               type="number"
-              min={memberCountMin}
+              min={studyData.memberMin}
               value={studyData.memberMax}
               onChange={handleMemberCountMax}
               required
@@ -251,7 +207,7 @@ const StudyPost = () => {
           </StudyPostInfo>
           <StudyPostInfo>
             <span>플랫폼</span>
-            <input type="url" value={platform} onChange={handlePlatform} />
+            <input type="url" value={studyData.platform} onChange={handlePlatform} />
           </StudyPostInfo>
           <StudyPostInfo>
             <span>태그</span>
@@ -266,7 +222,9 @@ const StudyPost = () => {
             />
           </StudyPostInfo>
           <StudyPostInput>
-            <TextEditor handleContentChange={setIntroduction} />
+            <TextEditor setIntroduction={setIntroduction} />
+            {/* 혹시나 했으나, 역시나.. props는.. readOnly 속성 */}
+            {/* <TextEditor introduction={studyData.introduction} /> */}
           </StudyPostInput>
           <StudyPostButtonWrapper>
             <StudyPostButton onClick={handlePostButton}>
