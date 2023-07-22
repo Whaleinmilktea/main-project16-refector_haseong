@@ -8,6 +8,10 @@ interface PropsType {
 
 const NewTagInput = ({ setTags }: PropsType) => {
   const [selected, setSelected] = useState<string[]>([]);
+  if(selected.length > 3) {
+    alert("태그는 최대 3개까지 입력 가능합니다.");
+    setSelected(selected.slice(0, 3));
+  }
   setTags(selected);
 
   return (

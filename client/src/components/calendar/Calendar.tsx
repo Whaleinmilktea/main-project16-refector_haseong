@@ -14,6 +14,7 @@ import ViewCalendarModal from "../modal/ViewCalendarEvent";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import ViewCustomCalendarEvent from "../modal/ViewCustomCalendarEvent";
+import styled from "styled-components";
 
 const Calendar = () => {
   const [studyEvents, setStudyEvents] = useState<StudyEvent[]>([]);
@@ -107,7 +108,7 @@ const Calendar = () => {
   };
 
   return (
-    <>
+    <CalendarWrapper>
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
@@ -142,8 +143,15 @@ const Calendar = () => {
           id={selectedCustomEvent}
         />
       )}
-    </>
+    </CalendarWrapper>
   );
 };
+
+const CalendarWrapper = styled.div`
+:root {
+  --fc-daygrid-event-dot-width: 8px;
+}
+`
+
 
 export default Calendar;

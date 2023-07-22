@@ -5,20 +5,67 @@ import axios from "axios";
 import StudyListTag from "../components/StudyListTag";
 import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
+import Search from "../components/Search";
 
 const StudyList = () => {
   interface StudyListDto {
     id: number;
     title: string;
     tagValues: string[];
+    createAt: string;
+    updateAt: string;
   }
 
   const initialState = [
     {
-      id: 0,
-      title: "",
-      tagValues: [""],
+      "id": 0,
+      "title": "React Fundamentals Study",
+      "tagValues": ["React", "JavaScript", "HTML"],
+      "createAt": "2023-07-22",
+      "updateAt": "2023-07-22"
     },
+    {
+      "id": 1,
+      "title": "Vue.js Projects Study",
+      "tagValues": ["Vue.js", "JavaScript", "HTML"],
+      "createAt": "2023-07-21",
+      "updateAt": "2023-07-21"
+    },
+    {
+      "id": 2,
+      "title": "Angular Advanced Study",
+      "tagValues": ["Angular", "TypeScript", "HTML"],
+      "createAt": "2023-07-20",
+      "updateAt": "2023-07-20"
+    },
+    {
+      "id": 3,
+      "title": "Frontend Performance Optimization Study",
+      "tagValues": ["Performance", "JavaScript", "CSS"],
+      "createAt": "2023-07-19",
+      "updateAt": "2023-07-19"
+    },
+    {
+      "id": 4,
+      "title": "Responsive Web Design Study",
+      "tagValues": ["Design", "CSS", "HTML"],
+      "createAt": "2023-07-18",
+      "updateAt": "2023-07-18"
+    },
+    {
+      "id": 5,
+      "title": "JavaScript ES6 Features Study",
+      "tagValues": ["JavaScript", "ES6", "Programming"],
+      "createAt": "2023-07-17",
+      "updateAt": "2023-07-17"
+    },
+    {
+      "id": 6,
+      "title": "Frontend Design Patterns",
+      "tagValues": ["Design Patterns", "JavaScript", "CSS"],
+      "createAt": "2023-07-16",
+      "updateAt": "2023-07-16"
+    }
   ];
 
   const [loading, setLoading] = useState(false);
@@ -38,9 +85,10 @@ const StudyList = () => {
 
   const fetchMoreList = async () => {
     const response = await axios.get(
-      `${
-        import.meta.env.VITE_APP_API_URL
-      }/studygroups?page=${currentPage}&size=6`
+      // `${
+      //   import.meta.env.VITE_APP_API_URL
+      // }/studygroups?page=${currentPage}&size=6`
+      `http://localhost:3000/studygroups?page=${currentPage}&size=12`
     );
     const data = response.data.data;
     setList([...list, ...data]);
@@ -66,8 +114,6 @@ const StudyList = () => {
       // fetchMoreList();
     }
   };
-
-
 
   // try {
   //     const response = await axios.get(
@@ -104,7 +150,7 @@ const StudyList = () => {
       <StudyListBody>
         <StudyListTop>
           <div>
-            <h2>여러분의 스터디를 만들어보세요!</h2>
+            <h3>Searching Study!</h3>
           </div>
           <Link to="/studypost">
             <StudyPostButton>스터디 모집!</StudyPostButton>
@@ -112,7 +158,9 @@ const StudyList = () => {
         </StudyListTop>
 
         <ListFilterWrapper>
+          <Search />
           <ListFilter setFilterData={setFilterData} />
+          {/* <ListFilter /> */}
         </ListFilterWrapper>
 
         {!loading && (
@@ -143,6 +191,7 @@ const StudyList = () => {
 const StudyListContainer = styled.div`
   width: 100%;
   height: 100%;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -158,6 +207,7 @@ const StudyListBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
 `;
 
 const StudyListTop = styled.div`
@@ -168,9 +218,10 @@ const StudyListTop = styled.div`
   align-items: center;
   div {
     text-align: start;
-    margin-left: 10px;
+    margin-left: 20px;
   }
-  h2 {
+  h3 {
+    font-family: "Noto Sans KR", sans-serif;
     text-align: left;
     font-size: 2rem;
     color: #1f1f1f;
@@ -179,21 +230,13 @@ const StudyListTop = styled.div`
   }
 `;
 
-const ListFilterWrapper = styled.div`
-  width: 900px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
 const StudyPostButton = styled.button`
   width: 160px;
   height: 48px;
   font-size: 1.2rem;
   color: #ffffff;
   background-color: #4994da;
-  margin-right: 20px;
+  margin-right: 30px;
 
   &:hover {
     opacity: 85%;
@@ -201,6 +244,14 @@ const StudyPostButton = styled.button`
   &:active {
     opacity: 100%;
   }
+`;
+
+const ListFilterWrapper = styled.div`
+  width: 900px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const StudyBoxContainer = styled.div`
@@ -226,12 +277,16 @@ const StudyBox = styled.div`
   border-radius: 8px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin: 10px;
-  padding: 5px;
+  padding: 15px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.05); /* 마우스가 올라갔을 때 크기를 105%로 확대 */
+  }
 
   .studylist-title {
     width: 260px;
@@ -250,13 +305,14 @@ const StudyBox = styled.div`
   .studylist-tag {
     width: 260px;
     height: 30px;
-    padding-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 20px;
+    margin-bottom: 5px;
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
   }
+
   .studylist-tag > div {
     height: 24px;
     color: #39739d;
