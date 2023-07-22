@@ -112,7 +112,6 @@ const StudyPost = () => {
     } catch (error) {
       alert("스터디 등록이 실패했습니다!");
     }
-    console.log(StudyPostDto);
   };
 
   return (
@@ -213,22 +212,11 @@ const StudyPost = () => {
           <StudyTagWrapper>
             <span id="tagTitle">태그</span>
             <span id="tagCategory">{selectedCategory}</span>
-            {/* <TagInput
-              selectedCategory={selectedCategory}
-              tags={tags}
-              setTags={setTags}
-              viewTag={viewTag}
-              setViewTag={setViewTag}
-              isInput={isInput}
-              setIsInput={setIsInput}
-            /> */}
             <NewTagInput setTags={setTags}/>
           </StudyTagWrapper>
 
           <StudyPostInput>
             <TextEditor setIntroduction={setIntroduction} />
-            {/* 혹시나 했으나, 역시나.. props는.. readOnly 속성 */}
-            {/* <TextEditor introduction={studyData.introduction} /> */}
           </StudyPostInput>
           <StudyPostButtonWrapper>
             <StudyPostButton onClick={handlePostButton}>
@@ -382,7 +370,7 @@ const StudyTagWrapper = styled.div`
 
   #tagCategory {
     color: #17594A;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     margin-right: 15px;
   }

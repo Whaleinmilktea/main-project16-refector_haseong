@@ -6,16 +6,16 @@ import { useState } from "react";
 type Props = {
   onFocus?: () => void;
   onBlur?: () => void;
-  setIntroduction: (introduction : string) => void
-  // introduction : string
+  setIntroduction: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function TextEditor({ onFocus, onBlur }: Props) {
+function TextEditor({ onFocus, onBlur, setIntroduction }: Props) {
   const [text, setText] = useState("");
 
   const handleOnChange = (_event : any, editor: ClassicEditor) => {
     const data = editor.getData();
     setText(data);
+    setIntroduction(data);
   };
 
 
