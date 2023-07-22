@@ -3,6 +3,7 @@ import tokenRequestApi from "./TokenRequestApi";
 import { baseApi } from "./EduApi";
 import { Base64 } from "js-base64";
 import {
+  MyStudyGroupListDto,
   StudyGroupListDto,
   StudyGroupMemberApprovalDto,
   StudyGroupMemberListDto,
@@ -14,8 +15,20 @@ import {
   WaitingStudyGroupListDto,
 } from "../types/StudyGroupApiInterfaces";
 
-export const getStudyGroupList = async () => {
-  const response = await tokenRequestApi.get<StudyGroupListDto>(
+export const getStudyGroupList = async (currentPage: number) => {
+  // const requestEndpoint = Base64.encode(`$studygroups?page${currentPage}&size=6}`)
+  // const response = await axios.get<StudyGroupListDto>(
+  //   `${import.meta.env.VITE_APP_API_URL}/studygroups?page${currentPage}&size=6`
+  // );
+  const response = await axios.get<StudyGroupListDto>(
+    `http://localhost:3000/studygroups?_page=${currentPage}&_limit=6`
+  );
+  return response.data;
+  console.log(response.data);
+};
+
+export const getMyStudyGroupList = async () => {
+  const response = await tokenRequestApi.get<MyStudyGroupListDto>(
     `/studygroup/myList?approved=true`
   );
   return response;

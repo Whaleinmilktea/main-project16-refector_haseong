@@ -5,6 +5,14 @@ export interface StudyGroup {
 }
 
 export interface StudyGroupListDto {
+  id: number;
+  title: string;
+  tagValues: string[];
+  createAt: string;
+  updateAt: string;
+}
+
+export interface MyStudyGroupListDto {
   leaders: StudyGroup[];
   members: StudyGroup[];
 }

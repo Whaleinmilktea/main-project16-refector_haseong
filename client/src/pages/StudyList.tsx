@@ -1,96 +1,32 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import StudyListTag from "../components/StudyListTag";
 import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
 import Search from "../components/Search";
+import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyList = () => {
-  interface StudyListDto {
-    id: number;
-    title: string;
-    tagValues: string[];
-    createAt: string;
-    updateAt: string;
-  }
-
-  const initialState = [
-    {
-      "id": 0,
-      "title": "React Fundamentals Study",
-      "tagValues": ["React", "JavaScript", "HTML"],
-      "createAt": "2023-07-22",
-      "updateAt": "2023-07-22"
-    },
-    {
-      "id": 1,
-      "title": "Vue.js Projects Study",
-      "tagValues": ["Vue.js", "JavaScript", "HTML"],
-      "createAt": "2023-07-21",
-      "updateAt": "2023-07-21"
-    },
-    {
-      "id": 2,
-      "title": "Angular Advanced Study",
-      "tagValues": ["Angular", "TypeScript", "HTML"],
-      "createAt": "2023-07-20",
-      "updateAt": "2023-07-20"
-    },
-    {
-      "id": 3,
-      "title": "Frontend Performance Optimization Study",
-      "tagValues": ["Performance", "JavaScript", "CSS"],
-      "createAt": "2023-07-19",
-      "updateAt": "2023-07-19"
-    },
-    {
-      "id": 4,
-      "title": "Responsive Web Design Study",
-      "tagValues": ["Design", "CSS", "HTML"],
-      "createAt": "2023-07-18",
-      "updateAt": "2023-07-18"
-    },
-    {
-      "id": 5,
-      "title": "JavaScript ES6 Features Study",
-      "tagValues": ["JavaScript", "ES6", "Programming"],
-      "createAt": "2023-07-17",
-      "updateAt": "2023-07-17"
-    },
-    {
-      "id": 6,
-      "title": "Frontend Design Patterns",
-      "tagValues": ["Design Patterns", "JavaScript", "CSS"],
-      "createAt": "2023-07-16",
-      "updateAt": "2023-07-16"
-    }
-  ];
-
   const [loading, setLoading] = useState(false);
-  const [list, setList] = useState<StudyListDto[]>(initialState);
+  const [list, setList] = useState<StudyGroupListDto[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterData, setFilterData] = useState<StudyListDto[]>(initialState);
+  // const [filterData, setFilterData] = useState<StudyListDto[]>(initialState);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchMoreList();
   }, []);
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
-
   const fetchMoreList = async () => {
     const response = await axios.get(
       // `${
       //   import.meta.env.VITE_APP_API_URL
       // }/studygroups?page=${currentPage}&size=6`
-      `http://localhost:3000/studygroups?page=${currentPage}&size=12`
+      `http://localhost:3000/studygroups?_page=${currentPage}&_limit=6`
     );
-    const data = response.data.data;
+    const data = response.data;
     setList([...list, ...data]);
     setCurrentPage((prevPage) => prevPage + 1);
     setLoading(false);
@@ -99,51 +35,18 @@ const StudyList = () => {
     }
   };
 
-  // setTimeout(() => {
-  //   if (loading) {
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   fetchMoreList();
-  // }, 500);
-
   const srollLogic = () => {
     const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
     if (scrollTop + clientHeight >= scrollHeight) {
-      console.log("scroll");
-      // fetchMoreList();
+      console.log("touch bottom");
     }
   };
 
-  // try {
-  //     const response = await axios.get(
-  //       `${import.meta.env.VITE_APP_API_URL}/studygroups?page=${currentPage}&size=6`
-  //     );
-  //     const data = response.data.data;
-  //     if (data.length === 0) {
-  //       alert("마지막 페이지입니다.");
-  //       return;
-  //     }
-  //     setList([...data]);
-  //   } catch (error) {
-  //     throw new Error("스터디 리스트 로딩에 실패했습니다.");
-  //   } finally {
-  //     setFetching(false);
-  //   }
-  // };
-
-  // const handleScroll = () => {
-  //   const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-  //   if (scrollTop + clientHeight >= scrollHeight) {
-  //     setCurrentPage((prevPage) => prevPage + 1);
-  //   }
-  // };
-
-  useEffect(() => {
-    setLoading(true);
-    setList(filterData);
-    setLoading(false);
-  }, [filterData]);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setList(filterData);
+  //   setLoading(false);
+  // }, [filterData]);
 
   return (
     <StudyListContainer onScroll={srollLogic}>
@@ -158,14 +61,14 @@ const StudyList = () => {
         </StudyListTop>
 
         <ListFilterWrapper>
-          <Search />
+          {/* <Search />
           <ListFilter setFilterData={setFilterData} />
-          {/* <ListFilter /> */}
+          <ListFilter /> */}
         </ListFilterWrapper>
 
         {!loading && (
           <StudyBoxContainer>
-            {list?.map((item: StudyListDto) => (
+            {list?.map((item: StudyGroupListDto) => (
               <StudyBox
                 key={item?.id}
                 onClick={() => navigate(`/studycontent/${item?.id}`)}
