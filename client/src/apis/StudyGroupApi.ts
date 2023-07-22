@@ -20,11 +20,9 @@ export const getStudyGroupList = async (currentPage: number) => {
   // const response = await axios.get<StudyGroupListDto>(
   //   `${import.meta.env.VITE_APP_API_URL}/studygroups?page${currentPage}&size=6`
   // );
-  const response = await axios.get<StudyGroupListDto>(
+  await axios.get<StudyGroupListDto>(
     `http://localhost:3000/studygroups?_page=${currentPage}&_limit=6`
   );
-  return response.data;
-  console.log(response.data);
 };
 
 export const getMyStudyGroupList = async () => {

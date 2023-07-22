@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import StudyListTag from "../components/StudyListTag";
 import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
