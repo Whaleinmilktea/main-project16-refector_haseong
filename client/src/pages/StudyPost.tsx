@@ -5,8 +5,8 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
+import NewTagInput from "../components/NewTagInput";
 import tokenRequestApi from "../apis/TokenRequestApi";
-// import TagInput from "../components/TagInput";
 import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyPost = () => {
@@ -25,11 +25,10 @@ const StudyPost = () => {
   });
   // 카테고리 상태 => 여러 상태가 맞물려서 작동하기 때문에 별도의 상태로 관리 필요
   const [selectedCategory, setSelectedCategory] =
-  useState<string>("프론트엔드");
-  const [viewTag, setViewTag] = useState(false);
-  const [isInput, setIsInput] = useState(false);
+    useState<string>("프론트엔드");
   // 스터디 소개 => TextEditor 컴포넌트에서 관리
   const [introduction, setIntroduction] = useState<string>("");
+  console.log(introduction);
   // 태그 => TagInput 컴포넌트에서 관리
   const [tags, setTags] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -42,8 +41,6 @@ const StudyPost = () => {
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setViewTag(false);
-    setIsInput(false);
   };
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStudyData({ ...studyData, studyName: e.target.value });
@@ -65,7 +62,8 @@ const StudyPost = () => {
   };
   const handleMemberCountMax = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStudyData({ ...studyData, memberMax: +e.target.value });
-    if(studyData.memberMin > +e.target.value) alert("최대 인원이 최소 인원보다 적습니다!");
+    if (studyData.memberMin > +e.target.value)
+      alert("최대 인원이 최소 인원보다 적습니다!");
   };
   const handlePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStudyData({ ...studyData, platform: e.target.value });
@@ -73,16 +71,16 @@ const StudyPost = () => {
 
   const handlePostButton = async () => {
     const StudyPostDto = {
-      studyName : studyData.studyName,
-      startDate : studyData.startDate,
-      endDate : studyData.endDate,
-      dayOfWeek : studyData.dayOfWeek,
-      startTime : studyData.startTime,
-      endTime : studyData.endTime,
-      memberMin : studyData.memberMin,
-      memberMax : studyData.memberMax,
-      platform : studyData.platform,
-      introduction : introduction,
+      studyName: studyData.studyName,
+      startDate: studyData.startDate,
+      endDate: studyData.endDate,
+      dayOfWeek: studyData.dayOfWeek,
+      startTime: studyData.startTime,
+      endTime: studyData.endTime,
+      memberMin: studyData.memberMin,
+      memberMax: studyData.memberMax,
+      platform: studyData.platform,
+      introduction: introduction,
       tags: {
         [selectedCategory]: tags,
       },
@@ -107,14 +105,14 @@ const StudyPost = () => {
       alert("요일을 선택해주세요!");
       return;
     }
-    // try {
-    //   await tokenRequestApi.post("/study", StudyPostDto);
-    //   alert("스터디 등록이 완료되었습니다!");
-    //   navigate("/studylist");
-    // } catch (error) {
-    //   alert("스터디 등록이 실패했습니다!");
-    // }
-    console.log(StudyPostDto)
+    try {
+      await tokenRequestApi.post("/study", StudyPostDto);
+      alert("스터디 등록이 완료되었습니다!");
+      navigate("/studylist");
+    } catch (error) {
+      alert("스터디 등록이 실패했습니다!");
+    }
+    console.log(StudyPostDto);
   };
 
   return (
@@ -205,11 +203,17 @@ const StudyPost = () => {
           </StudyPostInfo>
           <StudyPostInfo>
             <span>플랫폼</span>
-            <input type="url" value={studyData.platform} onChange={handlePlatform} />
+            <input
+              type="url"
+              value={studyData.platform}
+              onChange={handlePlatform}
+            />
           </StudyPostInfo>
-          <StudyPostInfo>
-            <span>태그</span>
-            <TagInput
+
+          <StudyTagWrapper>
+            <span id="tagTitle">태그</span>
+            <span id="tagCategory">{selectedCategory}</span>
+            {/* <TagInput
               selectedCategory={selectedCategory}
               tags={tags}
               setTags={setTags}
@@ -217,8 +221,10 @@ const StudyPost = () => {
               setViewTag={setViewTag}
               isInput={isInput}
               setIsInput={setIsInput}
-            />
-          </StudyPostInfo>
+            /> */}
+            <NewTagInput setTags={setTags}/>
+          </StudyTagWrapper>
+
           <StudyPostInput>
             <TextEditor setIntroduction={setIntroduction} />
             {/* 혹시나 했으나, 역시나.. props는.. readOnly 속성 */}
@@ -355,6 +361,31 @@ const StudyPostInfo = styled.form`
 
   /* transition 속성 추가하여 부드러운 애니메이션 효과 */
   transition: transform 0.5s ease;
+`;
+
+const StudyTagWrapper = styled.div`
+  font-size: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  #tagTitle {
+    width: 90px;
+    text-align: left;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2759a2;
+    margin-right: 15px;
+    border-radius: 5px;
+  }
+
+  #tagCategory {
+    color: #17594A;
+    font-size: 14px;
+    font-weight: 700;
+    margin-right: 15px;
+  }
 `;
 
 const StudyPostInput = styled.div`

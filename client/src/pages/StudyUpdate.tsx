@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
-import TagInput from "../components/TagInput";
+// import TagInput from "../components/TagInput";
 import {
   getStudyGroupInfo,
   updateStudyGroupContentsInfo,
