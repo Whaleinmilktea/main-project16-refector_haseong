@@ -7,6 +7,7 @@ import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
 import Search from "../components/Search";
 import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+import { getStudyGroupList } from "../apis/StudyGroupApi";
 
 const StudyList = () => {
   const [loading, setLoading] = useState(false);
@@ -20,13 +21,7 @@ const StudyList = () => {
   }, []);
 
   const fetchMoreList = async () => {
-    const response = await axios.get(
-      // `${
-      //   import.meta.env.VITE_APP_API_URL
-      // }/studygroups?page=${currentPage}&size=6`
-      `http://localhost:3000/studygroups?_page=${currentPage}&_limit=6`
-    );
-    const data = response.data;
+    const data = await getStudyGroupList(currentPage);
     setList([...list, ...data]);
     setCurrentPage((prevPage) => prevPage + 1);
     setLoading(false);
