@@ -5,29 +5,32 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
+import NewTagInput from "../components/NewTagInput";
 import tokenRequestApi from "../apis/TokenRequestApi";
-import TagInput from "../components/TagInput";
-import { DatePick } from "../components/DatePicker";
-import { TimePick } from "../components/TimePicker";
+import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 
 const StudyPost = () => {
-  const [studyName, setStudyName] = useState<string>("");
-  const [studyPeriodStart, setStudyPeriodStart] = useState<string>("");
-  const [studyPeriodEnd, setStudyPeriodEnd] = useState<string>("");
-  const [checked, setChecked] = useState<string[]>([]);
-  const [studyTimeStart, setStudyTimeStart] = useState<string>("00:00");
-  const [studyTimeEnd, setStudyTimeEnd] = useState<string>("00:00");
-  const [memberCountMin, setMemberCountMin] = useState<number>(2);
-  const [memberCountMax, setMemberCountMax] = useState<number>(2);
-  const [platform, setPlatform] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [viewTag, setViewTag] = useState(false);
-  const [isInput, setIsInput] = useState(false);
-  const [introduction, setIntroduction] = useState<string>("");
+  const isLoggedIn = useRecoilValue(LogInState);
+  const [studyData, setStudyData] = useState<StudyGroupCreateDto>({
+    studyName: "",
+    startDate: "",
+    endDate: "",
+    dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
+    startTime: "10:00",
+    endTime: "11:00",
+    memberMin: 2,
+    memberMax: 2,
+    platform: "",
+    introduction: "",
+  });
+  // 카테고리 상태 => 여러 상태가 맞물려서 작동하기 때문에 별도의 상태로 관리 필요
   const [selectedCategory, setSelectedCategory] =
     useState<string>("프론트엔드");
-  const isLoggedIn = useRecoilValue(LogInState);
-
+  // 스터디 소개 => TextEditor 컴포넌트에서 관리
+  const [introduction, setIntroduction] = useState<string>("");
+  console.log(introduction);
+  // 태그 => TagInput 컴포넌트에서 관리
+  const [tags, setTags] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,80 +39,76 @@ const StudyPost = () => {
     }
   }, []);
 
-  const StudyPostDto = {
-    studyName,
-    studyPeriodStart,
-    studyPeriodEnd,
-    daysOfWeek: checked,
-    studyTimeStart,
-    studyTimeEnd,
-    memberCountMin,
-    memberCountMax,
-    platform,
-    introduction,
-    tags: {
-      [selectedCategory]: tags,
-    },
-  };
-
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setViewTag(false);
-    setIsInput(false);
   };
-
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStudyName(e.target.value);
+    setStudyData({ ...studyData, studyName: e.target.value });
   };
-
+  const handleStartDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, startDate: e.target.value });
+  };
+  const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, endDate: e.target.value });
+  };
+  const handleStudyTimeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, startTime: e.target.value });
+  };
+  const handleStudyTimeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, endTime: e.target.value });
+  };
   const handleMemberCountMin = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemberCountMin(+e.target.value);
+    setStudyData({ ...studyData, memberMin: +e.target.value });
   };
   const handleMemberCountMax = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemberCountMax(+e.target.value);
+    setStudyData({ ...studyData, memberMax: +e.target.value });
+    if (studyData.memberMin > +e.target.value)
+      alert("최대 인원이 최소 인원보다 적습니다!");
   };
   const handlePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlatform(e.target.value);
+    setStudyData({ ...studyData, platform: e.target.value });
   };
 
   const handlePostButton = async () => {
-    if (studyTimeStart === "00:00:00") {
-      alert("시작 시간을 입력해주세요!");
-      return;
-    }
-    if (studyTimeEnd === "00:00:00") {
-      alert("종료 시간을 입력해주세요!");
-      return;
-    }
-
-    if (studyName === "") {
-      alert("제목을 입력해주세요!");
-      return;
-    }
+    const StudyPostDto = {
+      studyName: studyData.studyName,
+      startDate: studyData.startDate,
+      endDate: studyData.endDate,
+      dayOfWeek: studyData.dayOfWeek,
+      startTime: studyData.startTime,
+      endTime: studyData.endTime,
+      memberMin: studyData.memberMin,
+      memberMax: studyData.memberMax,
+      platform: studyData.platform,
+      introduction: introduction,
+      tags: {
+        [selectedCategory]: tags,
+      },
+    };
     if (!isLoggedIn) {
       alert("로그인한 사람만 스터디 등록이 가능합니다!");
       return;
     }
-    if (memberCountMin > memberCountMax) {
+    if (studyData.studyName === "") {
+      alert("제목을 입력해주세요!");
+      return;
+    }
+    if (studyData.memberMin > studyData.memberMax) {
       alert("최대 인원이 최소 인원보다 적습니다!");
       return;
     }
-
-    if (studyPeriodStart > studyPeriodEnd) {
+    if (studyData.startDate > studyData.endDate) {
       alert("스터디 시작일이 종료일보다 늦습니다!");
       return;
     }
-
-    if (checked.length === 0) {
+    if (studyData.dayOfWeek.indexOf(1) === -1) {
       alert("요일을 선택해주세요!");
       return;
     }
-
     try {
-      await tokenRequestApi.post("/studygroup", StudyPostDto);
+      await tokenRequestApi.post("/study", StudyPostDto);
       alert("스터디 등록이 완료되었습니다!");
       navigate("/studylist");
-      console.log(StudyPostDto);
     } catch (error) {
       alert("스터디 등록이 실패했습니다!");
     }
@@ -122,96 +121,109 @@ const StudyPost = () => {
           <span>스터디 등록</span>
           <input
             type="text"
-            placeholder="스터디 이름을 입력하세요"
-            value={studyName}
+            placeholder="제목을 입력하세요"
+            value={studyData.studyName}
             onChange={handleTitle}
             required
           />
-
         </StudyPostTop>
-        <TimePick />
+
         <StudyPostMain>
-          <StudyPostInfoWrapper>
-            <StudyPostInfo>
-              <span>분야</span>
-              <select
-                name="category"
-                value={selectedCategory}
-                onChange={handleCategory}
-              >
-                <option value="프론트엔드">프론트엔드</option>
-                <option value="백엔드">백엔드</option>
-                <option value="알고리즘">알고리즘</option>
-                <option value="인공지능">인공지능</option>
-                <option value="기타">기타</option>
-              </select>
-            </StudyPostInfo>
+          <StudyPostInfo>
+            <span>분야</span>
+            <select
+              name="category"
+              value={selectedCategory}
+              onChange={handleCategory}
+            >
+              <option value="프론트엔드">프론트엔드</option>
+              <option value="백엔드">백엔드</option>
+              <option value="알고리즘">알고리즘</option>
+              <option value="인공지능">인공지능</option>
+              <option value="기타">기타</option>
+            </select>
+          </StudyPostInfo>
 
-            <StudyPostInfo>
-              <span>날짜</span>
-              <DatePick />
-              <p>~</p>
-              <DatePick />
-            </StudyPostInfo>
-            <StudyPostInfo>
-              <span>요일</span>
-              <div>
-                <DaysOfWeek checked={checked} setChecked={setChecked} />
-              </div>
-            </StudyPostInfo>
-            <StudyPostInfo>
-              <span>시간</span>
-              <TimePick />
-              <p>~</p>
-              <TimePick />
-            </StudyPostInfo>
-            <StudyPostInfo>
-              <span>인원</span>
-              <input
-                type="number"
-                min="2"
-                value={memberCountMin}
-                onChange={handleMemberCountMin}
-                required
-              />
-              <p>~</p>
-              <input
-                type="number"
-                min={memberCountMin}
-                value={memberCountMax}
-                onChange={handleMemberCountMax}
-                required
-              />
-            </StudyPostInfo>
-            <StudyPostInfo>
-              <span>플랫폼</span>
-              <input type="url" value={platform} onChange={handlePlatform} placeholder="ex) Zoom"/>
-            </StudyPostInfo>
-            <StudyPostInfo>
-              <span>태그</span>
-              <TagInput
-                selectedCategory={selectedCategory}
-                tags={tags}
-                setTags={setTags}
-                viewTag={viewTag}
-                setViewTag={setViewTag}
-                isInput={isInput}
-                setIsInput={setIsInput}
-              />
-            </StudyPostInfo>
-          </StudyPostInfoWrapper>
-          <StudyPostInputWrapper>
-            <StudyPostInput>
-              <TextEditor handleContentChange={setIntroduction} />
-            </StudyPostInput>
-          </StudyPostInputWrapper>
+          <StudyPostInfo>
+            <span>날짜</span>
+            <input
+              type="date"
+              value={studyData.startDate}
+              onChange={handleStartDate}
+              required
+            />
+            <p>~</p>
+            <input
+              type="date"
+              value={studyData.endDate}
+              onChange={handleEndDate}
+              required
+            />
+          </StudyPostInfo>
+          <StudyPostInfo>
+            <span>요일</span>
+            <div>
+              <DaysOfWeek setStudyData={setStudyData} />
+            </div>
+          </StudyPostInfo>
+          <StudyPostInfo>
+            <span>시간</span>
+            <input
+              type="time"
+              value={studyData.startTime}
+              onChange={handleStudyTimeStart}
+              required
+            />
+            <p>~</p>
+            <input
+              type="time"
+              value={studyData.endTime}
+              onChange={handleStudyTimeEnd}
+              required
+            />
+          </StudyPostInfo>
+          <StudyPostInfo>
+            <span>인원</span>
+            <input
+              type="number"
+              min="2"
+              value={studyData.memberMin}
+              onChange={handleMemberCountMin}
+              required
+            />
+            <p>~</p>
+            <input
+              type="number"
+              min={studyData.memberMin}
+              value={studyData.memberMax}
+              onChange={handleMemberCountMax}
+              required
+            />
+          </StudyPostInfo>
+          <StudyPostInfo>
+            <span>플랫폼</span>
+            <input
+              type="url"
+              value={studyData.platform}
+              onChange={handlePlatform}
+            />
+          </StudyPostInfo>
+
+          <StudyTagWrapper>
+            <span id="tagTitle">태그</span>
+            <span id="tagCategory">{selectedCategory}</span>
+            <NewTagInput setTags={setTags}/>
+          </StudyTagWrapper>
+
+          <StudyPostInput>
+            <TextEditor setIntroduction={setIntroduction} />
+          </StudyPostInput>
+          <StudyPostButtonWrapper>
+            <StudyPostButton onClick={handlePostButton}>
+              스터디 등록
+            </StudyPostButton>
+          </StudyPostButtonWrapper>
         </StudyPostMain>
-
-        <StudyPostButtonWrapper>
-          <StudyPostButton onClick={handlePostButton}>
-            스터디 등록
-          </StudyPostButton>
-        </StudyPostButtonWrapper>
       </StudyPostBody>
     </StudyPostContainer>
   );
@@ -220,29 +232,30 @@ const StudyPost = () => {
 const StudyPostContainer = styled.div`
   width: 100%;
   height: 100%;
-  background-color: #e9e9e9;
+  background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 const StudyPostBody = styled.div`
-  width: 1200px;
+  width: 960px;
   padding: 120px 0 100px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
 `;
 
 const StudyPostTop = styled.div`
-  width: 1050px;
+  width: 800px;
   padding-bottom: 5px;
   margin-bottom: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: left;
+  justify-content: center;
   align-items: flex-start;
   border-bottom: 1px solid #ccc;
 
@@ -269,34 +282,55 @@ const StudyPostMain = styled.div`
   width: 800px;
   margin: 15px 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
 `;
 
-const StudyPostInfoWrapper = styled.div``;
-
 const StudyPostInfo = styled.form`
-  width: 400px;
+  width: 800px;
   margin-bottom: 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
+  select {
+    width: 150px;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    outline: none;
+    appearance: none; /* 브라우저 기본 스타일 제거 */
+    -webkit-appearance: none; /* Safari 버전 지원 */
+
+    /* 드롭다운 화살표 스타일링 */
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6l-6-6l1.41-1.41z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
   span {
     width: 90px;
     text-align: left;
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #2759a2;
+    margin-right: 15px;
+    border-radius: 5px;
   }
   input {
-    width: 100px;
+    width: 240px;
     height: 40px;
     border: 1px solid #ccc;
-    border-radius: 0;
+    border-radius: 5px;
   }
   p {
     padding: 0 10px;
+    border-radius: 5px;
   }
   ul {
     margin: 0 20px;
@@ -306,20 +340,40 @@ const StudyPostInfo = styled.form`
     background-color: #e9e9e9;
     font-size: 0.8rem;
   }
-  select {
-  font-weight: 400;
-  line-height: 1.5;
-  color: #444;
-  background-color: #fff;
 
-  padding: 0.6em 1.4em 0.5em 0.8em;
-  margin: 0;
-  border: 1px solid #ccc;
-}
+  select:hover,
+  input:hover,
+  ul:hover {
+    transform: scale(1.05); /* Hover 시 요소를 확대 */
+  }
 
+  /* transition 속성 추가하여 부드러운 애니메이션 효과 */
+  transition: transform 0.5s ease;
 `;
 
-const StudyPostInputWrapper = styled.div`
+const StudyTagWrapper = styled.div`
+  font-size: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  #tagTitle {
+    width: 90px;
+    text-align: left;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2759a2;
+    margin-right: 15px;
+    border-radius: 5px;
+  }
+
+  #tagCategory {
+    color: #17594A;
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 15px;
+  }
 `;
 
 const StudyPostInput = styled.div`
@@ -334,9 +388,9 @@ const StudyPostButtonWrapper = styled.div`
 `;
 
 const StudyPostButton = styled.button`
-  width: 140px;
-  height: 45px;
-  font-size: 1rem;
+  width: 150px;
+  height: 48px;
+  font-size: 1.2rem;
   color: #ffffff;
   background-color: #4994da;
 

@@ -6,17 +6,18 @@ import { useState } from "react";
 type Props = {
   onFocus?: () => void;
   onBlur?: () => void;
-  handleContentChange: (content: string) => void;
+  setIntroduction: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function TextEditor({ onFocus, onBlur, handleContentChange }: Props) {
+function TextEditor({ onFocus, onBlur, setIntroduction }: Props) {
   const [text, setText] = useState("");
 
-  const handleOnChange = (_event: any, editor: ClassicEditor) => {
+  const handleOnChange = (_event : any, editor: ClassicEditor) => {
     const data = editor.getData();
     setText(data);
-    handleContentChange(data);
+    setIntroduction(data);
   };
+
 
   return (
     <EditorContainer>
@@ -36,7 +37,7 @@ function TextEditor({ onFocus, onBlur, handleContentChange }: Props) {
 export default TextEditor;
 
 const EditorContainer = styled.div`
-  width: 650px;
+  width: 800px;
   display: flex;
   justify-content: center;
   align-items: center;
