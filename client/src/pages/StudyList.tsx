@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import StudyListTag from "../components/StudyListTag";
 import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
 import Search from "../components/Search";
 import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
+import { useInView } from "react-intersection-observer";
 
 const StudyList = () => {
+  const [ref, inView] = useInView();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<StudyGroupListDto[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,34 +18,19 @@ const StudyList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchMoreList();
-  }, []);
+    if (inView) fetchList();
+  }, [inView]);
 
-  const fetchMoreList = async () => {
-    const data = await getStudyGroupList(currentPage);
-    setList([...list, ...data]);
+  const fetchList = async () => {
+    // setLoading(true);
+    const res = await getStudyGroupList(currentPage);
+    setList((prev) => [...prev, ...res]);
     setCurrentPage((prevPage) => prevPage + 1);
-    setLoading(false);
-    if (data.length === 0) {
-      return <p>마지막 페이지입니다.</p>;
-    }
+    // setLoading(false);
   };
-
-  const srollLogic = () => {
-    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      console.log("touch bottom");
-    }
-  };
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   setList(filterData);
-  //   setLoading(false);
-  // }, [filterData]);
 
   return (
-    <StudyListContainer onScroll={srollLogic}>
+    <StudyListContainer>
       <StudyListBody>
         <StudyListTop>
           <div>
@@ -56,8 +42,8 @@ const StudyList = () => {
         </StudyListTop>
 
         <ListFilterWrapper>
-          {/* <Search />
-          <ListFilter setFilterData={setFilterData} />
+          <Search />
+          {/* <ListFilter setFilterData={setFilterData} />
           <ListFilter /> */}
         </ListFilterWrapper>
 
@@ -82,6 +68,7 @@ const StudyList = () => {
           </StudyBoxContainer>
         )}
       </StudyListBody>
+      <div ref={ref}>request Infinite Scroll</div>
     </StudyListContainer>
   );
 };

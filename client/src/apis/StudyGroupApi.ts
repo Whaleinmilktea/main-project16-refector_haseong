@@ -19,13 +19,12 @@ export const getStudyGroupList = async (
   currentPage: number
 ): Promise<StudyGroupListDto[]> => {
   // const requestEndpoint = Base64.encode(`$studygroups?page${currentPage}&size=6}`)
-  // const response = await axios.get<StudyGroupListDto>(
+  // const response = await axios.get<StudyGroupListDto[]>(
   //   `${import.meta.env.VITE_APP_API_URL}/studygroups?page${currentPage}&size=6`
   // );
   const response = await axios.get(
     `http://localhost:3000/studygroups?_page=${currentPage}&_limit=6`
   );
-  console.log(response.data);
   return response.data;
 };
 
