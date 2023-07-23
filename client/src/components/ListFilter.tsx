@@ -1,41 +1,21 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { getStudyListOrder } from "../apis/StudyGroupApi";
-import { StudyGroup } from "../types/StudyGroupApiInterfaces";
-const ListFilter = ({
-  setFilterData,
-}: {
-  setFilterData: React.Dispatch<React.SetStateAction<StudyGroup[]>>;
-}) => {
-  const [selectedOption, setSelectedOption] = useState("기본값");
-  const [isAscending, _setIsAscending] = useState(false);
 
-  const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(e.target.value);
-  };
+interface ListFilterProps {
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
 
-  useEffect(() => {
-    getStudyListOrder(selectedOption, isAscending).then((data) => {
-      setFilterData(data);
-    });
-  }, ["", selectedOption]);
-
+const ListFilter = ({ onChange }: ListFilterProps) => {
   return (
     <ListFilterContainer>
-      <select
-        name="listFilter"
-        value={selectedOption}
-        onChange={handleOptionChange}
-      >
-        <option value="기본값">최신등록순</option>
-        <option value="수정순">업데이트순</option>
-        <option value="카테고리순">카테고리</option>
-        <option value="모집순">모집중/완료</option>
+      <select name="listFilter" onChange={onChange}>
+        <option value="createdAt">등록순</option>
+        <option value="updatedAt">업데이트순</option>
+        <option value="koAlpabetical">가나다순</option>
+        <option value="recruit">모집중</option>
       </select>
     </ListFilterContainer>
   );
 };
-
 
 const ListFilterContainer = styled.div`
   select {

@@ -11,10 +11,10 @@ import { useInView } from "react-intersection-observer";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
-  const [loading, setLoading] = useState(false);
   const [list, setList] = useState<StudyGroupListDto[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [filterData, setFilterData] = useState<StudyListDto[]>(initialState);
+  const [filterData, setFilterData] = useState<StudyGroupListDto[]>([]);
+  const [sortValue, setSortValue] = useState("createdAt");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,12 +22,54 @@ const StudyList = () => {
   }, [inView]);
 
   const fetchList = async () => {
-    // setLoading(true);
     const res = await getStudyGroupList(currentPage);
     setList((prev) => [...prev, ...res]);
     setCurrentPage((prevPage) => prevPage + 1);
-    // setLoading(false);
   };
+
+  useEffect(() => {
+    filterList(sortValue);
+  }, [list]);
+
+  useEffect(() => {
+    filterList(sortValue);
+  }, [sortValue]);
+
+  const filterList = (sortValue : string) => {
+    const value = sortValue;
+    if (value === "createdAt") {
+      const sortedList = list.sort((a, b) => {
+        return new Date(a.createAt).getTime() - new Date(b.createAt).getTime();
+      });
+
+      setFilterData(sortedList);
+    }
+    if (value === "updatedAt") {
+      const sortedList = list.sort((a, b) => {
+        return new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime();
+      });
+      scroll(0, 0);
+      setFilterData(sortedList);
+    }
+    if (value === "koAlpabetical") {
+      const sortedList = list.sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+      setFilterData(sortedList);
+    }
+    // * Api 제공 가능 시, 활성화 but 현재는 recruit 필드가 없음
+    // if (value === "recruit") {
+    //   const sortedList = list.filter((item) => {
+    //     return item.recruit;
+    //   });
+    //   setFilterData(sortedList);
+    // }
+  }
+
+  const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortValue(e.target.value);
+  };
+  console.log(sortValue)
 
   return (
     <StudyListContainer>
@@ -40,33 +82,29 @@ const StudyList = () => {
             <StudyPostButton>스터디 모집!</StudyPostButton>
           </Link>
         </StudyListTop>
-
         <ListFilterWrapper>
           <Search />
-          {/* <ListFilter setFilterData={setFilterData} />
-          <ListFilter /> */}
+          {/* <ListFilter onChange={handleSortOrder} /> */}
+          <ListFilter onChange={handleSortOrder} />
         </ListFilterWrapper>
-
-        {!loading && (
-          <StudyBoxContainer>
-            {list?.map((item: StudyGroupListDto) => (
-              <StudyBox
-                key={item?.id}
-                onClick={() => navigate(`/studycontent/${item?.id}`)}
-              >
-                <StudyListImage></StudyListImage>
-                <div>
-                  <div className="studylist-title">
-                    <h3>{item?.title}</h3>
-                  </div>
-                  <div className="studylist-tag">
-                    <StudyListTag item={item.tagValues} />
-                  </div>
+        <StudyBoxContainer>
+          {filterData?.map((item: StudyGroupListDto) => (
+            <StudyBox
+              key={item?.id}
+              onClick={() => navigate(`/studycontent/${item?.id}`)}
+            >
+              <StudyListImage></StudyListImage>
+              <div>
+                <div className="studylist-title">
+                  <h3>{item?.title}</h3>
                 </div>
-              </StudyBox>
-            ))}
-          </StudyBoxContainer>
-        )}
+                <div className="studylist-tag">
+                  <StudyListTag item={item.tagValues} />
+                </div>
+              </div>
+            </StudyBox>
+          ))}
+        </StudyBoxContainer>
       </StudyListBody>
       <div ref={ref}>request Infinite Scroll</div>
     </StudyListContainer>
