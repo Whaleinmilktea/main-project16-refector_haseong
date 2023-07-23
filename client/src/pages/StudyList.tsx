@@ -1,141 +1,112 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import StudyListTag from "../components/StudyListTag";
 import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
+import Search from "../components/Search";
+import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+import { getStudyGroupList } from "../apis/StudyGroupApi";
+import { useInView } from "react-intersection-observer";
 
 const StudyList = () => {
-  interface StudyListDto {
-    id: number;
-    title: string;
-    tagValues: string[];
-  }
-
-  const initialState = [
-    {
-      id: 0,
-      title: "",
-      tagValues: [""],
-    },
-  ];
-
-  const [loading, setLoading] = useState(false);
-  const [list, setList] = useState<StudyListDto[]>(initialState);
+  const [ref, inView] = useInView();
+  const [list, setList] = useState<StudyGroupListDto[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterData, setFilterData] = useState<StudyListDto[]>(initialState);
+  const [filterData, setFilterData] = useState<StudyGroupListDto[]>([]);
+  const [sortValue, setSortValue] = useState("createdAt");
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchMoreList();
-  }, []);
+    if (inView) fetchList();
+  }, [inView]);
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
-
-  const fetchMoreList = async () => {
-    const response = await axios.get(
-      `${
-        import.meta.env.VITE_APP_API_URL
-      }/studygroups?page=${currentPage}&size=6`
-    );
-    const data = response.data.data;
-    setList([...list, ...data]);
+  const fetchList = async () => {
+    const res = await getStudyGroupList(currentPage);
+    setList((prev) => [...prev, ...res]);
     setCurrentPage((prevPage) => prevPage + 1);
-    setLoading(false);
-    if (data.length === 0) {
-      return <p>마지막 페이지입니다.</p>;
-    }
   };
-
-  // setTimeout(() => {
-  //   if (loading) {
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   fetchMoreList();
-  // }, 500);
-
-  const srollLogic = () => {
-    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      console.log("scroll");
-      // fetchMoreList();
-    }
-  };
-
-
-
-  // try {
-  //     const response = await axios.get(
-  //       `${import.meta.env.VITE_APP_API_URL}/studygroups?page=${currentPage}&size=6`
-  //     );
-  //     const data = response.data.data;
-  //     if (data.length === 0) {
-  //       alert("마지막 페이지입니다.");
-  //       return;
-  //     }
-  //     setList([...data]);
-  //   } catch (error) {
-  //     throw new Error("스터디 리스트 로딩에 실패했습니다.");
-  //   } finally {
-  //     setFetching(false);
-  //   }
-  // };
-
-  // const handleScroll = () => {
-  //   const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-  //   if (scrollTop + clientHeight >= scrollHeight) {
-  //     setCurrentPage((prevPage) => prevPage + 1);
-  //   }
-  // };
 
   useEffect(() => {
-    setLoading(true);
-    setList(filterData);
-    setLoading(false);
-  }, [filterData]);
+    filterList(sortValue);
+  }, [list]);
+
+  useEffect(() => {
+    filterList(sortValue);
+  }, [sortValue]);
+
+  const filterList = (sortValue : string) => {
+    const value = sortValue;
+    if (value === "createdAt") {
+      const sortedList = list.sort((a, b) => {
+        return new Date(a.createAt).getTime() - new Date(b.createAt).getTime();
+      });
+
+      setFilterData(sortedList);
+    }
+    if (value === "updatedAt") {
+      const sortedList = list.sort((a, b) => {
+        return new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime();
+      });
+      scroll(0, 0);
+      setFilterData(sortedList);
+    }
+    if (value === "koAlpabetical") {
+      const sortedList = list.sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+      setFilterData(sortedList);
+    }
+    // * Api 제공 가능 시, 활성화 but 현재는 recruit 필드가 없음
+    // if (value === "recruit") {
+    //   const sortedList = list.filter((item) => {
+    //     return item.recruit;
+    //   });
+    //   setFilterData(sortedList);
+    // }
+  }
+
+  const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortValue(e.target.value);
+  };
+  console.log(sortValue)
 
   return (
-    <StudyListContainer onScroll={srollLogic}>
+    <StudyListContainer>
       <StudyListBody>
         <StudyListTop>
           <div>
-            <h2>여러분의 스터디를 만들어보세요!</h2>
+            <h3>Searching Study!</h3>
           </div>
           <Link to="/studypost">
             <StudyPostButton>스터디 모집!</StudyPostButton>
           </Link>
         </StudyListTop>
-
         <ListFilterWrapper>
-          <ListFilter setFilterData={setFilterData} />
+          <Search />
+          {/* <ListFilter onChange={handleSortOrder} /> */}
+          <ListFilter onChange={handleSortOrder} />
         </ListFilterWrapper>
-
-        {!loading && (
-          <StudyBoxContainer>
-            {list?.map((item: StudyListDto) => (
-              <StudyBox
-                key={item?.id}
-                onClick={() => navigate(`/studycontent/${item?.id}`)}
-              >
-                <StudyListImage></StudyListImage>
-                <div>
-                  <div className="studylist-title">
-                    <h3>{item?.title}</h3>
-                  </div>
-                  <div className="studylist-tag">
-                    <StudyListTag item={item.tagValues} />
-                  </div>
+        <StudyBoxContainer>
+          {filterData?.map((item: StudyGroupListDto) => (
+            <StudyBox
+              key={item?.id}
+              onClick={() => navigate(`/studycontent/${item?.id}`)}
+            >
+              <StudyListImage></StudyListImage>
+              <div>
+                <div className="studylist-title">
+                  <h3>{item?.title}</h3>
                 </div>
-              </StudyBox>
-            ))}
-          </StudyBoxContainer>
-        )}
+                <div className="studylist-tag">
+                  <StudyListTag item={item.tagValues} />
+                </div>
+              </div>
+            </StudyBox>
+          ))}
+        </StudyBoxContainer>
       </StudyListBody>
+      <div ref={ref}>request Infinite Scroll</div>
     </StudyListContainer>
   );
 };
@@ -143,6 +114,7 @@ const StudyList = () => {
 const StudyListContainer = styled.div`
   width: 100%;
   height: 100%;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -158,6 +130,7 @@ const StudyListBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
 `;
 
 const StudyListTop = styled.div`
@@ -168,9 +141,10 @@ const StudyListTop = styled.div`
   align-items: center;
   div {
     text-align: start;
-    margin-left: 10px;
+    margin-left: 20px;
   }
-  h2 {
+  h3 {
+    font-family: "Noto Sans KR", sans-serif;
     text-align: left;
     font-size: 2rem;
     color: #1f1f1f;
@@ -179,21 +153,13 @@ const StudyListTop = styled.div`
   }
 `;
 
-const ListFilterWrapper = styled.div`
-  width: 900px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
 const StudyPostButton = styled.button`
   width: 160px;
   height: 48px;
   font-size: 1.2rem;
   color: #ffffff;
   background-color: #4994da;
-  margin-right: 20px;
+  margin-right: 30px;
 
   &:hover {
     opacity: 85%;
@@ -201,6 +167,14 @@ const StudyPostButton = styled.button`
   &:active {
     opacity: 100%;
   }
+`;
+
+const ListFilterWrapper = styled.div`
+  width: 900px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const StudyBoxContainer = styled.div`
@@ -226,12 +200,16 @@ const StudyBox = styled.div`
   border-radius: 8px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin: 10px;
-  padding: 5px;
+  padding: 15px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.05); /* 마우스가 올라갔을 때 크기를 105%로 확대 */
+  }
 
   .studylist-title {
     width: 260px;
@@ -250,13 +228,14 @@ const StudyBox = styled.div`
   .studylist-tag {
     width: 260px;
     height: 30px;
-    padding-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 20px;
+    margin-bottom: 5px;
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
   }
+
   .studylist-tag > div {
     height: 24px;
     color: #39739d;

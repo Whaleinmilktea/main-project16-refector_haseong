@@ -185,3 +185,22 @@ export const handlers = [
     }
   }),
 ];
+
+const studyListData = [
+  {
+    id : 1,
+    title : "스터디1",
+    tagValues : ["tag1", "tag2"],
+
+  }
+]
+
+rest.get(`${import.meta.env.VITE_APP_API_URL}/studylist?page=1&size=6`, async (req, res, ctx) => {
+  if(!isLoggedIn) return res(ctx.status(403), ctx.json({ message: "권한이 없습니다" })
+  );
+  try {
+    return res(ctx.json(studyListData));
+  } catch (error) {
+    return res(ctx.status(403), ctx.json({ message: "권한이 없습니다" }));
+  }
+})
