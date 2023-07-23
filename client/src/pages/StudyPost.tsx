@@ -6,12 +6,14 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import NewTagInput from "../components/NewTagInput";
-import tokenRequestApi from "../apis/TokenRequestApi";
 import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
+import { createStudyGroup } from "../apis/StudyGroupApi";
+// import { v4 as uuidv4 } from "uuid"; // 테스트용 임시 id 생성
 
 const StudyPost = () => {
   const isLoggedIn = useRecoilValue(LogInState);
   const [studyData, setStudyData] = useState<StudyGroupCreateDto>({
+    // id : "", // 테스트용 임시 id 생성
     studyName: "",
     startDate: "",
     endDate: "",
@@ -22,13 +24,13 @@ const StudyPost = () => {
     memberMax: 2,
     platform: "",
     introduction: "",
+    tags: [],
   });
   // 카테고리 상태 => 여러 상태가 맞물려서 작동하기 때문에 별도의 상태로 관리 필요
   const [selectedCategory, setSelectedCategory] =
     useState<string>("프론트엔드");
   // 스터디 소개 => TextEditor 컴포넌트에서 관리
   const [introduction, setIntroduction] = useState<string>("");
-  console.log(introduction);
   // 태그 => TagInput 컴포넌트에서 관리
   const [tags, setTags] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -70,21 +72,6 @@ const StudyPost = () => {
   };
 
   const handlePostButton = async () => {
-    const StudyPostDto = {
-      studyName: studyData.studyName,
-      startDate: studyData.startDate,
-      endDate: studyData.endDate,
-      dayOfWeek: studyData.dayOfWeek,
-      startTime: studyData.startTime,
-      endTime: studyData.endTime,
-      memberMin: studyData.memberMin,
-      memberMax: studyData.memberMax,
-      platform: studyData.platform,
-      introduction: introduction,
-      tags: {
-        [selectedCategory]: tags,
-      },
-    };
     if (!isLoggedIn) {
       alert("로그인한 사람만 스터디 등록이 가능합니다!");
       return;
@@ -105,9 +92,22 @@ const StudyPost = () => {
       alert("요일을 선택해주세요!");
       return;
     }
+    const StudyPostData = {
+      // id : uuidv4(), // 테스트용 임시 id 생성
+      studyName: studyData.studyName,
+      startDate: studyData.startDate,
+      endDate: studyData.endDate,
+      dayOfWeek: studyData.dayOfWeek,
+      startTime: studyData.startTime,
+      endTime: studyData.endTime,
+      memberMin: studyData.memberMin,
+      memberMax: studyData.memberMax,
+      platform: studyData.platform,
+      introduction: introduction,
+      tags: tags,
+    };
     try {
-      await tokenRequestApi.post("/study", StudyPostDto);
-      alert("스터디 등록이 완료되었습니다!");
+      await createStudyGroup(StudyPostData, isLoggedIn);
       navigate("/studylist");
     } catch (error) {
       alert("스터디 등록이 실패했습니다!");

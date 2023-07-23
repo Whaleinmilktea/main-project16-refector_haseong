@@ -4,6 +4,7 @@ import { baseApi } from "./EduApi";
 import { Base64 } from "js-base64";
 import {
   MyStudyGroupListDto,
+  StudyGroupCreateDto,
   StudyGroupListDto,
   StudyGroupMemberApprovalDto,
   StudyGroupMemberListDto,
@@ -15,16 +16,27 @@ import {
   WaitingStudyGroupListDto,
 } from "../types/StudyGroupApiInterfaces";
 
+export const createStudyGroup = async (
+  data: StudyGroupCreateDto,
+  isLoggedIn: boolean
+) => {
+  if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
+  // await tokenRequestApi.post(`${import.meta.env.VITE_APP_API_URL}/study`, data);
+  await axios.post(`http://localhost:3000/study`, data);
+  alert("스터디가 생성되었습니다");
+};
+
 export const getStudyGroupList = async (
   currentPage: number
 ): Promise<StudyGroupListDto[]> => {
   // const requestEndpoint = Base64.encode(`$studygroups?page${currentPage}&size=6}`)
   // const response = await axios.get<StudyGroupListDto[]>(
-  //   `${import.meta.env.VITE_APP_API_URL}/studygroups?page${currentPage}&size=6`
+  //   `${import.meta.env.VITE_APP_API_URL}/list?p=${currentPage}&s=6`
   // );
   const response = await axios.get(
-    `http://localhost:3000/studygroups?_page=${currentPage}&_limit=6`
+    `http://localhost:3000/list?_page=${currentPage}&_limit=6`
   );
+  console.log(response.data);
   return response.data;
 };
 
@@ -60,10 +72,6 @@ export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
     `/studygroup/${encodeId}`
   );
   const studyInfo = response.data;
-  studyInfo.studyTimeStart = studyInfo.studyTimeStart
-    .split("T")[1]
-    .substring(0, 5);
-  studyInfo.studyTimeEnd = studyInfo.studyTimeEnd.split("T")[1].substring(0, 5);
   return studyInfo;
 }
 

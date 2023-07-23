@@ -2,19 +2,19 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import StudyListTag from "../components/StudyListTag";
-import studyImage from "../assets/studyImage.webp";
 import ListFilter from "../components/ListFilter";
 import Search from "../components/Search";
 import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
+import { FaRegThumbsUp } from "react-icons/fa";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
   const [list, setList] = useState<StudyGroupListDto[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterData, setFilterData] = useState<StudyGroupListDto[]>([]);
-  const [sortValue, setSortValue] = useState("createdAt");
+  const [sortValue, setSortValue] = useState("default");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,25 +31,14 @@ const StudyList = () => {
     filterList(sortValue);
   }, [list]);
 
-  useEffect(() => {
-    filterList(sortValue);
-  }, [sortValue]);
+  const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortValue(e.target.value);
+  };
 
-  const filterList = (sortValue : string) => {
+  const filterList = (sortValue: string) => {
     const value = sortValue;
-    if (value === "createdAt") {
-      const sortedList = list.sort((a, b) => {
-        return new Date(a.createAt).getTime() - new Date(b.createAt).getTime();
-      });
-
-      setFilterData(sortedList);
-    }
-    if (value === "updatedAt") {
-      const sortedList = list.sort((a, b) => {
-        return new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime();
-      });
-      scroll(0, 0);
-      setFilterData(sortedList);
+    if (value === "default") {
+      setFilterData(list);
     }
     if (value === "koAlpabetical") {
       const sortedList = list.sort((a, b) => {
@@ -57,19 +46,19 @@ const StudyList = () => {
       });
       setFilterData(sortedList);
     }
-    // * Api 제공 가능 시, 활성화 but 현재는 recruit 필드가 없음
-    // if (value === "recruit") {
-    //   const sortedList = list.filter((item) => {
-    //     return item.recruit;
-    //   });
-    //   setFilterData(sortedList);
-    // }
-  }
-
-  const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortValue(e.target.value);
+    if (value === "views") {
+      const sortedList = list.sort((a, b) => {
+        return b.views - a.views;
+      });
+      setFilterData(sortedList);
+    }
+    if (value === "likes") {
+      const sortedList = list.sort((a, b) => {
+        return b.likes - a.likes;
+      });
+      setFilterData(sortedList);
+    }
   };
-  console.log(sortValue)
 
   return (
     <StudyListContainer>
@@ -84,7 +73,6 @@ const StudyList = () => {
         </StudyListTop>
         <ListFilterWrapper>
           <Search />
-          {/* <ListFilter onChange={handleSortOrder} /> */}
           <ListFilter onChange={handleSortOrder} />
         </ListFilterWrapper>
         <StudyBoxContainer>
@@ -93,20 +81,26 @@ const StudyList = () => {
               key={item?.id}
               onClick={() => navigate(`/studycontent/${item?.id}`)}
             >
-              <StudyListImage></StudyListImage>
+              <StudyListImage image={item.image}></StudyListImage>
               <div>
                 <div className="studylist-title">
                   <h3>{item?.title}</h3>
                 </div>
+                <div className="studylist-interest">
+                  <div id="studylist-interest_likes">
+                    ❤️ {item?.likes}
+                  </div>
+                  <div id="studylist-interest_views">🧐 {item?.views}</div>
+                </div>
                 <div className="studylist-tag">
-                  <StudyListTag item={item.tagValues} />
+                  <StudyListTag item={item.tags} />
                 </div>
               </div>
             </StudyBox>
           ))}
         </StudyBoxContainer>
       </StudyListBody>
-      <div ref={ref}>request Infinite Scroll</div>
+      <div ref={ref}></div>
     </StudyListContainer>
   );
 };
@@ -185,10 +179,10 @@ const StudyBoxContainer = styled.div`
   align-items: center;
 `;
 
-const StudyListImage = styled.div`
+const StudyListImage = styled.div<{ image: string }>`
   width: 260px;
   height: 180px;
-  background-image: url(${studyImage});
+  background-image: url(${(props) => props.image});
   background-size: cover;
   background-color: aliceblue;
 `;
@@ -224,6 +218,20 @@ const StudyBox = styled.div`
     height: 32px;
     text-align: left;
     font-weight: 700;
+  }
+  .studylist-interest {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 600;
+    #studylist-interest_likes {
+      word-spacing: 2px;
+      margin-right: 10px;
+    }
+    #studylist-interest_views {
+      word-spacing: 2px;
+      margin-right: 10px;
+    }
   }
   .studylist-tag {
     width: 260px;

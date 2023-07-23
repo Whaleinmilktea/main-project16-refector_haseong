@@ -8,10 +8,10 @@ const ListFilter = ({ onChange }: ListFilterProps) => {
   return (
     <ListFilterContainer>
       <select name="listFilter" onChange={onChange}>
-        <option value="createdAt">등록순</option>
-        <option value="updatedAt">업데이트순</option>
+        <option value="default">등록순</option>
         <option value="koAlpabetical">가나다순</option>
-        <option value="recruit">모집중</option>
+        <option value="views">조회수 높은 순</option>
+        <option value="likes">좋아요 높은 순</option>
       </select>
     </ListFilterContainer>
   );

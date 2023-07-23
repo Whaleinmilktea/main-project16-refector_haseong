@@ -1,15 +1,31 @@
-export interface StudyGroup {
-  id: number;
-  title: string;
-  tagValues: string[];
-}
+export interface StudyGroupCreateDto {
+  // id : string, // 테스트용 임시로 추가
+  studyName: string,
+  startDate: string,
+  endDate: string,
+  dayOfWeek: number[],
+  startTime: string,
+  endTime: string,
+  memberMin: number,
+  memberMax: number,
+  platform: string,
+  introduction: string,
+  tags: string[],
+};
 
 export interface StudyGroupListDto {
   id: number;
   title: string;
+  image: string;
+  tags: string[];
+  views: number;
+  likes: number;
+}
+
+export interface StudyGroup {
+  id: number;
+  title: string;
   tagValues: string[];
-  createAt: string;
-  updateAt: string;
 }
 
 export interface MyStudyGroupListDto {
@@ -26,41 +42,31 @@ export interface WaitingStudyGroupListDto {
   beStudys: WaitingStudyGroupItemDto[];
 }
 
-export interface StudyTags {
-  [key: string]: string[];
-}
 
-export interface StudyGroupCreateDto {
-  studyName: string;
-  startDate: string;
-  endDate: string;
-  dayOfWeek: number[];
-  startTime: string,
-  endTime: string,
-  memberMin: number,
-  memberMax: number,
-  platform: string,
-  introduction: string,
-}
 
 export interface StudyInfoDto {
   id: number;
   studyName: string;
-  studyPeriodStart: string;
-  studyPeriodEnd: string;
-  daysOfWeek: string[];
-  studyTimeStart: string;
-  studyTimeEnd: string;
-  memberCountMin: number;
-  memberCountMax: number;
-  memberCountCurrent: number;
+  image: string;
+  memberMin: number;
+  memberMax: number;
+  memberCnt: number;
   platform: string;
   introduction: string;
   isRecruited: boolean;
-  tags: StudyTags;
+  startDate: string;
+  endDate: string;
+  dayOfWeek: number[];
+  startTime: string;
+  endTime: string;
+  tags: string[];
   leaderNickName: string;
-  leader: boolean;
+  isLeader: boolean;
+  views: number;
+  likes: number;
+  isLikes: boolean;
 }
+
 
 export interface StudyGroupUpdateDto {
   id?: number;
@@ -74,7 +80,7 @@ export interface StudyGroupUpdateDto {
   memberCountMax: number;
   platform: string;
   introduction: string;
-  tags: StudyTags;
+  tags: [];
 }
 
 export interface StudyGroupUpdateDto {
