@@ -3,43 +3,41 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
-  CommentDto,
   deleteComment,
   getComments,
   patchComment,
 } from "../apis/CommentApi";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { useNavigate } from "react-router-dom";
+import { GetCommentDto } from "../types/CommentInterfaces";
 
 const StudyCommentList = ({
   isLeader,
   studyGroupId,
-  comments,
-  setComments,
+  commentsList,
+  setCommentsList,
 }: {
   isLeader: boolean;
   studyGroupId: number;
-  comments: CommentDto[];
-  setComments: React.Dispatch<React.SetStateAction<CommentDto[]>>;
+  commentsList: GetCommentDto[];
+  setCommentsList: React.Dispatch<React.SetStateAction<GetCommentDto[]>>;
 }) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
 
-  const [comment, setComment] = useState("");
+  const [inputComment, setInputComment] = useState("");
   const [patchId, setPatchId] = useState<number | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [isEnterPressed, setIsEnterPressed] = useState(false);
 
   const handleComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(e.target.value);
+    setInputComment(e.target.value);
   };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !isEnterPressed) {
       setIsEnterPressed(true);
-
       handleUpdateButton();
-
       setTimeout(() => {
         setIsEnterPressed(false);
       }, 1000); // enter로 입력시 발생하는 이중 입력 방지
@@ -50,20 +48,20 @@ const StudyCommentList = ({
     if (!isLoggedIn) navigate("/login");
     setIsUpdateMode(!isUpdateMode);
     setPatchId(id);
-    setComment(content);
+    setInputComment(content);
   };
 
   const handleUpdateButton = async () => {
     if (!isLoggedIn) navigate("/login");
-    if (validateEmptyInput(comment)) {
+    if (validateEmptyInput(inputComment)) {
       alert("댓글 내용을 입력해주세요.");
     } else {
       try {
         if (patchId) {
-          await patchComment(studyGroupId, patchId, comment);
+          await patchComment(studyGroupId, patchId, inputComment);
           setIsUpdateMode(false);
           setPatchId(null);
-          setComment("");
+          setInputComment("");
         }
       } catch (error) {
         alert("댓글 등록 실패했습니다.");
@@ -84,7 +82,7 @@ const StudyCommentList = ({
   const fetchCommentsData = async () => {
     try {
       const newComment = await getComments(studyGroupId);
-      setComments(newComment);
+      setCommentsList(newComment);
     } catch (error) {}
   };
   useEffect(() => {
@@ -93,32 +91,32 @@ const StudyCommentList = ({
   return (
     <>
       <ul>
-        {comments.map((comment) => {
+        {commentsList.map((commentsList) => {
           return (
-            <CommentItemDiv key={comment.commentId}>
+            <CommentItemDiv key={commentsList.id}>
               <ContentItem>
-                <p>{comment.nickName}</p>
+                <p>{commentsList.nickName}</p>
                 <>
-                  {isUpdateMode && patchId === comment.commentId ? (
+                  {isUpdateMode && patchId === commentsList.id ? (
                     <>
                       <input
                         onKeyDown={handleEnter}
-                        defaultValue={comment.content}
+                        defaultValue={commentsList.content}
                         onChange={handleComment}
                       ></input>
                       <button onClick={handleUpdateButton}>완료</button>
                     </>
                   ) : (
-                    <span>{comment.content}</span>
+                    <span>{commentsList.content}</span>
                   )}
                 </>
               </ContentItem>
               <ButtonDiv>
-                {comment.isMyComment && (
+                {commentsList.isMyComment && (
                   <>
                     <button
                       onClick={() =>
-                        handleUpdate(comment.commentId, comment.content)
+                        handleUpdate(commentsList.id, commentsList.content)
                       }
                     >
                       수정
@@ -126,8 +124,8 @@ const StudyCommentList = ({
                   </>
                 )}
 
-                {(isLeader || comment.isMyComment) && (
-                  <button onClick={() => handleDelete(comment.commentId)}>
+                {(isLeader || commentsList.isMyComment) && (
+                  <button onClick={() => handleDelete(commentsList.id)}>
                     삭제
                   </button>
                 )}
