@@ -1,7 +1,8 @@
 import axios from "axios";
 import tokenRequestApi from "./TokenRequestApi";
 import { baseApi } from "./EduApi";
-import { Base64 } from "js-base64";
+// import { Base64 } from "js-base64";
+import { v4 as uuidv4 } from "uuid";
 import {
   MyStudyGroupListDto,
   StudyGroupCreateDto,
@@ -36,7 +37,6 @@ export const getStudyGroupList = async (
   const response = await axios.get(
     `http://localhost:3000/list?_page=${currentPage}&_limit=6`
   );
-  console.log(response.data);
   return response.data;
 };
 
@@ -56,6 +56,19 @@ export const getWaitingStudyGroupList =
     return data;
   };
 
+export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
+  if (!isLoggedIn) throw new Error("로그인 상태를 확인하세요");
+  // const encodeId = Base64.encode(id.toString());
+  // const response = await tokenRequestApi.get<StudyInfoDto>(
+  //   `/study/${encodeId}`
+  // );
+  const response = await axios.get<StudyInfoDto>(
+    `http://localhost:3000/study/${id}`
+  );
+  const studyInfo = response.data;
+  return studyInfo;
+}
+
 export async function cancelStudyGroupApplication(
   id: number,
   isLoggedIn: boolean
@@ -63,16 +76,6 @@ export async function cancelStudyGroupApplication(
   if (!isLoggedIn) throw new Error("로그인 상태를 확인하세요");
   await tokenRequestApi.delete(`/studygroup/${id}/join`);
   alert("해당 그룹에 가입신청을 철회합니다");
-}
-
-export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
-  if (!isLoggedIn) throw new Error("로그인 상태를 확인하세요");
-  const encodeId = Base64.encode(id.toString());
-  const response = await tokenRequestApi.get<StudyInfoDto>(
-    `/studygroup/${encodeId}`
-  );
-  const studyInfo = response.data;
-  return studyInfo;
 }
 
 export async function updateStudyGroupInfo(

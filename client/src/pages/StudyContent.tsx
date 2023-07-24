@@ -3,42 +3,43 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import {
-  getStudyGroupInfo,
-
-} from "../apis/StudyGroupApi";
+import { getStudyGroupInfo } from "../apis/StudyGroupApi";
 import { CommentDto } from "../apis/CommentApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
-import StudyListTag from "../components/StudyListTag";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
+import { v4 as uuidv4 } from "uuid";
 
 const StudyContent = () => {
-  const initialTag = { [""]: [""] };
   const initialState = {
-    id: 1,
+    id: uuidv4(),
     studyName: "",
-    studyPeriodStart: "",
-    studyPeriodEnd: "",
-    daysOfWeek: [""],
-    studyTimeStart: "",
-    studyTimeEnd: "",
-    memberCountMin: 1,
-    memberCountMax: 1,
-    memberCountCurrent: 1,
+    image: "",
+    memberMin: 2,
+    memberMax: 2,
+    memberCnt: 2,
     platform: "",
     introduction: "",
-    isRecruited: false,
-    tags: initialTag,
+    isRecruited: true,
+    startDate: "",
+    endDate: "",
+    dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
+    startTime: "",
+    endTime: "",
+    tags: [],
     leaderNickName: "",
-    leader: false,
+    isLeader: true,
+    views: 0,
+    likes: 0,
+    isLikes: false,
   };
 
   const [fetching, setFetching] = useState(true);
   const [comments, setComments] = useState<CommentDto[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
+  const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
   const { id } = useParams(); // App.tsx의 Route url에 :id로 명시하면 그걸 가져옴
   const parsedId = Number(id);
@@ -56,6 +57,7 @@ const StudyContent = () => {
       }
       try {
         const content = await getStudyGroupInfo(parsedId, isLoggedIn);
+        dayOfWeekMapFunc(content.dayOfWeek);
         setContent(content);
         setFetching(false);
       } catch (error) {
@@ -70,6 +72,28 @@ const StudyContent = () => {
     };
     fetchData();
   }, [parsedId]);
+
+  const dayOfWeekMapFunc = (dayOfWeek: number[]) => {
+    interface DayOfWeekMap {
+      [key: number]: string;
+    }
+    const dayOfWeekMap: DayOfWeekMap = {
+      0: "월",
+      1: "화",
+      2: "수",
+      3: "목",
+      4: "금",
+      5: "토",
+      6: "일",
+    };
+    const dayOfWeekArr = [];
+    for (let i = 0; i < dayOfWeek.length; i++) {
+      if (dayOfWeek[i] === 1) {
+        dayOfWeekArr.push(dayOfWeekMap[i]);
+      }
+    }
+    setDayOfWeekMap(dayOfWeekArr);
+  };
 
   const handleJoinButton = async () => {
     try {
@@ -102,45 +126,49 @@ const StudyContent = () => {
                 )}
                 <StudyContentTitle>
                   <h2>{content?.studyName}</h2>
-                  <StudyContentEdit>
-                  </StudyContentEdit>
+                  <div className="studylist-interest">
+                    <div id="studylist-interest_likes">❤️ {content?.likes}</div>
+                    <div id="studylist-interest_views">🧐 {content?.views}</div>
+                  </div>
                 </StudyContentTitle>
               </StudyContentTop>
               <StudyContentMain>
                 <StudyContentInfo>
                   <div>날짜</div>
-                  <span>{`${content?.studyPeriodStart} ~ ${content?.studyPeriodEnd}`}</span>
+                  <span>{`${content?.startDate} ~ ${content?.endDate}`}</span>
                 </StudyContentInfo>
                 <StudyContentInfo>
-                  <div>요일, 시간</div>
-                  <span>{`${content?.daysOfWeek} ${content?.studyTimeStart} ~ ${content?.studyTimeEnd}`}</span>
+                  <div>요일/시간</div>
+                  <span>{`${dayOfWeekMap} ${content?.startTime} ~ ${content?.endTime}`}</span>
                 </StudyContentInfo>
                 <StudyContentInfo>
                   <div>인원</div>
-                  <span>{`${content?.memberCountMin} ~ ${content?.memberCountMax}`}</span>
+                  <span>{`${content?.memberMin} ~ ${content?.memberMax}`}</span>
                 </StudyContentInfo>
                 <StudyContentInfo>
                   <div>플랫폼</div>
                   <span>{content?.platform}</span>
                 </StudyContentInfo>
+                <StudyContentTag>
+                  {content?.tags && (
+                    <>
+                      {content?.tags.map((tag) => (
+                        <div>{tag}</div>
+                      ))}
+                    </>
+                  )}
+                </StudyContentTag>
                 <StudyContentText
                   dangerouslySetInnerHTML={markUp(convertIntroduction)}
                 ></StudyContentText>
+
                 <StudyContentProfileWrapper>
                   <StudyContentProfile>
                     <div className="profile-name">{`${content?.leaderNickName}`}</div>
                     <div>일반회원</div>
                   </StudyContentProfile>
                 </StudyContentProfileWrapper>
-                <StudyContentTag>
-                  {content?.tags && (
-                    <>
-                      {Object.entries(content.tags).map(([category, tags]) => (
-                        <StudyListTag key={category} item={tags} />
-                      ))}
-                    </>
-                  )}
-                </StudyContentTag>
+
                 <StudyJoinButtonWrapper>
                   <StudyJoinButton type="button" onClick={handleJoinButton}>
                     스터디 신청!
@@ -153,7 +181,7 @@ const StudyContent = () => {
               />
               {content && (
                 <StudyCommentList
-                  isLeader={content.leader}
+                  isLeader={content.isLeader}
                   studyGroupId={Number(id)}
                   comments={comments}
                   setComments={setComments}
@@ -177,6 +205,7 @@ const StudyContentContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #fff;
 `;
 
 const StudyContentBody = styled.div`
@@ -187,6 +216,7 @@ const StudyContentBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
 `;
 
 const StudyContentTop = styled.div`
@@ -221,20 +251,30 @@ const StudyContentTitle = styled.div`
     color: #1f1f1f;
     text-align: left;
   }
-`;
+  .studylist-interest {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 600;
 
-const StudyContentEdit = styled.div`
-  width: 100px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-
-  button {
-    width: 50px;
-    font-size: 0.875rem;
-    color: #858da8;
-    cursor: pointer;
-    padding: 0;
+    #studylist-interest_likes {
+      font-size: 18px;
+      word-spacing: 2px;
+      margin-right: 10px;
+      :hover {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+    }
+    #studylist-interest_views {
+      font-size: 18px;
+      word-spacing: 2px;
+      margin-right: 10px;
+      :hover {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+    }
   }
 `;
 
@@ -276,10 +316,32 @@ const StudyContentInfo = styled.div`
   }
 `;
 
+const StudyContentTag = styled.div`
+  width: 260px;
+  padding-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  div {
+    height: 24px;
+    color: #39739d;
+    font-size: 0.8125rem;
+    border-radius: 4px;
+    background-color: #e1ecf4;
+    padding: 4.8px 6px;
+    margin-right: 7px;
+    cursor: pointer;
+  }
+`;
+
 const StudyContentText = styled.p`
   width: 800px;
   margin: 15px 0;
   padding: 20px 0;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-top: 1px solid #ccc;
   text-align: left;
   font-size: 1rem;
   font-weight: 300;
@@ -317,28 +379,9 @@ const StudyContentProfile = styled.div`
   }
 `;
 
-const StudyContentTag = styled.div`
-  width: 260px;
-  padding-top: 10px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-
-  div {
-    height: 24px;
-    color: #39739d;
-    font-size: 0.8125rem;
-    border-radius: 4px;
-    background-color: #e1ecf4;
-    padding: 4.8px 6px;
-    margin-right: 7px;
-    cursor: pointer;
-  }
-`;
-
 const StudyJoinButtonWrapper = styled.div`
   width: 800px;
-  margin: 15px 0;
+  margin-bottom: 20px;
   display: flex;
   justify-content: flex-end;
 `;

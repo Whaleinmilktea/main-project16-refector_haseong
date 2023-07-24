@@ -77,23 +77,31 @@ const StudyComment = ({
 };
 
 const StudyCommentContainer = styled.div`
-  width: 800px;
-  height: 200px;
+  width: 810px;
+  height: 170px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  margin: 10px 20px;
-  padding: 20px 0 10px;
   display: flex;
   flex-flow: column wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  background-color: #F3F9FB;
 `;
 
 const CommentInput = styled.div`
   input {
     width: 720px;
-    height: 90px;
+    height: 45px;
+    color: #1f1f1f;
+    font-size: 16px;
+    margin-top: 30px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+    :focus {
+      outline: none;
+    }
   }
 `;
 
@@ -107,12 +115,15 @@ const CommentButtonWrapper = styled.div`
 const CommentButton = styled.button`
   width: 130px;
   height: 42px;
-  font-size: 1.125rem;
-  color: #ffffff;
-  background-color: #4994da;
+  color: #1f1f1f;
+  /* border-color: #4994da; */
+  background-color: #F3F9FB;
 
   &:hover {
-    opacity: 85%;
+    color: #fff;
+    background-color: #87C0CD;
+    transition: 0.3;
+    animation: ease-in;
   }
   &:active {
     opacity: 100%;

@@ -7,7 +7,6 @@ import Search from "../components/Search";
 import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
-import { FaRegThumbsUp } from "react-icons/fa";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
@@ -202,7 +201,7 @@ const StudyBox = styled.div`
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
   &:hover {
-    transform: scale(1.05); /* 마우스가 올라갔을 때 크기를 105%로 확대 */
+    transform: scale(1.05);
   }
 
   .studylist-title {
