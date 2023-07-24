@@ -2,24 +2,21 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { useState } from "react";
-import { CommentDto } from "../apis/CommentApi";
-import { getComments } from "../apis/CommentApi";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
-import { postComment } from "../apis/CommentApi";
+import { postComment, getComments } from "../apis/CommentApi";
+import { GetCommentDto } from "../types/CommentInterfaces";
 import { useNavigate } from "react-router-dom";
 
 const StudyComment = ({
   studyGroupId,
-  setComments,
+  setCommentsList,
 }: {
   studyGroupId: number;
-  setComments: React.Dispatch<React.SetStateAction<CommentDto[]>>;
+  setCommentsList: React.Dispatch<React.SetStateAction<GetCommentDto[]>>;
 }) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
-
-  const [comment, setComment] = useState("");
-
+  const [inputComment, setInputComment] = useState("");
   const [isEnterPressed, setIsEnterPressed] = useState(false);
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -28,26 +25,27 @@ const StudyComment = ({
       handleCommentButton();
       setTimeout(() => {
         setIsEnterPressed(false);
-      }, 1000); // enter로 입력시 발생하는 이중 입력 방지
+      }, 1000);
     }
   };
 
   const handleComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(e.target.value);
+    setInputComment(e.target.value);
   };
 
   const handleCommentButton = async () => {
     if (!isLoggedIn) navigate("/login");
-    else if (validateEmptyInput(comment)) {
+    else if (validateEmptyInput(postComment)) {
       alert("댓글 내용을 입력해주세요");
     } else {
       try {
-        await postComment(studyGroupId, comment);
-        setComment("");
+        await postComment(studyGroupId, inputComment);
+        setInputComment("");
+        // 헷갈려서 구분한 코드 : 댓글 등록 후 댓글 목록을 다시 불러옴
         const fetchData = async () => {
           try {
             const newComment = await getComments(studyGroupId);
-            setComments(newComment);
+            setCommentsList(newComment);
           } catch (error) {}
         };
         fetchData();
@@ -61,7 +59,7 @@ const StudyComment = ({
     <StudyCommentContainer>
       <CommentInput>
         <input
-          value={comment}
+          value={inputComment}
           onChange={handleComment}
           onKeyDown={handleEnter}
           type="text"

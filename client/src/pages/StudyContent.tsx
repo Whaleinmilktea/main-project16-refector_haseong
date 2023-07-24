@@ -9,6 +9,7 @@ import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
+import { GetCommentDto } from "../types/CommentInterfaces";
 import { v4 as uuidv4 } from "uuid";
 
 const StudyContent = () => {
@@ -36,7 +37,7 @@ const StudyContent = () => {
   };
 
   const [fetching, setFetching] = useState(true);
-  const [comments, setComments] = useState<CommentDto[]>([]);
+  const [commentsList, setCommentsList] = useState<GetCommentDto[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
@@ -101,7 +102,6 @@ const StudyContent = () => {
     } catch (error) {
       alert("스터디 신청이 실패했습니다!");
     }
-    // 이미 등록한 스터디입니다 어떻게?
   };
 
   const markUp = (convertIntroduction: string) => {
@@ -109,7 +109,7 @@ const StudyContent = () => {
   };
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
-  }, [comments]);
+  }, [setCommentsList]);
 
   return (
     <>
@@ -176,14 +176,14 @@ const StudyContent = () => {
               </StudyContentMain>
               <StudyComment
                 studyGroupId={Number(id)}
-                setComments={setComments}
+                setCommentsList={setCommentsList}
               />
               {content && (
                 <StudyCommentList
                   isLeader={content.isLeader}
                   studyGroupId={Number(id)}
-                  comments={comments}
-                  setComments={setComments}
+                  commentsList={commentsList}
+                  setCommentsList={setCommentsList}
                 />
               )}
             </div>
