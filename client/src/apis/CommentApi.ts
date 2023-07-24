@@ -1,19 +1,13 @@
 import tokenRequestApi from "./TokenRequestApi";
-export interface CommentDto {
-  content: string;
-  studygroupId: number;
-  commentId: number;
-  nickName: string;
-  isMyComment: boolean;
-}
+import {
+  PostCommentDto,
+  PatchCommentDto,
+} from "../types/CommentInterfaces";
+
 export const postComment = async (studyGroupId: number, data: string) => {
-  try {
-    await tokenRequestApi.post(`/studygroup/${studyGroupId}/comment`, {
-      content: data,
-    });
-  } catch (error) {
-    throw new Error("댓글 등록 실패");
-  }
+  await tokenRequestApi.post(`/comment/${studyGroupId}`, {
+    content: data,
+  });
 };
 
 export const patchComment = async (

@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { useState } from "react";
-import { CommentDto } from "../apis/CommentApi";
-import { getComments } from "../apis/CommentApi";
+import { PostCommentDto } from "../types/CommentInterfaces";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { postComment } from "../apis/CommentApi";
 import { useNavigate } from "react-router-dom";
@@ -13,13 +12,11 @@ const StudyComment = ({
   setComments,
 }: {
   studyGroupId: number;
-  setComments: React.Dispatch<React.SetStateAction<CommentDto[]>>;
+  setComments: React.Dispatch<React.SetStateAction<PostCommentDto>>;
 }) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
-
   const [comment, setComment] = useState("");
-
   const [isEnterPressed, setIsEnterPressed] = useState(false);
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -28,7 +25,7 @@ const StudyComment = ({
       handleCommentButton();
       setTimeout(() => {
         setIsEnterPressed(false);
-      }, 1000); // enter로 입력시 발생하는 이중 입력 방지
+      }, 1000);
     }
   };
 
