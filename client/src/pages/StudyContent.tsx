@@ -8,7 +8,6 @@ import { CommentDto } from "../apis/CommentApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
-import StudyListTag from "../components/StudyListTag";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 import { v4 as uuidv4 } from "uuid";
@@ -127,7 +126,10 @@ const StudyContent = () => {
                 )}
                 <StudyContentTitle>
                   <h2>{content?.studyName}</h2>
-                  <StudyContentEdit></StudyContentEdit>
+                  <div className="studylist-interest">
+                    <div id="studylist-interest_likes">❤️ {content?.likes}</div>
+                    <div id="studylist-interest_views">🧐 {content?.views}</div>
+                  </div>
                 </StudyContentTitle>
               </StudyContentTop>
               <StudyContentMain>
@@ -147,24 +149,26 @@ const StudyContent = () => {
                   <div>플랫폼</div>
                   <span>{content?.platform}</span>
                 </StudyContentInfo>
+                <StudyContentTag>
+                  {content?.tags && (
+                    <>
+                      {content?.tags.map((tag) => (
+                        <div>{tag}</div>
+                      ))}
+                    </>
+                  )}
+                </StudyContentTag>
                 <StudyContentText
                   dangerouslySetInnerHTML={markUp(convertIntroduction)}
                 ></StudyContentText>
+
                 <StudyContentProfileWrapper>
                   <StudyContentProfile>
                     <div className="profile-name">{`${content?.leaderNickName}`}</div>
                     <div>일반회원</div>
                   </StudyContentProfile>
                 </StudyContentProfileWrapper>
-                <StudyContentTag>
-                  {/* {content?.tags && (
-                    <>
-                      {Object.entries(content.tags).map(([category, tags]) => (
-                        <StudyListTag key={category} item={tags} />
-                      ))}
-                    </>
-                  )} */}
-                </StudyContentTag>
+
                 <StudyJoinButtonWrapper>
                   <StudyJoinButton type="button" onClick={handleJoinButton}>
                     스터디 신청!
@@ -247,20 +251,30 @@ const StudyContentTitle = styled.div`
     color: #1f1f1f;
     text-align: left;
   }
-`;
+  .studylist-interest {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 600;
 
-const StudyContentEdit = styled.div`
-  width: 100px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-
-  button {
-    width: 50px;
-    font-size: 0.875rem;
-    color: #858da8;
-    cursor: pointer;
-    padding: 0;
+    #studylist-interest_likes {
+      font-size: 18px;
+      word-spacing: 2px;
+      margin-right: 10px;
+      :hover {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+    }
+    #studylist-interest_views {
+      font-size: 18px;
+      word-spacing: 2px;
+      margin-right: 10px;
+      :hover {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+    }
   }
 `;
 
@@ -302,10 +316,32 @@ const StudyContentInfo = styled.div`
   }
 `;
 
+const StudyContentTag = styled.div`
+  width: 260px;
+  padding-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  div {
+    height: 24px;
+    color: #39739d;
+    font-size: 0.8125rem;
+    border-radius: 4px;
+    background-color: #e1ecf4;
+    padding: 4.8px 6px;
+    margin-right: 7px;
+    cursor: pointer;
+  }
+`;
+
 const StudyContentText = styled.p`
   width: 800px;
   margin: 15px 0;
   padding: 20px 0;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-top: 1px solid #ccc;
   text-align: left;
   font-size: 1rem;
   font-weight: 300;
@@ -343,28 +379,9 @@ const StudyContentProfile = styled.div`
   }
 `;
 
-const StudyContentTag = styled.div`
-  width: 260px;
-  padding-top: 10px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-
-  div {
-    height: 24px;
-    color: #39739d;
-    font-size: 0.8125rem;
-    border-radius: 4px;
-    background-color: #e1ecf4;
-    padding: 4.8px 6px;
-    margin-right: 7px;
-    cursor: pointer;
-  }
-`;
-
 const StudyJoinButtonWrapper = styled.div`
   width: 800px;
-  margin: 15px 0;
+  margin-bottom: 20px;
   display: flex;
   justify-content: flex-end;
 `;

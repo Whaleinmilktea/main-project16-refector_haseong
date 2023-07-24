@@ -201,7 +201,7 @@ const StudyBox = styled.div`
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
   &:hover {
-    transform: scale(1.05); /* 마우스가 올라갔을 때 크기를 105%로 확대 */
+    transform: scale(1.05);
   }
 
   .studylist-title {
