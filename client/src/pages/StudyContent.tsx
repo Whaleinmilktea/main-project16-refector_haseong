@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { getStudyGroupInfo } from "../apis/StudyGroupApi";
-import { CommentDto } from "../apis/CommentApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
