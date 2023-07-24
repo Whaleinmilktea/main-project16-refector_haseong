@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import {
-  getStudyGroupInfo,
-
-} from "../apis/StudyGroupApi";
+import { getStudyGroupInfo } from "../apis/StudyGroupApi";
 import { CommentDto } from "../apis/CommentApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
@@ -14,31 +11,36 @@ import StudyCommentList from "../components/StudyCommentList";
 import StudyListTag from "../components/StudyListTag";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
+import { v4 as uuidv4 } from "uuid";
 
 const StudyContent = () => {
-  const initialTag = { [""]: [""] };
   const initialState = {
-    id: 1,
+    id: uuidv4(),
     studyName: "",
-    studyPeriodStart: "",
-    studyPeriodEnd: "",
-    daysOfWeek: [""],
-    studyTimeStart: "",
-    studyTimeEnd: "",
-    memberCountMin: 1,
-    memberCountMax: 1,
-    memberCountCurrent: 1,
+    image: "",
+    memberMin: 2,
+    memberMax: 2,
+    memberCnt: 2,
     platform: "",
     introduction: "",
-    isRecruited: false,
-    tags: initialTag,
+    isRecruited: true,
+    startDate: "",
+    endDate: "",
+    dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
+    startTime: "",
+    endTime: "",
+    tags: [],
     leaderNickName: "",
-    leader: false,
+    isLeader: true,
+    views: 0,
+    likes: 0,
+    isLikes: false,
   };
 
   const [fetching, setFetching] = useState(true);
   const [comments, setComments] = useState<CommentDto[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
+  const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
   const { id } = useParams(); // App.tsx의 Route url에 :id로 명시하면 그걸 가져옴
   const parsedId = Number(id);
@@ -56,6 +58,7 @@ const StudyContent = () => {
       }
       try {
         const content = await getStudyGroupInfo(parsedId, isLoggedIn);
+        dayOfWeekMapFunc(content.dayOfWeek);
         setContent(content);
         setFetching(false);
       } catch (error) {
@@ -70,6 +73,28 @@ const StudyContent = () => {
     };
     fetchData();
   }, [parsedId]);
+
+  const dayOfWeekMapFunc = (dayOfWeek: number[]) => {
+    interface DayOfWeekMap {
+      [key: number]: string;
+    }
+    const dayOfWeekMap: DayOfWeekMap = {
+      0: "월",
+      1: "화",
+      2: "수",
+      3: "목",
+      4: "금",
+      5: "토",
+      6: "일",
+    };
+    const dayOfWeekArr = [];
+    for (let i = 0; i < dayOfWeek.length; i++) {
+      if (dayOfWeek[i] === 1) {
+        dayOfWeekArr.push(dayOfWeekMap[i]);
+      }
+    }
+    setDayOfWeekMap(dayOfWeekArr);
+  };
 
   const handleJoinButton = async () => {
     try {
@@ -102,22 +127,21 @@ const StudyContent = () => {
                 )}
                 <StudyContentTitle>
                   <h2>{content?.studyName}</h2>
-                  <StudyContentEdit>
-                  </StudyContentEdit>
+                  <StudyContentEdit></StudyContentEdit>
                 </StudyContentTitle>
               </StudyContentTop>
               <StudyContentMain>
                 <StudyContentInfo>
                   <div>날짜</div>
-                  <span>{`${content?.studyPeriodStart} ~ ${content?.studyPeriodEnd}`}</span>
+                  <span>{`${content?.startDate} ~ ${content?.endDate}`}</span>
                 </StudyContentInfo>
                 <StudyContentInfo>
-                  <div>요일, 시간</div>
-                  <span>{`${content?.daysOfWeek} ${content?.studyTimeStart} ~ ${content?.studyTimeEnd}`}</span>
+                  <div>요일/시간</div>
+                  <span>{`${dayOfWeekMap} ${content?.startTime} ~ ${content?.endTime}`}</span>
                 </StudyContentInfo>
                 <StudyContentInfo>
                   <div>인원</div>
-                  <span>{`${content?.memberCountMin} ~ ${content?.memberCountMax}`}</span>
+                  <span>{`${content?.memberMin} ~ ${content?.memberMax}`}</span>
                 </StudyContentInfo>
                 <StudyContentInfo>
                   <div>플랫폼</div>
@@ -133,13 +157,13 @@ const StudyContent = () => {
                   </StudyContentProfile>
                 </StudyContentProfileWrapper>
                 <StudyContentTag>
-                  {content?.tags && (
+                  {/* {content?.tags && (
                     <>
                       {Object.entries(content.tags).map(([category, tags]) => (
                         <StudyListTag key={category} item={tags} />
                       ))}
                     </>
-                  )}
+                  )} */}
                 </StudyContentTag>
                 <StudyJoinButtonWrapper>
                   <StudyJoinButton type="button" onClick={handleJoinButton}>
@@ -153,7 +177,7 @@ const StudyContent = () => {
               />
               {content && (
                 <StudyCommentList
-                  isLeader={content.leader}
+                  isLeader={content.isLeader}
                   studyGroupId={Number(id)}
                   comments={comments}
                   setComments={setComments}
@@ -177,6 +201,7 @@ const StudyContentContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #fff;
 `;
 
 const StudyContentBody = styled.div`
@@ -187,6 +212,7 @@ const StudyContentBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
 `;
 
 const StudyContentTop = styled.div`

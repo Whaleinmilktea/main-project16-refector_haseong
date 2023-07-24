@@ -1,17 +1,16 @@
 export interface StudyGroupCreateDto {
-  // id : string, // 테스트용 임시로 추가
-  studyName: string,
-  startDate: string,
-  endDate: string,
-  dayOfWeek: number[],
-  startTime: string,
-  endTime: string,
-  memberMin: number,
-  memberMax: number,
-  platform: string,
-  introduction: string,
-  tags: string[],
-};
+  studyName: string;
+  startDate: string;
+  endDate: string;
+  dayOfWeek: number[];
+  startTime: string;
+  endTime: string;
+  memberMin: number;
+  memberMax: number;
+  platform: string;
+  introduction: string;
+  tags: string[];
+}
 
 export interface StudyGroupListDto {
   id: number;
@@ -22,30 +21,8 @@ export interface StudyGroupListDto {
   likes: number;
 }
 
-export interface StudyGroup {
-  id: number;
-  title: string;
-  tagValues: string[];
-}
-
-export interface MyStudyGroupListDto {
-  leaders: StudyGroup[];
-  members: StudyGroup[];
-}
-
-export interface WaitingStudyGroupItemDto {
-  id: number;
-  title: string;
-}
-
-export interface WaitingStudyGroupListDto {
-  beStudys: WaitingStudyGroupItemDto[];
-}
-
-
-
 export interface StudyInfoDto {
-  id: number;
+  id: string;
   studyName: string;
   image: string;
   memberMin: number;
@@ -67,6 +44,25 @@ export interface StudyInfoDto {
   isLikes: boolean;
 }
 
+export interface StudyGroup {
+  id: number;
+  title: string;
+  tagValues: string[];
+}
+
+export interface MyStudyGroupListDto {
+  leaders: StudyGroup[];
+  members: StudyGroup[];
+}
+
+export interface WaitingStudyGroupItemDto {
+  id: number;
+  title: string;
+}
+
+export interface WaitingStudyGroupListDto {
+  beStudys: WaitingStudyGroupItemDto[];
+}
 
 export interface StudyGroupUpdateDto {
   id?: number;
@@ -95,7 +91,7 @@ export interface StudyGroupUpdateDto {
   memberCountMax: number;
   platform: string;
   introduction: string;
-  tags: StudyTags;
+  tags: [];
 }
 
 export interface StudyGroupRecruitmentStatusUpdateDto {

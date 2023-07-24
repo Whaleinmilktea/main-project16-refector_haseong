@@ -7,7 +7,6 @@ import Search from "../components/Search";
 import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
-import { FaRegThumbsUp } from "react-icons/fa";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
