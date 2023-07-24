@@ -1,13 +1,22 @@
 import tokenRequestApi from "./TokenRequestApi";
-import {
-  PostCommentDto,
-  PatchCommentDto,
-} from "../types/CommentInterfaces";
+import { PatchCommentDto, GetCommentDto } from "../types/CommentInterfaces";
 
 export const postComment = async (studyGroupId: number, data: string) => {
   await tokenRequestApi.post(`/comment/${studyGroupId}`, {
     content: data,
   });
+  // await tokenRequestApi.post(`http://localhost:3000/comment/${studyGroupId}`, {
+  //   content: data,
+  // });
+};
+
+export const getComments = async (
+  studyGroupId: number
+): Promise<GetCommentDto[]> => {
+    const response = await tokenRequestApi.get<GetCommentDto[]>(
+      `/comment/${studyGroupId}?page=1&size=10`
+    );
+    return response.data;
 };
 
 export const patchComment = async (
@@ -22,19 +31,6 @@ export const patchComment = async (
     );
   } catch (error) {
     throw new Error("댓글 수정 실패");
-  }
-};
-
-export const getComments = async (
-  studyGroupId: number
-): Promise<CommentDto[]> => {
-  try {
-    const response = await tokenRequestApi.get<CommentDto[]>(
-      `/studygroup/${studyGroupId}/comments`
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error("댓글 전부 조회 실패");
   }
 };
 

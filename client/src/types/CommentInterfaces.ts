@@ -1,5 +1,8 @@
-export interface PostCommentDto {
+export interface GetCommentDto {
+  id : number;
+  nickName: string;
   content: string;
+  isMyComment: boolean
 }
 
 export interface PatchCommentDto {
@@ -7,9 +10,3 @@ export interface PatchCommentDto {
   content: string;
 }
 
-export interface GetCommentDto {
-  id : number;
-  nickName: string;
-  content: string;
-  isMyComment: boolean
-}

@@ -37,7 +37,7 @@ const StudyContent = () => {
   };
 
   const [fetching, setFetching] = useState(true);
-  const [comments, setComments] = useState<GetCommentDto[]>([]);
+  const [commentsList, setCommentsList] = useState<GetCommentDto[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
@@ -109,7 +109,7 @@ const StudyContent = () => {
   };
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
-  }, [comments]);
+  }, [setCommentsList]);
 
   return (
     <>
@@ -176,14 +176,14 @@ const StudyContent = () => {
               </StudyContentMain>
               <StudyComment
                 studyGroupId={Number(id)}
-                setComments={setComments}
+                setCommentsList={setCommentsList}
               />
               {content && (
                 <StudyCommentList
                   isLeader={content.isLeader}
                   studyGroupId={Number(id)}
-                  comments={comments}
-                  setComments={setComments}
+                  commentsList={commentsList}
+                  setCommentsList={setCommentsList}
                 />
               )}
             </div>
