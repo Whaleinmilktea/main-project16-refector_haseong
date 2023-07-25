@@ -42,6 +42,7 @@
 - [image 업로드 요청 형식 변경 ( json -> form-data )](#이미지-업로드-시-json-형식에서-form-data-형식으로-변경)
 - [인터페이스 모듈화 및 분리 + 구체적인 기능을 명시하는 변수 명으로 변경](#인터페이스-모듈화-및-분리)
 - [비밀번호 유효성 검사 정규화](#비밀번호-유효성-검사-정규화)
+- [무한스크롤 구현](#스터디-리스트-무한스크롤-구현)
 
 <br>
 
@@ -205,4 +206,102 @@ const handleSignUpButton = () => {
     ...
     }
   }
+```
+
+<br>
+
+### 스터디 리스트 무한스크롤 구현
+- 스터디 리스트의 무한스크롤 기능 추가
+- 서버로 page와 size를 쿼리를 요청하는 방법으로 구현
+- 무한스크롤 기능은 바닐라 JS를 활용하여 구현할 경우 쓰로틀에 의한 이벤트 과다 이슈가 있어, 이를 효과적으로 제어하는 라이브러리를 활용하여 구현
+- 주석으로 처리된 부분은, 서버의 배포 이슈로 인해 임시 json-server로 테스트하여 동작여부 확인한 코드
+```typescript
+// ~/src/apis/StudyGroupApi.ts
+export const getStudyGroupList = async (
+  currentPage: number
+): Promise<StudyGroupListDto[]> => {
+  const requestEndpoint = Base64.encode(`$studygroups?page${currentPage}&size=6}`)
+  const response = await axios.get<StudyGroupListDto[]>(
+    `${import.meta.env.VITE_APP_API_URL}/list?p=${currentPage}&s=6`
+  );
+  // const response = await axios.get(
+  //   `http://localhost:3000/list?_page=${currentPage}&_limit=6`
+  // );
+  return response.data;
+};
+```
+```typescript
+// ~/src/pages/StudyList
+// ... dependancy
+import { useInView } from "react-intersection-observer";
+
+const StudyList = () => {
+  const [ref, inView] = useInView();
+  const [list, setList] = useState<StudyGroupListDto[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  // ... 기타 states (재정렬 및 데이터 편집)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (inView) fetchList();
+  }, [inView]);
+
+  const fetchList = async () => {
+    const res = await getStudyGroupList(currentPage);
+    setList((prev) => [...prev, ...res]);
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  useEffect(() => {
+    filterList(sortValue);
+  }, [list]);
+
+  const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // ... select option에 따른 이벤트 핸들링
+  };
+
+  const filterList = (sortValue: string) => {
+    // ... 재정렬 조건문
+  };
+
+  return (
+    <StudyListContainer>
+      <StudyListBody>
+          // ...
+        </StudyListTop>
+        <ListFilterWrapper>
+          // ...
+        </ListFilterWrapper>
+        <StudyBoxContainer>
+          {filterData?.map((item: StudyGroupListDto) => (
+            <StudyBox
+              key={item?.id}
+              onClick={() => navigate(`/studycontent/${item?.id}`)}
+            >
+              <StudyListImage image={item.image}></StudyListImage>
+              <div>
+                <div className="studylist-title">
+                  <h3>{item?.title}</h3>
+                </div>
+                <div className="studylist-interest">
+                  <div id="studylist-interest_likes">
+                    ❤️ {item?.likes}
+                  </div>
+                  <div id="studylist-interest_views">🧐 {item?.views}</div>
+                </div>
+                <div className="studylist-tag">
+                  <StudyListTag item={item.tags} />
+                </div>
+              </div>
+            </StudyBox>
+          ))}
+        </StudyBoxContainer>
+      </StudyListBody>
+      <div ref={ref}></div>
+    </StudyListContainer>
+  );
+};
+
+export default StudyList;
+
 ```

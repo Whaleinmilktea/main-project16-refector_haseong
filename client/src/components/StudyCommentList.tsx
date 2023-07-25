@@ -24,7 +24,6 @@ const StudyCommentList = ({
 }) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
-
   const [inputComment, setInputComment] = useState("");
   const [patchId, setPatchId] = useState<number | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);

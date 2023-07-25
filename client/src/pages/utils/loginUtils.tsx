@@ -1,4 +1,4 @@
-export const validateEmptyInput = (text: any): boolean => {
+export const validateEmptyInput = (text: string): boolean => {
   if (!text.hasOwnProperty("length")) {
     throw new Error("text is not a text?");
   }

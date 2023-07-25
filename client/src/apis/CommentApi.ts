@@ -1,5 +1,5 @@
 import tokenRequestApi from "./TokenRequestApi";
-import { PatchCommentDto, GetCommentDto } from "../types/CommentInterfaces";
+import { GetCommentDto } from "../types/CommentInterfaces";
 
 export const postComment = async (studyGroupId: number, data: string) => {
   await tokenRequestApi.post(`/comment/${studyGroupId}`, {
@@ -26,8 +26,8 @@ export const patchComment = async (
 ) => {
   try {
     await tokenRequestApi.patch(
-      `/studygroup/${studyGroupId}/comment/${patchId}`,
-      { content: data }
+      `/comment/${studyGroupId}`,
+      { id : patchId, content: data }
     );
   } catch (error) {
     throw new Error("댓글 수정 실패");
@@ -37,7 +37,7 @@ export const patchComment = async (
 export const deleteComment = async (studyGroupId: number, patchId: number) => {
   try {
     await tokenRequestApi.delete(
-      `/studygroup/${studyGroupId}/comment/${patchId}`
+      `/comment/${studyGroupId}/${patchId}`
     );
   } catch (error) {
     alert("댓글을 삭제하는데 실패했습니다. 권한을 확인하세요");

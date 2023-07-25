@@ -35,7 +35,7 @@ const StudyComment = ({
 
   const handleCommentButton = async () => {
     if (!isLoggedIn) navigate("/login");
-    else if (validateEmptyInput(postComment)) {
+    else if (validateEmptyInput(inputComment)) {
       alert("댓글 내용을 입력해주세요");
     } else {
       try {

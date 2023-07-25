@@ -151,8 +151,8 @@ const StudyContent = () => {
                 <StudyContentTag>
                   {content?.tags && (
                     <>
-                      {content?.tags.map((tag) => (
-                        <div>{tag}</div>
+                      {content?.tags.map((tag, index) => (
+                        <div key={index}>{tag}</div>
                       ))}
                     </>
                   )}
