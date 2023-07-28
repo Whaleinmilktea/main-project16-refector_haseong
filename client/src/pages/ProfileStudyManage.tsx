@@ -26,14 +26,12 @@ const ProfileStudyManage = () => {
   const isLoggedIn = useRecoilValue(LogInState);
   const isRecruiting = studyInfo?.isRecruited;
 
-  // TODO : 로그인 상태가 변경되면, 홈 화면으로 이동하는 코드
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/");
     }
   }, [isLoggedIn]);
 
-  // TODO : 최초 페이지 진입 시 스터디 정보를 조회하는 코드
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login");

@@ -41,7 +41,6 @@ const StudyComment = ({
       try {
         await postComment(studyGroupId, inputComment);
         setInputComment("");
-        // 헷갈려서 구분한 코드 : 댓글 등록 후 댓글 목록을 다시 불러옴
         const fetchData = async () => {
           try {
             const newComment = await getComments(studyGroupId);

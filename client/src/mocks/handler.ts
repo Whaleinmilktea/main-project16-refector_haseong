@@ -3,7 +3,6 @@ import { getStudyGroupInfo } from "../apis/StudyGroupApi";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { MemberPasswordCheckDto } from "../types/MemberApiInterfaces";
-
 const isLoggedIn = useRecoilValue(LogInState);
 
 interface LoginRequestBody {
