@@ -2,14 +2,11 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  deleteComment,
-  getComments,
-  patchComment,
-} from "../apis/CommentApi";
+import { deleteComment, getComments, patchComment } from "../apis/CommentApi";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { useNavigate } from "react-router-dom";
 import { GetCommentDto } from "../types/CommentInterfaces";
+import ViewOtherMember from "./modal/ViewOtherMember";
 
 const StudyCommentList = ({
   isLeader,
@@ -28,6 +25,8 @@ const StudyCommentList = ({
   const [patchId, setPatchId] = useState<number | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [isEnterPressed, setIsEnterPressed] = useState(false);
+  const [clickedMember, setClickedMember] = useState("");
+  const [viewOtherMemberInfo, setViewOtherMemberInfo] = useState(false);
 
   const handleComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputComment(e.target.value);
@@ -57,7 +56,7 @@ const StudyCommentList = ({
     } else {
       try {
         if (patchId) {
-          await patchComment(studyGroupId, patchId, inputComment);
+          await patchComment(patchId, inputComment);
           setIsUpdateMode(false);
           setPatchId(null);
           setInputComment("");
@@ -87,6 +86,14 @@ const StudyCommentList = ({
   useEffect(() => {
     fetchCommentsData();
   }, [!isUpdateMode]);
+
+  const handleViewOtherMemberModal = (
+    e: React.MouseEvent<HTMLParagraphElement>
+  ) => {
+    setClickedMember(e.currentTarget.innerText);
+    setViewOtherMemberInfo(true);
+  };
+
   return (
     <>
       <ul>
@@ -94,7 +101,9 @@ const StudyCommentList = ({
           return (
             <CommentItemDiv key={commentsList.id}>
               <ContentItem>
-                <p>{commentsList.nickName}</p>
+                <p onClick={handleViewOtherMemberModal}>
+                  {commentsList.nickName}
+                </p>
                 <>
                   {isUpdateMode && patchId === commentsList.id ? (
                     <>
@@ -133,13 +142,19 @@ const StudyCommentList = ({
           );
         })}
       </ul>
+      <ViewOtherMember
+        isOpen={viewOtherMemberInfo}
+        closeModal={() => setViewOtherMemberInfo(false)}
+        nickName={clickedMember}
+      />
     </>
   );
 };
 
 const CommentItemDiv = styled.div`
-  width: 80%;
+  width: 100%;
   height: 70px;
+  margin-top: 20px;
   padding: 10px 10px 10px 10px;
   background-color: #ffffff;
   display: flex;
@@ -159,6 +174,10 @@ const ContentItem = styled.div`
     font-size: 16px;
     font-weight: bold;
     color: #2759a2;
+    :hover {
+      cursor: pointer;
+      transform: scale(1.05);
+    }
   }
   span {
     font-size: 12px;

@@ -6,6 +6,7 @@ import {
   MemberPasswordCheckDto,
   MemberProfileUpdateImageDto,
   Oauth2MemberCheckDto,
+  OtherMemberInfo,
 } from "../types/MemberApiInterfaces";
 // * recoil에서 전역 LogInState를 가져와서 isLogin 변수에 할당
 
@@ -78,3 +79,14 @@ export const updateUserPassword = async (isLoggedIn : boolean, password: string)
 //   if (!data) throw new Error("입력값을 확인해주세요.");
 //   await tokenRequestApi.patch("/members", data);
 // };
+
+export const getOtherMemberInfo = async (nickname: string) => {
+  // const response = await tokenRequestApi.get<OtherMemberInfo>(
+  //   `/members/${nickname}`
+  // );
+  const response = await tokenRequestApi.get<OtherMemberInfo>(
+    `http://localhost:3000/members/${nickname}`
+  );
+  if (response.status !== 200) throw new Error("존재하지 않는 사용자입니다.");
+  return response.data;
+}
