@@ -15,7 +15,6 @@ export interface EditNicknameDto {
 }
 
 export interface MemberProfileUpdateImageDto {
-  // image: FormData;
   image: File | undefined;
 }
 
@@ -29,6 +28,12 @@ export interface MemberPasswordCheckDto {
 
 export interface Oauth2MemberCheckDto {
   provider: string;
+}
+
+export interface OtherMemberInfo {
+  nickName: string;
+  aboutMe: string;
+  image: string;
 }
 
 // 리팩토링 이후 더 이상 사용하지 않는 코드

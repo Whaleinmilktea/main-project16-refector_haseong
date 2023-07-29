@@ -8,7 +8,6 @@ const Search = () => {
     }
   };
 
-
   return (
     <SearchContainer>
       <form>

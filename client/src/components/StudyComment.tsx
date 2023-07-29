@@ -77,6 +77,7 @@ const StudyCommentContainer = styled.div`
   width: 810px;
   height: 170px;
   background-color: #fff;
+  margin-bottom: 20px;
   border-radius: 8px;
   display: flex;
   flex-flow: column wrap;
