@@ -186,6 +186,7 @@ const OtherMemberInfoWrapper = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   :hover {
+    // 만약, 향후 다른 유저 정보를 보여주는 페이지가 설계될 경우 해당 hover 이벤트로 유저에게 특정한 이벤트를 피드백할 수 있습니다.
     background-color: #d6e3ff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(1.05);
