@@ -111,9 +111,11 @@ const StudyContent = () => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [setCommentsList]);
 
+  console.log(content?.image);
+
   return (
     <>
-      <StudyContentContainer>
+      <StudyContentContainer imageUrl={content?.image}>
         <StudyContentBody>
           {!fetching && (
             <div key={content?.id}>
@@ -198,15 +200,30 @@ const StudyContent = () => {
   );
 };
 
-const StudyContentContainer = styled.div`
+const StudyContentContainer = styled.div<{ imageUrl?: string }>`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #fff;
-`;
+  position: relative;
+  /* 추가된 스타일 */
+  background-image: ${(props) =>
+    props.imageUrl ? `url(${props.imageUrl})` : "none"};
+  background-size: cover;
+  background-position: center;
 
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.92); /* Adjust the last value (0.7 here) to change the opacity */
+  }
+`;
 const StudyContentBody = styled.div`
   width: 960px;
   padding: 120px 0 100px;
@@ -216,6 +233,7 @@ const StudyContentBody = styled.div`
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
+  opacity: 0.99;
 `;
 
 const StudyContentTop = styled.div`
