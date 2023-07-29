@@ -8,26 +8,14 @@ const customStyles = {
   content: {
     top: "50%",
     left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "80%",
-    heigth: "500px",
+    right: "auto",
+    bottom: "auto",
     maxWidth: "500px",
+    maxHeight: "600px",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
   },
 };
-
-const nicknameStyles = {
-  marginLeft: "10px",
-  fontSize: "24px",
-};
-
-const aboutMeStyles = {
-  background: "#f1f1f1",
-  width: "90%",
-  padding: "10px",
-  marginTop: "20px",
-  marginLeft: "10px",
-};
-
 interface ViewOtherMemberProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -50,16 +38,13 @@ const ViewOtherMember = ({
   });
 
   useEffect(() => {
-    if (data?.aboutMe === null) {
-      setOtherMemberInfo((prevInfo) => ({
-        ...prevInfo,
-        aboutMe: "아직 자기소개가 없습니다",
-      }));
-    }
+    if (data) setOtherMemberInfo(data);
   }, [data]);
-  if (error) return alert("유저의 정보를 불러오는 도중 에러가 발생했습니다");
 
-  console.log(data);
+  if (error) {
+    alert("유저의 정보를 불러오는 도중 에러가 발생했습니다");
+    return null;
+  }
 
   return (
     <Modal
@@ -71,15 +56,16 @@ const ViewOtherMember = ({
       {isLoading ? (
         <div>로딩중...</div>
       ) : (
-        <>
-          <h1 style={nicknameStyles}>{otherMemberInfo.nickName}</h1>
+        <div>
+        <div >
+          <h1>{otherMemberInfo.nickName}</h1>
           <img
             src={otherMemberInfo.image}
             alt="프로필 이미지"
-            style={{ width: "100%", maxWidth: "300px", margin: "10px" }}
           />
-          <div style={aboutMeStyles}>{otherMemberInfo.aboutMe}</div>
-        </>
+          </div>
+          <div>{otherMemberInfo.aboutMe}</div>
+        </div>
       )}
     </Modal>
   );

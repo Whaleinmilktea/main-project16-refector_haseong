@@ -6,7 +6,8 @@ import { deleteComment, getComments, patchComment } from "../apis/CommentApi";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { useNavigate } from "react-router-dom";
 import { GetCommentDto } from "../types/CommentInterfaces";
-import ViewOtherMember from "./modal/ViewOtherMember";
+import { getOtherMemberInfo } from "../apis/MemberApi";
+import { useQuery } from "@tanstack/react-query";
 
 const StudyCommentList = ({
   isLeader,
@@ -25,8 +26,10 @@ const StudyCommentList = ({
   const [patchId, setPatchId] = useState<number | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [isEnterPressed, setIsEnterPressed] = useState(false);
-  const [clickedMember, setClickedMember] = useState("");
-  const [viewOtherMemberInfo, setViewOtherMemberInfo] = useState(false);
+  const [isViewOtherMember, setIsViewOtherMember] = useState({
+    nickName: "",
+    isView: false,
+  });
 
   const handleComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputComment(e.target.value);
@@ -87,11 +90,28 @@ const StudyCommentList = ({
     fetchCommentsData();
   }, [!isUpdateMode]);
 
-  const handleViewOtherMemberModal = (
-    e: React.MouseEvent<HTMLParagraphElement>
-  ) => {
-    setClickedMember(e.currentTarget.innerText);
-    setViewOtherMemberInfo(true);
+  const ClickCommentNickName = (e: React.MouseEvent<HTMLParagraphElement>) => {
+    const nickName = e.currentTarget.innerText;
+    setIsViewOtherMember({
+      nickName: nickName,
+      isView: true,
+    });
+  };
+
+  const OtherMemberInfo = () => {
+    const { data, error, isLoading } = useQuery(
+      ["otherMemberInfo", isViewOtherMember.nickName],
+      () => getOtherMemberInfo(isViewOtherMember.nickName)
+    );
+    if (isLoading) return <div>로딩중...</div>;
+    if (error) return <div>에러가 발생했습니다.</div>;
+    if (!data) return <div>데이터가 없습니다.</div>;
+    return (
+      <OtherMemberInfoWrapper>
+        <div>{data.nickName}</div>
+        <div>{data.aboutMe}</div>
+      </OtherMemberInfoWrapper>
+    );
   };
 
   return (
@@ -99,57 +119,89 @@ const StudyCommentList = ({
       <ul>
         {commentsList.map((commentsList) => {
           return (
-            <CommentItemDiv key={commentsList.id}>
-              <ContentItem>
-                <p onClick={handleViewOtherMemberModal}>
-                  {commentsList.nickName}
-                </p>
-                <>
-                  {isUpdateMode && patchId === commentsList.id ? (
-                    <>
-                      <input
-                        onKeyDown={handleEnter}
-                        defaultValue={commentsList.content}
-                        onChange={handleComment}
-                      ></input>
-                      <button onClick={handleUpdateButton}>완료</button>
-                    </>
-                  ) : (
-                    <span>{commentsList.content}</span>
-                  )}
-                </>
-              </ContentItem>
-              <ButtonDiv>
-                {commentsList.isMyComment && (
+            <CommentItemWrapper key={commentsList.id}>
+              <CommentItemDiv>
+                <ContentItem>
+                  <p onClick={ClickCommentNickName}>{commentsList.nickName}</p>
                   <>
-                    <button
-                      onClick={() =>
-                        handleUpdate(commentsList.id, commentsList.content)
-                      }
-                    >
-                      수정
-                    </button>
+                    {isUpdateMode && patchId === commentsList.id ? (
+                      <>
+                        <input
+                          onKeyDown={handleEnter}
+                          defaultValue={commentsList.content}
+                          onChange={handleComment}
+                        ></input>
+                        <button onClick={handleUpdateButton}>완료</button>
+                      </>
+                    ) : (
+                      <span>{commentsList.content}</span>
+                    )}
                   </>
-                )}
-
-                {(isLeader || commentsList.isMyComment) && (
-                  <button onClick={() => handleDelete(commentsList.id)}>
-                    삭제
-                  </button>
-                )}
-              </ButtonDiv>
-            </CommentItemDiv>
+                </ContentItem>
+                <ButtonDiv>
+                  {commentsList.isMyComment && (
+                    <>
+                      <button
+                        onClick={() =>
+                          handleUpdate(commentsList.id, commentsList.content)
+                        }
+                      >
+                        수정
+                      </button>
+                    </>
+                  )}
+                  {(isLeader || commentsList.isMyComment) && (
+                    <button onClick={() => handleDelete(commentsList.id)}>
+                      삭제
+                    </button>
+                  )}
+                </ButtonDiv>
+              </CommentItemDiv>
+              {isViewOtherMember.isView &&
+              isViewOtherMember.nickName === commentsList.nickName ? (
+                <>
+                  <OtherMemberInfo />
+                </>
+              ) : (
+                <></>
+              )}
+            </CommentItemWrapper>
           );
         })}
       </ul>
-      <ViewOtherMember
-        isOpen={viewOtherMemberInfo}
-        closeModal={() => setViewOtherMemberInfo(false)}
-        nickName={clickedMember}
-      />
     </>
   );
 };
+
+const CommentItemWrapper = styled.div``;
+
+const OtherMemberInfoWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  background-color: #f2f2f2;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px; /* 둥근 테두리 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  :hover {
+    background-color: #d6e3ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+
+
+  :first-child {
+    border-top: solid #e9e9e9;
+    margin-left: 20px;
+  }
+
+  :last-child {
+    line-height: 20px;
+  }
+`;
 
 const CommentItemDiv = styled.div`
   width: 100%;

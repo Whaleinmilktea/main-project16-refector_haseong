@@ -88,5 +88,6 @@ export const getOtherMemberInfo = async (nickname: string) => {
     `http://localhost:3000/members/${nickname}`
   );
   if (response.status !== 200) throw new Error("존재하지 않는 사용자입니다.");
+  if (response.data.aboutMe === null) response.data.aboutMe = "아직 자기소개가 없습니다."
   return response.data;
 }
