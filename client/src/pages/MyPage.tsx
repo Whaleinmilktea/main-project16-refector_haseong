@@ -60,6 +60,7 @@ const LnbWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16); /* 내부 그림자 추가 */
 
   ul {
     width: 130px;
@@ -74,14 +75,17 @@ const LnbWrapper = styled.div`
     margin-top: 10px;
     padding: 10px 8px 0;
   }
+
   .schedule-link {
     color: #1f1f1f;
     cursor: pointer;
   }
+
   .schedule-link:hover {
     color: #2759a2;
   }
 `;
+
 const Title = styled.h2`
   width: 130px;
   padding: 10px 5px;

@@ -225,3 +225,8 @@ export async function getStudyListOrder(order: string, isAscending: boolean) {
   );
   return response.data.data;
 }
+
+export const setLikeStatus = async (studygroupId: number | undefined) => {
+  if(studygroupId === undefined) return
+  await tokenRequestApi.patch(`/study/${studygroupId}/likes`)
+}
