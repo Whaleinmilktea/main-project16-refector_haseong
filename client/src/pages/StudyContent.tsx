@@ -234,8 +234,8 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
       255,
       255,
       255,
-      0.92
-    ); /* Adjust the last value (0.7 here) to change the opacity */
+      0.95
+    );
   }
 `;
 const StudyContentBody = styled.div`
@@ -246,7 +246,7 @@ const StudyContentBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   opacity: 0.99;
 `;
 

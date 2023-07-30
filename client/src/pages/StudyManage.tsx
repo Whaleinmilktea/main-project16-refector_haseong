@@ -26,8 +26,6 @@ const ProfileStudyManage = () => {
   const isLoggedIn = useRecoilValue(LogInState);
   const isRecruiting = studyInfo?.isRecruited;
 
-  console.log(studyInfo);
-
   useEffect(() => {
     if (!isLoggedIn) navigate("/");
   }, [isLoggedIn]);
@@ -42,9 +40,9 @@ const ProfileStudyManage = () => {
         return;
       }
       try {
-        const studyInfo = await getStudyGroupInfo(parsedId, isLoggedIn);
-        // dayOfWeekMapFunc(studyInfo.dayOfWeek);
-        setStudyInfo(studyInfo);
+        const data = await getStudyGroupInfo(parsedId, isLoggedIn);
+        dayOfWeekMapFunc(data.dayOfWeek);
+        setStudyInfo(data);
       } catch (error) {}
     };
 
@@ -56,7 +54,7 @@ const ProfileStudyManage = () => {
     //   }
     // });
     fetchStudyGroupInfo();
-  }, []);
+  }, [parsedId]);
 
   const handleEditClick = () => {
     if (LoggedInUser !== studyInfo?.leaderNickName) {
@@ -126,99 +124,136 @@ const ProfileStudyManage = () => {
   };
 
   return (
-    <StoryManageContainer>
-      <ManageTitle>
-        <h2>{studyInfo?.studyName}</h2>
-      </ManageTitle>
-      <ManageInfo>
-        {" "}
-        <ManageSpan>인원 모집</ManageSpan>
-        {!isRecruiting ? (
+    <StudyManageContainer imageUrl={studyInfo?.image}>
+      <StudyManageBody>
+        <ManageTitle>
+          <h2>{studyInfo?.studyName}</h2>
+        </ManageTitle>
+        <ManageInfo>
+          {" "}
+          <ManageSpan>모집 상태</ManageSpan>
+          {!isRecruiting ? (
+            <button
+              type="button"
+              className="recruit-close-button"
+              onClick={handleRecuitCloseClick}
+            >
+              완료하기
+            </button>
+          ) : (
+            <div>
+              <strong>모집 완료</strong>
+            </div>
+          )}
+        </ManageInfo>
+
+        <ManageInfo>
+          <ManageSpan>스터디장</ManageSpan>{" "}
+          <strong>{studyInfo?.leaderNickName}</strong>
+        </ManageInfo>
+        <ManageInfo>
+          <ManageSpan>현재 인원</ManageSpan> {studyInfo?.memberCnt}
+        </ManageInfo>
+        <ManageInfo>
+          <ManageSpan>플랫폼</ManageSpan> {studyInfo?.platform}
+        </ManageInfo>
+        <ManageInfo>
+          <ManageSpan>기간</ManageSpan> {studyInfo?.startDate} ~{" "}
+          {studyInfo?.endDate}
+        </ManageInfo>
+        <ManageInfo>
+          <ManageSpan>태그</ManageSpan>
+          <ManageTag>
+            {studyInfo?.tags && (
+              <>
+                {studyInfo?.tags.map((tag, index) => (
+                  <div key={index}>{tag}</div>
+                ))}
+              </>
+            )}
+          </ManageTag>
+        </ManageInfo>
+        <ManageInfo>
+          <ManageSpan>일정</ManageSpan> 매주{" "}
+          {`${dayOfWeekMap} ${studyInfo?.startTime} ${" "}
+        ~ ${studyInfo?.endTime}`}
+        </ManageInfo>
+        <ManageIntro>{removeHtmlTag(studyInfo?.introduction)}</ManageIntro>
+        <ManageButtonContainer>
+          <button type="button" onClick={handleEditClick}>
+            스터디 정보 수정
+          </button>
+        </ManageButtonContainer>
+        {isModalOpen && (
+          <StudyInfoEditModal
+            isOpen={isModalOpen}
+            closeModal={() => setModalOpen(false)}
+            studyInfo={studyInfo}
+          />
+        )}
+        {/* <MemberManage studyLeader={studyInfo?.leaderNickName} />
+      <CandidateManage studyLeader={studyInfo?.leaderNickName} /> */}
+        <ManageButtonContainer>
           <button
             type="button"
-            className="recruit-close-button"
-            onClick={handleRecuitCloseClick}
+            className="delete-exit-button"
+            onClick={handleDeleteClick}
           >
-            완료하기
+            스터디 삭제
           </button>
-        ) : (
-          <div>
-            <strong>모집 완료</strong>
-          </div>
-        )}
-      </ManageInfo>
-
-      <ManageInfo>
-        <ManageSpan>스터디장</ManageSpan>{" "}
-        <strong>{studyInfo?.leaderNickName}</strong>
-      </ManageInfo>
-      <ManageInfo>
-        <ManageSpan>현재 인원</ManageSpan> {studyInfo?.memberCnt}
-      </ManageInfo>
-      <ManageInfo>
-        <ManageSpan>플랫폼</ManageSpan> {studyInfo?.platform}
-      </ManageInfo>
-      <ManageInfo>
-        <ManageSpan>기간</ManageSpan> {studyInfo?.startDate} ~{" "}
-        {studyInfo?.endDate}
-      </ManageInfo>
-      <ManageInfo>
-        <ManageSpan>태그</ManageSpan>
-        <ManageTag>
-          {studyInfo?.tags && (
-            <>
-              {studyInfo?.tags.map((tag, index) => (
-                <div key={index}>{tag}</div>
-              ))}
-            </>
-          )}
-        </ManageTag>
-      </ManageInfo>
-      <ManageInfo>
-        <ManageSpan>일정</ManageSpan> 매주 {dayOfWeekMap}{" "}
-        {studyInfo?.startTime} ~ {studyInfo?.endTime}
-      </ManageInfo>
-      <ManageIntro>{removeHtmlTag(studyInfo?.introduction)}</ManageIntro>
-      <ManageButtonContainer>
-        <button type="button" onClick={handleEditClick}>
-          스터디 정보 수정
-        </button>
-      </ManageButtonContainer>
-      {isModalOpen && (
-        <StudyInfoEditModal
-          isOpen={isModalOpen}
-          closeModal={() => setModalOpen(false)}
-          studyInfo={studyInfo}
-        />
-      )}
-      {/* <MemberManage studyLeader={studyInfo?.leaderNickName} />
-      <CandidateManage studyLeader={studyInfo?.leaderNickName} /> */}
-      <ManageButtonContainer>
-        <button
-          type="button"
-          className="delete-exit-button"
-          onClick={handleDeleteClick}
-        >
-          스터디 삭제
-        </button>
-        <button
-          type="button"
-          className="delete-exit-button"
-          onClick={handleExitClick}
-        >
-          스터디 탈퇴
-        </button>
-      </ManageButtonContainer>
-    </StoryManageContainer>
+          <button
+            type="button"
+            className="delete-exit-button"
+            onClick={handleExitClick}
+          >
+            스터디 탈퇴
+          </button>
+        </ManageButtonContainer>
+      </StudyManageBody>
+    </StudyManageContainer>
   );
 };
 
 export default ProfileStudyManage;
 
-const StoryManageContainer = styled.div`
+const StudyManageContainer = styled.div<{ imageUrl?: string }>`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  position: relative;
+  background-image: ${(props) =>
+    props.imageUrl ? `url(${props.imageUrl})` : "none"};
+  background-size: cover;
+  background-position: center;
+
+  ::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(
+      255,
+      255,
+      255,
+      0.95
+    ); // Adjust the last value to change the opacity
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+`;
+
+const StudyManageBody = styled.div`
   width: 960px;
   height: 100%;
-  margin-top: 40px;
   padding: 40px 0 200px;
   background-color: #fff;
   border-radius: 4px;
@@ -278,6 +313,15 @@ const ManageInfo = styled.div`
     font-weight: 300;
     color: #666;
   }
+
+  &:hover {
+    opacity: 85%;
+    transform: scale(1.01);
+    transition: transform 0.1s ease-in-out;
+  }
+  &:active {
+    opacity: 100%;
+  }
 `;
 
 const ManageSpan = styled.span`
@@ -309,12 +353,14 @@ const ManageTag = styled.div`
 `;
 
 const ManageIntro = styled.p`
-  width: 750px;
+  width: 90%;
   margin: 20px 40px;
+  padding-top: 15px;
   text-align: left;
   font-size: 15px;
   font-weight: 300;
   color: #1f1f1f;
+  border-top: 1px solid #ccc;
 `;
 
 const ManageButtonContainer = styled.div`
@@ -333,6 +379,8 @@ const ManageButtonContainer = styled.div`
 
     &:hover {
       opacity: 85%;
+      transform: scale(1.05);
+      transition: transform 0.1s ease-in-out;
     }
     &:active {
       opacity: 100%;
@@ -347,6 +395,8 @@ const ManageButtonContainer = styled.div`
 
     &:hover {
       background-color: #5a0202;
+      transform: scale(1.05);
+      transition: transform 0.1s ease-in-out;
     }
   }
 `;
