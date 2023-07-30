@@ -217,7 +217,6 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
   align-items: center;
   background-color: #fff;
   position: relative;
-  /* 추가된 스타일 */
   background-image: ${(props) =>
     props.imageUrl ? `url(${props.imageUrl})` : "none"};
   background-size: cover;
@@ -234,7 +233,7 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
       255,
       255,
       255,
-      0.95
+      0.92
     );
   }
 `;

@@ -128,6 +128,10 @@ const ProfileStudyManage = () => {
       <StudyManageBody>
         <ManageTitle>
           <h2>{studyInfo?.studyName}</h2>
+          <div className="studylist-interest">
+            <div id="studylist-interest_likes">❤️ {studyInfo?.likes}</div>
+            <div id="studylist-interest_views">🧐 {studyInfo?.views}</div>
+          </div>
         </ManageTitle>
         <ManageInfo>
           {" "}
@@ -236,12 +240,7 @@ const StudyManageContainer = styled.div<{ imageUrl?: string }>`
     right: 0;
     bottom: 0;
     left: 0;
-    background: rgba(
-      255,
-      255,
-      255,
-      0.95
-    ); // Adjust the last value to change the opacity
+    background: rgba(255, 255, 255, 0.95);
     z-index: 0;
   }
 
@@ -254,7 +253,7 @@ const StudyManageContainer = styled.div<{ imageUrl?: string }>`
 const StudyManageBody = styled.div`
   width: 960px;
   height: 100%;
-  padding: 40px 0 200px;
+  padding: 60px 0 200px;
   background-color: #fff;
   border-radius: 4px;
   display: flex;
@@ -263,6 +262,10 @@ const StudyManageBody = styled.div`
   align-items: center;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const ManageTitle = styled.div`
@@ -278,6 +281,27 @@ const ManageTitle = styled.div`
     font-size: 24px;
     font-weight: 700;
     color: #1f1f1f;
+  }
+  .studylist-interest {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 600;
+
+    #studylist-interest_likes {
+      font-size: 18px;
+      word-spacing: 2px;
+      margin-right: 10px;
+      :hover {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+    }
+    #studylist-interest_views {
+      font-size: 18px;
+      word-spacing: 2px;
+      margin-right: 10px;
+    }
   }
 `;
 
@@ -353,7 +377,7 @@ const ManageTag = styled.div`
 `;
 
 const ManageIntro = styled.p`
-  width: 90%;
+  width: 85%;
   margin: 20px 40px;
   padding-top: 15px;
   text-align: left;

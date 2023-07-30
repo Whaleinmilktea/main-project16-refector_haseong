@@ -8,11 +8,13 @@ import KakaoButton from "../components/social-login-button/KakaoButton";
 import NaverButton from "../components/social-login-button/NaverButton";
 import MemberRestoreModal from "../components/modal/MemberRestoreModal";
 import { validateEmptyInput } from "./utils/loginUtils";
+import { Base64 } from "js-base64";
 
 const SignUp = () => {
   const [nickName, setNickName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState(false);
   const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -24,18 +26,26 @@ const SignUp = () => {
   };
   const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    handlePasswordValidation(password);
+  };
+
+  const handlePasswordValidation = (password: string) => {
+    const passwordTest = (data: string) => {
+      return /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/g.test(data);
+    };
+    if (passwordTest(password)) {
+      setPasswordValidation(true);
+    } else {
+      setPasswordValidation(false);
+    }
   };
 
   const emailTest = (data: string) => {
     return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g.test(
       data
     );
+    // 비밀번호는 8~25자리의 영문, 숫자, 특수문자 조합
   };
-
-  const passwordTest = (data: string) => {
-    return /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/g.test(data);
-  };
-
 
   const handleSignUpButton = () => {
     if (
@@ -46,7 +56,6 @@ const SignUp = () => {
       alert("닉네임과 이메일, 패스워드를 모두 입력해주세요!");
     else if (nickName.length < 2) alert("닉네임은 2자리 이상이어야 합니다.");
     else if (emailTest(email) === false) alert("이메일 형식이 잘못되었습니다.");
-    else if (passwordTest(password) === false) alert("비밀번호는 8~25자리의 영문 대소문자, 숫자, 특수문자 조합이어야 합니다.");
     else {
       baseApi
         .post(`/members`, {
@@ -56,13 +65,14 @@ const SignUp = () => {
         })
         .then(() => navigate("/login"))
         .catch((error) => {
+          console.log(error);
+          if (error.response.status === 409) alert("이미 가입된 회원입니다.");
           if (error.response.data.message === "이메일이 이미 존재") {
             alert("이미 가입된 이메일 입니다.");
           }
           if (error.response.data.message === "닉네임이 이미 존재") {
             alert("사용할 수 없는 닉네임입니다.");
           }
-
           if (error.response.data.message === "탈퇴한 회원입니다.") {
             setMemberRestoreModalOpen(true);
           }
@@ -100,13 +110,31 @@ const SignUp = () => {
           />
         </SignUpForm>
         <SignUpForm>
-          <input
-            onChange={handlePassword}
-            type="password"
-            placeholder="Password"
-            autoComplete="new-password"
-            required
-          />
+          {passwordValidation ? (
+            <>
+              <input
+                onChange={handlePassword}
+                type="password"
+                placeholder="Password"
+                autoComplete="new-password"
+                required
+              />
+              <p style={{ marginTop : "10px", fontSize : "12px", color: "#4682A9" }}>사용할 수 있는 비밀번호입니다</p>
+            </>
+          ) : (
+            <>
+              <input
+                onChange={handlePassword}
+                type="password"
+                placeholder="Password"
+                autoComplete="new-password"
+                required
+              />
+              <p style={{ marginTop : "10px", fontSize : "12px", color: "#C51605" }}>
+                비밀번호는 8~25자리의 영문, 숫자, 특수문자 조합이어야 합니다
+              </p>
+            </>
+          )}
         </SignUpForm>
         <ButtonDiv>
           <button type="button" onClick={handleSignUpButton}>
@@ -174,6 +202,7 @@ const SignUpForm = styled.form`
     padding: 10px;
   }
 `;
+
 const ButtonDiv = styled.div`
   margin-top: 1rem;
   width: 75%;
