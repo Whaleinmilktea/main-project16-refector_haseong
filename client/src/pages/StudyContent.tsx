@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { getStudyGroupInfo, setLikeStatus } from "../apis/StudyGroupApi";
+import { getStudyGroupInfo } from "../apis/StudyGroupApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";

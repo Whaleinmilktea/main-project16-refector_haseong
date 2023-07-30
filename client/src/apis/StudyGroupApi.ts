@@ -46,7 +46,7 @@ export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
   //   `/study/${encodeId}`
   // );
   const response = await axios.get<StudyInfoDto>(
-    `http://localhost:3000/study/${id}`
+    `http://localhost:3000/studyInfo`
   );
   const studyInfo = response.data;
   return studyInfo;

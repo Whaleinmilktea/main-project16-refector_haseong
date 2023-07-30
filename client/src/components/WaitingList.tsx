@@ -39,7 +39,14 @@ const WaitingList = () => {
     }
   };
 
-  const WaitingStudyGroupItem = ({ id, title }: StudyGroupListDto) => {
+  const WaitingStudyGroupItem = ({
+    id,
+    title,
+    views,
+    tags,
+    likes,
+    image,
+  }: StudyGroupListDto) => {
     return (
       <ItemWrapper key={id}>
         <ItemTitle>{title}</ItemTitle>
@@ -58,7 +65,11 @@ const WaitingList = () => {
           <WaitingStudyGroupItem
             key={study.id}
             id={study.id}
+            image={study.image}
             title={study.title}
+            views={study.views}
+            tags={study.tags}
+            likes={study.likes}
           />
         ))}
       </ItemList>
@@ -128,6 +139,6 @@ const CancelButton = styled.button`
   align-items: center;
   :hover {
     transform: scale(1.1);
-    background-color: #C51605;
+    background-color: #c51605;
   }
 `;

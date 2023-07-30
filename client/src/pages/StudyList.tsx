@@ -80,19 +80,18 @@ const StudyList = () => {
               key={item?.id}
               onClick={() => navigate(`/studycontent/${item?.id}`)}
             >
-              <StudyListImage image={item.image}></StudyListImage>
+              <StudyListImage image={item?.image}></StudyListImage>
+
               <div>
                 <div className="studylist-title">
                   <h3>{item?.title}</h3>
                 </div>
                 <div className="studylist-interest">
-                  <div id="studylist-interest_likes">
-                    ❤️ {item?.likes}
-                  </div>
+                  <div id="studylist-interest_likes">❤️ {item?.likes}</div>
                   <div id="studylist-interest_views">🧐 {item?.views}</div>
                 </div>
                 <div className="studylist-tag">
-                  <StudyListTag item={item.tags} />
+                  <StudyListTag item={item?.tags} />
                 </div>
               </div>
             </StudyBox>

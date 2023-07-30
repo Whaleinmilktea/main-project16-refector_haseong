@@ -7,7 +7,6 @@ import {
 } from "../apis/StudyGroupApi";
 import styled from "styled-components";
 import StudyInfoEditModal from "../components/modal/StudyInfoEditModal";
-import StudyListTag from "../components/StudyListTag";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
@@ -20,22 +19,22 @@ const ProfileStudyManage = () => {
   const [studyInfo, setStudyInfo] = useState<StudyInfoDto | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [LoggedInUser, setLoggedInUser] = useState<string | null>(null);
+  const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const { id } = useParams();
   const parsedId = Number(id);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(LogInState);
   const isRecruiting = studyInfo?.isRecruited;
 
+  console.log(studyInfo);
+
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/");
-    }
+    if (!isLoggedIn) navigate("/");
   }, [isLoggedIn]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
+    if (!isLoggedIn) navigate("/login");
+
     const fetchStudyGroupInfo = async () => {
       if (isNaN(parsedId)) {
         alert("잘못된 접근입니다");
@@ -44,20 +43,21 @@ const ProfileStudyManage = () => {
       }
       try {
         const studyInfo = await getStudyGroupInfo(parsedId, isLoggedIn);
+        // dayOfWeekMapFunc(studyInfo.dayOfWeek);
         setStudyInfo(studyInfo);
       } catch (error) {}
     };
-    getMemberInfo(isLoggedIn).then((data) => {
-      if (data) {
-        setLoggedInUser(data.nickName);
-      } else {
-        setLoggedInUser(null);
-      }
-    });
-    fetchStudyGroupInfo();
-  }, [parsedId]);
 
-  // TODO : 스터디 정보를 수정하는 코드
+    // getMemberInfo(isLoggedIn).then((data) => {
+    //   if (data) {
+    //     setLoggedInUser(data.nickName);
+    //   } else {
+    //     setLoggedInUser(null);
+    //   }
+    // });
+    fetchStudyGroupInfo();
+  }, []);
+
   const handleEditClick = () => {
     if (LoggedInUser !== studyInfo?.leaderNickName) {
       alert("스터디장만 스터디를 수정할 수 있습니다");
@@ -66,7 +66,6 @@ const ProfileStudyManage = () => {
     setModalOpen(true);
   };
 
-  // TODO : 스터디 정보를 삭제하는 코드
   const handleDeleteClick = async () => {
     if (LoggedInUser !== studyInfo?.leaderNickName) {
       alert("선넘네...?");
@@ -77,7 +76,6 @@ const ProfileStudyManage = () => {
     navigate("/profile/manage-group");
   };
 
-  // TODO : 스터디에서 탈퇴하는 코드
   const handleExitClick = async () => {
     if (LoggedInUser === studyInfo?.leaderNickName) {
       alert("스터디장은 스터디에서 탈퇴할 수 없습니다");
@@ -89,7 +87,6 @@ const ProfileStudyManage = () => {
     window.location.reload(); // 페이지를 새로고침
   };
 
-  // TODO : 스터디 모집 상태를 수정하는 코드
   const handleRecuitCloseClick = async () => {
     getMemberInfo(isLoggedIn).then((data) => {
       if (data.nickName !== studyInfo?.leaderNickName) {
@@ -101,10 +98,31 @@ const ProfileStudyManage = () => {
     location.reload();
   };
 
-  // TODO : HTML 태그로 이뤄진 문자열을 일반 문자열로 변경하는 함수
   const removeHtmlTag = (str: string | undefined) => {
     if (str === undefined) return str;
     return str.replace(/(<([^>]+)>)/gi, "");
+  };
+
+  const dayOfWeekMapFunc = (dayOfWeek: number[]) => {
+    interface DayOfWeekMap {
+      [key: number]: string;
+    }
+    const dayOfWeekMap: DayOfWeekMap = {
+      0: "월",
+      1: "화",
+      2: "수",
+      3: "목",
+      4: "금",
+      5: "토",
+      6: "일",
+    };
+    const dayOfWeekArr = [];
+    for (let i = 0; i < dayOfWeek.length; i++) {
+      if (dayOfWeek[i] === 1) {
+        dayOfWeekArr.push(dayOfWeekMap[i]);
+      }
+    }
+    setDayOfWeekMap(dayOfWeekArr);
   };
 
   return (
@@ -135,30 +153,30 @@ const ProfileStudyManage = () => {
         <strong>{studyInfo?.leaderNickName}</strong>
       </ManageInfo>
       <ManageInfo>
-        <ManageSpan>현재 인원</ManageSpan> {studyInfo?.memberCountCurrent}
+        <ManageSpan>현재 인원</ManageSpan> {studyInfo?.memberCnt}
       </ManageInfo>
       <ManageInfo>
         <ManageSpan>플랫폼</ManageSpan> {studyInfo?.platform}
       </ManageInfo>
       <ManageInfo>
-        <ManageSpan>기간</ManageSpan> {studyInfo?.studyPeriodStart} ~{" "}
-        {studyInfo?.studyPeriodEnd}
+        <ManageSpan>기간</ManageSpan> {studyInfo?.startDate} ~{" "}
+        {studyInfo?.endDate}
       </ManageInfo>
       <ManageInfo>
         <ManageSpan>태그</ManageSpan>
         <ManageTag>
           {studyInfo?.tags && (
             <>
-              {Object.entries(studyInfo.tags).map(([_category, tags]) => (
-                <StudyListTag item={tags} />
+              {studyInfo?.tags.map((tag, index) => (
+                <div key={index}>{tag}</div>
               ))}
             </>
           )}
         </ManageTag>
       </ManageInfo>
       <ManageInfo>
-        <ManageSpan>일정</ManageSpan> 매주 {studyInfo?.daysOfWeek}{" "}
-        {studyInfo?.studyTimeStart} ~ {studyInfo?.studyTimeEnd}
+        <ManageSpan>일정</ManageSpan> 매주 {dayOfWeekMap}{" "}
+        {studyInfo?.startTime} ~ {studyInfo?.endTime}
       </ManageInfo>
       <ManageIntro>{removeHtmlTag(studyInfo?.introduction)}</ManageIntro>
       <ManageButtonContainer>
@@ -173,8 +191,8 @@ const ProfileStudyManage = () => {
           studyInfo={studyInfo}
         />
       )}
-      <MemberManage studyLeader={studyInfo?.leaderNickName} />
-      <CandidateManage studyLeader={studyInfo?.leaderNickName} />
+      {/* <MemberManage studyLeader={studyInfo?.leaderNickName} />
+      <CandidateManage studyLeader={studyInfo?.leaderNickName} /> */}
       <ManageButtonContainer>
         <button
           type="button"
@@ -200,7 +218,7 @@ export default ProfileStudyManage;
 const StoryManageContainer = styled.div`
   width: 960px;
   height: 100%;
-  margin-top: 100px;
+  margin-top: 40px;
   padding: 40px 0 200px;
   background-color: #fff;
   border-radius: 4px;
@@ -208,6 +226,8 @@ const StoryManageContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.3s ease-in-out;
 `;
 
 const ManageTitle = styled.div`

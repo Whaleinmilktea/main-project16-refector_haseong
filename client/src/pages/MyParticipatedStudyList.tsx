@@ -42,7 +42,7 @@ const ProfileStudyList = () => {
       navigate(`/profile/${id}`);
     };
 
-    const tagElements = tags.map((tag, index) => (
+    const tagElements = tags?.map((tag, index) => (
       <Tag key={index}>
         <div>{tag}</div>
       </Tag>
