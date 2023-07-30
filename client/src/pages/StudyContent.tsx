@@ -301,10 +301,6 @@ const StudyContentTitle = styled.div`
       font-size: 18px;
       word-spacing: 2px;
       margin-right: 10px;
-      :hover {
-        transform: scale(1.2);
-        cursor: pointer;
-      }
     }
   }
 `;
@@ -426,6 +422,8 @@ const StudyJoinButton = styled.button`
 
   &:hover {
     opacity: 85%;
+    transform: scale(1.1);
+    transition: transform 0.1s ease-in-out;
   }
   &:active {
     opacity: 100%;

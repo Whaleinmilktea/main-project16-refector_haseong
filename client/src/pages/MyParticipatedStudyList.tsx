@@ -6,74 +6,87 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import studyImage from "../assets/studyImage.webp";
 import WaitingList from "../components/WaitingList";
 import {
-  getStudyGroupList,
+  getLeaderRoleStduies,
+  getMemberRoleStduies,
 } from "../apis/StudyGroupApi";
-import { StudyGroup, StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
-
+import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 
 const ProfileStudyList = () => {
   const isLoggedIn = useRecoilValue(LogInState);
-  const [studyList, setStudyList] = useState<StudyGroupListDto>({
-    leaders: [],
-    members: [],
-  });
+  const [leaderRoleStudies, setLeaderRoleStudies] = useState<
+    StudyGroupListDto[]
+  >([]);
+  const [memberRoleStudies, setMemberRoleStudies] = useState<
+    StudyGroupListDto[]
+  >([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login");
     }
-    const fetchStudyList = async () => {
-      const { data, status } = await getStudyGroupList();
-      if (status < 299) {
-        setStudyList(data);
-      }
+    const fetchLeaderRoleStudies = async () => {
+      const { data } = await getLeaderRoleStduies();
+      setLeaderRoleStudies(data);
     };
-    // response.data도 항상 있음.
-    fetchStudyList();
+    const fetchMemberRoleStudies = async () => {
+      const { data } = await getMemberRoleStduies();
+      setMemberRoleStudies(data);
+    };
+    fetchLeaderRoleStudies();
+    fetchMemberRoleStudies();
   }, []);
 
-  const StudyCard = ({ id, title, tagValues }: StudyGroup) => {
+  const StudyCard = ({ id, title, tags }: StudyGroupListDto) => {
     const handleClick = () => {
       navigate(`/profile/${id}`);
     };
 
+    const tagElements = tags.map((tag, index) => (
+      <Tag key={index}>
+        <div>{tag}</div>
+      </Tag>
+    ));
+
     return (
       <CardProfileStudyListContainer onClick={handleClick}>
-        <Image>{/* 이미지 표시 로직 추가 */}</Image>
+        <Image />
         <Title>
           <h3>{title}</h3>
         </Title>
-        <Tag>
-          <div>{tagValues.join(", ")}</div>
-        </Tag>
+        <TagWrapper>{tagElements}</TagWrapper>
       </CardProfileStudyListContainer>
     );
   };
-
   return (
     <MyStudyListContainer>
       <WaitingList />
       <ListTitle>운영중인 스터디</ListTitle>
       <StudyCardContainer>
-        {studyList.leaders.map((leader) => (
+        {leaderRoleStudies.map((studies) => (
           <StudyCard
-            key={leader.id}
-            id={leader.id}
-            title={leader.title}
-            tagValues={leader.tagValues}
+            key={studies.id}
+            id={studies.id}
+            image={studies.image}
+            title={studies.title}
+            tags={studies.tags}
+            views={studies.views}
+            likes={studies.likes}
           />
         ))}
       </StudyCardContainer>
 
       <ListTitle>가입된 스터디</ListTitle>
       <StudyCardContainer>
-        {studyList.members.map((member) => (
+        {memberRoleStudies.map((studies) => (
           <StudyCard
-            key={member.id}
-            id={member.id}
-            title={member.title}
-            tagValues={member.tagValues}
+            key={studies.id}
+            id={studies.id}
+            image={studies.image}
+            title={studies.title}
+            tags={studies.tags}
+            views={studies.views}
+            likes={studies.likes}
           />
         ))}
       </StudyCardContainer>
@@ -86,21 +99,27 @@ export default ProfileStudyList;
 const MyStudyListContainer = styled.div`
   width: 960px;
   height: 100%;
-  margin-top: 100px;
-  padding: 40px 0 200px;
+  margin-top: 40px;
+  padding: 40px 0 40px;
   background-color: #fff;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const StudyCardContainer = styled.div`
   width: 900px;
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 `;
 
@@ -119,7 +138,7 @@ const CardProfileStudyListContainer = styled.div`
   height: 320px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  box-shadow: rgba(99, 99, 99, 0.2) 2px 4px 10px 2px;
   margin: 10px 20px;
   padding: 5px;
   display: flex;
@@ -127,6 +146,12 @@ const CardProfileStudyListContainer = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s;
+
+  &:hover {
+    box-shadow: rgba(99, 99, 99, 0.4) 0px 4px 12px 0px;
+    transform: scale(1.05);
+  }
 `;
 
 const Title = styled.div`
@@ -151,13 +176,16 @@ const Image = styled.div`
   background-size: cover;
   background-color: aliceblue;
 `;
+
+const TagWrapper = styled.div`
+display: flex;
+width: 240px;
+justify-content: flex-start;
+align-items: flex-start;
+`;
+
 const Tag = styled.div`
-  width: 240px;
-  padding-top: 10px;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
-  align-items: center;
 
   div {
     height: 24px;
