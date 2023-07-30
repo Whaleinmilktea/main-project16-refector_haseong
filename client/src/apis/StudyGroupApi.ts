@@ -52,21 +52,33 @@ export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
   return studyInfo;
 }
 
-export const getMyStudyGroupList = async () => {
-  const response = await tokenRequestApi.get<MyStudyGroupListDto>(
-    `/studygroup/myList?approved=true`
-  );
+export const getLeaderRoleStduies = async () => {
+  // https://{{local}}/study/leader/list
+  const response = await axios.get<StudyGroupListDto[]>(
+    "http://localhost:3000/leaderStudies"
+  )
   return response;
 };
 
-export const getWaitingStudyGroupList =
-  async (): Promise<WaitingStudyGroupListDto> => {
-    const response = await tokenRequestApi.get<WaitingStudyGroupListDto>(
-      `/studygroup/myList?approved=false`
-    );
-    const data = response.data;
-    return data;
-  };
+export const getMemberRoleStduies = async () => {
+  // https://{{local}}/study/leader/list
+  const response = await axios.get<StudyGroupListDto[]>(
+    "http://localhost:3000/memberStudies"
+  )
+  return response;
+};
+
+export const getWaitingStudyGroupList = async () => {
+  const response = await axios.get<StudyGroupListDto[]>(
+    `http://localhost:3000/waitingStudyGroupList`
+  );
+  return response.data;
+}
+  // async (): Promise<WaitingStudyGroupListDto> => {
+  //   const response = await tokenRequestApi.get<WaitingStudyGroupListDto>(
+  //     `/studygroup/myList?approved=false`
+  //   );
+
 
 export async function cancelStudyGroupApplication(
   id: number,
@@ -224,4 +236,9 @@ export async function getStudyListOrder(order: string, isAscending: boolean) {
     `/studygroups/order?page=1&size=3&order=${order}&isAscending=${isAscending}`
   );
   return response.data.data;
+}
+
+export const setLikeStatus = async (studygroupId: number | undefined) => {
+  if(studygroupId === undefined) return
+  await tokenRequestApi.patch(`/study/${studygroupId}/likes`)
 }

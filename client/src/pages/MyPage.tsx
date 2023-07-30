@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Routes, Route, useNavigate, Link } from "react-router-dom";
 import ProfileStudyList from "./MyParticipatedStudyList";
 import ProfileCalendar from "./ProfileCalendar";
-import ProfileStudyManage from "./ProfileStudyManage";
+import ProfileStudyManage from "./StudyManage";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -54,12 +54,15 @@ const LnbWrapper = styled.div`
   width: 160px;
   height: 270px;
   border-radius: 4px;
-  margin: 100px 20px 0 0;
+  margin-right: 20px;
   padding: 30px 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  position: sticky;
+  top: 90px;
 
   ul {
     width: 130px;
@@ -73,15 +76,22 @@ const LnbWrapper = styled.div`
     font-weight: 500;
     margin-top: 10px;
     padding: 10px 8px 0;
+    :hover {
+      transform: scale(1.05);
+      transition: transform 0.1s ease-in-out;
+    }
   }
+
   .schedule-link {
     color: #1f1f1f;
     cursor: pointer;
   }
+
   .schedule-link:hover {
     color: #2759a2;
   }
 `;
+
 const Title = styled.h2`
   width: 130px;
   padding: 10px 5px;

@@ -7,12 +7,11 @@ import {
 import { FiDelete } from "react-icons/fi";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { WaitingStudyGroupItemDto } from "../types/StudyGroupApiInterfaces";
+import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 
 const WaitingList = () => {
-  const [waitingList, setWaitingList] = useState<WaitingStudyGroupItemDto[]>(
-    []
-  );
+  const [isData, setIsData] = useState<boolean>(true);
+  const [waitingList, setWaitingList] = useState<StudyGroupListDto[]>([]);
   const isLoggedIn = useRecoilValue(LogInState);
 
   useEffect(() => {
@@ -20,9 +19,9 @@ const WaitingList = () => {
       try {
         const data = await getWaitingStudyGroupList();
         if (data === null) {
-          return;
+          setIsData(false);
         }
-        setWaitingList(data.beStudys);
+        setWaitingList(data);
       } catch (error) {
         alert("스터디 그룹 리스트를 불러오는데 실패했습니다.");
       }
@@ -30,7 +29,8 @@ const WaitingList = () => {
     fetchWaitingList();
   }, []);
 
-  const handleCancelButton = async (id: number) => {
+  const handleCancelButton = async (id: number | undefined) => {
+    if (id === undefined) return alert("잘못된 접근입니다");
     try {
       await cancelStudyGroupApplication(id, isLoggedIn);
       setWaitingList(waitingList.filter((study) => study.id !== id));
@@ -39,7 +39,7 @@ const WaitingList = () => {
     }
   };
 
-  const WaitingStudyGroupItem = ({ id, title }: WaitingStudyGroupItemDto) => {
+  const WaitingStudyGroupItem = ({ id, title }: StudyGroupListDto) => {
     return (
       <ItemWrapper key={id}>
         <ItemTitle>{title}</ItemTitle>
@@ -69,6 +69,7 @@ const WaitingList = () => {
 export default WaitingList;
 
 const WaitingListWrapper = styled.div`
+  margin-left: 15px;
   padding-left: 20px;
 `;
 
@@ -82,24 +83,27 @@ const WaitingListTitle = styled.h2`
 `;
 
 const ItemList = styled.div`
-  width: 900px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
 `;
 
 const ItemWrapper = styled.div`
-  width: 700px;
+  width: 95%;
   height: 60px;
   background-color: #fff;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 4px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  :hover {
+    box-shadow: rgba(99, 99, 99, 0.4) 0px 4px 12px 0px;
+    transform: scale(1.01);
+  }
 `;
 
 const ItemTitle = styled.div`
@@ -122,4 +126,8 @@ const CancelButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  :hover {
+    transform: scale(1.1);
+    background-color: #C51605;
+  }
 `;

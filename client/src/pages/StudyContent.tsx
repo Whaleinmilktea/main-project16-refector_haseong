@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { getStudyGroupInfo } from "../apis/StudyGroupApi";
+import { getStudyGroupInfo, setLikeStatus } from "../apis/StudyGroupApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
@@ -11,6 +11,7 @@ import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 import { GetCommentDto } from "../types/CommentInterfaces";
 import { v4 as uuidv4 } from "uuid";
+// import { useMutation } from "@tanstack/react-query";
 
 const StudyContent = () => {
   const initialState = {
@@ -106,12 +107,20 @@ const StudyContent = () => {
 
   const markUp = (convertIntroduction: string) => {
     return { __html: convertIntroduction };
-  };
+  }; // XSS 방지 로직 추가 필요
+
+  // const ClickLikeButton = useMutation(() => setLikeStatus(content?.id), {
+  //   onSuccess: () => {
+  //     alert("좋아요가 반영되었습니다.");
+  //   },
+  //   onError: () => {
+  //     alert("좋아요 반영에 실패했습니다.");
+  //   },
+  // });
+
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [setCommentsList]);
-
-  console.log(content?.image);
 
   return (
     <>
@@ -221,7 +230,12 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.92); /* Adjust the last value (0.7 here) to change the opacity */
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.92
+    ); /* Adjust the last value (0.7 here) to change the opacity */
   }
 `;
 const StudyContentBody = styled.div`
@@ -287,10 +301,6 @@ const StudyContentTitle = styled.div`
       font-size: 18px;
       word-spacing: 2px;
       margin-right: 10px;
-      :hover {
-        transform: scale(1.2);
-        cursor: pointer;
-      }
     }
   }
 `;
@@ -412,6 +422,8 @@ const StudyJoinButton = styled.button`
 
   &:hover {
     opacity: 85%;
+    transform: scale(1.1);
+    transition: transform 0.1s ease-in-out;
   }
   &:active {
     opacity: 100%;
