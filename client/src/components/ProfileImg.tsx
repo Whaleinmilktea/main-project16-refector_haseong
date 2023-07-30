@@ -13,7 +13,6 @@ const ProfileImg = ({ profileImage }: Props) => {
   const [imageUrl, setImageUrl] = useState<string>(profileImage || "");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isRendering, setIsRendering] = useRecoilState(RenderingState);
-  // const formData = new FormData();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file: File | undefined = e.target.files?.[0];
@@ -48,7 +47,7 @@ const ProfileImg = ({ profileImage }: Props) => {
       <ProfileImgSection>
         {!isEditing ? (
           <label htmlFor="profile-image">
-            <img src={profileImage} alt="Profile image" />
+            <img src={imageUrl} alt="Profile image" />
           </label>
         ) : (
           <img src={imageUrl} alt="Profile image" />
@@ -129,6 +128,7 @@ const ButtonGroup = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  margin-left: 40px;
 `;
 
 const CancelButton = styled.button`
