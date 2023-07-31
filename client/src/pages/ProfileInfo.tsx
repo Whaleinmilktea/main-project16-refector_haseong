@@ -218,7 +218,7 @@ export default ProfileInfo;
 const ProfileInfoContainer = styled.div`
   width: 900px;
   height: 100%;
-  padding: 100px 0 0 50px;
+  padding: 40px 0 0 50px;
 `;
 
 const ProfileBaseWrapper = styled.div`
