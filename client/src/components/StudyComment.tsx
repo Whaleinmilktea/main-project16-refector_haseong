@@ -4,7 +4,7 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import { useState } from "react";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { postComment, getComments } from "../apis/CommentApi";
-import { GetCommentDto } from "../types/CommentInterfaces";
+import { CommentList } from "../types/CommentInterfaces";
 import { useNavigate } from "react-router-dom";
 
 const StudyComment = ({
@@ -12,7 +12,7 @@ const StudyComment = ({
   setCommentsList,
 }: {
   studyGroupId: number;
-  setCommentsList: React.Dispatch<React.SetStateAction<GetCommentDto[]>>;
+  setCommentsList: React.Dispatch<React.SetStateAction<CommentList[]>>;
 }) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
@@ -42,10 +42,8 @@ const StudyComment = ({
         await postComment(studyGroupId, inputComment);
         setInputComment("");
         const fetchData = async () => {
-          try {
             const newComment = await getComments(studyGroupId);
-            setCommentsList(newComment);
-          } catch (error) {}
+            setCommentsList(newComment.comment);
         };
         fetchData();
       } catch (error) {
