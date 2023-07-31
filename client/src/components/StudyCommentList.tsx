@@ -24,7 +24,7 @@ const StudyCommentList = ({
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
   const [inputComment, setInputComment] = useState("");
-  const [patchId, setPatchId] = useState<number | null>(null);
+  const [commentId, setCommentId] = useState<number | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [isEnterPressed, setIsEnterPressed] = useState(false);
   const [isViewOtherMember, setIsViewOtherMember] = useState({
@@ -38,7 +38,6 @@ const StudyCommentList = ({
     totalElements: 1,
     totalPages: 1
   });
-
 
   const fetchCommentsData = async () => {
     const commentData = await getComments(studyGroupId, currentPage);
@@ -68,7 +67,7 @@ const StudyCommentList = ({
   const handleUpdate = (id: number, content: string) => {
     if (!isLoggedIn) navigate("/login");
     setIsUpdateMode(!isUpdateMode);
-    setPatchId(id);
+    setCommentId(id);
     setInputComment(content);
   };
 
@@ -78,10 +77,10 @@ const StudyCommentList = ({
       alert("댓글 내용을 입력해주세요.");
     } else {
       try {
-        if (patchId) {
-          await patchComment(patchId, inputComment);
+        if (commentId) {
+          await patchComment(commentId, inputComment);
           setIsUpdateMode(false);
-          setPatchId(null);
+          setCommentId(null);
           setInputComment("");
         }
       } catch (error) {
@@ -134,7 +133,7 @@ const StudyCommentList = ({
                 <ContentItem>
                   <p onClick={ClickCommentNickName}>{commentsList.nickName}</p>
                   <>
-                    {isUpdateMode && patchId === commentsList.id ? (
+                    {isUpdateMode && commentId === commentsList.id ? (
                       <>
                         <input
                           onKeyDown={handleEnter}
