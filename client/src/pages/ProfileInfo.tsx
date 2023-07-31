@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import ProfileImg from "../components/ProfileImg";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState} from "recoil";
+import { useRecoilState } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { removeTokens } from "./utils/Auth";
@@ -13,9 +13,7 @@ import {
   checkOauth2Member,
   leaveMembership,
 } from "../apis/MemberApi";
-import {
-  MemberDetailDto,
-} from "../types/MemberApiInterfaces";
+import { MemberDetailDto } from "../types/MemberApiInterfaces";
 import NicknameEditModal from "../components/modal/NicknameEditModal";
 import PasswordEditModal from "../components/modal/PasswordEditModal";
 import { Tooltip } from "react-tooltip";
@@ -36,15 +34,19 @@ const ProfileInfo = () => {
   const [passowrdCheckModalOpen, setPasswordCheckModalOpen] =
     useState<boolean>(false);
   const navigate = useNavigate();
-
-  const { data, isLoading, isError } = useQuery(["userInfo"], ()=>{
+  const { data, isLoading, isError, refetch } = useQuery(["userInfo"], () => {
     return getMemberInfo(isLoggedIn);
-  })
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [isNicknameEditModalOpen])
+
   const userInfo = data;
 
   if (!isLoggedIn) navigate("/login");
-  if (isLoading) return <div>로딩중...</div>
-  if (isError) return <div>에러가 발생했습니다.</div>
+  if (isLoading) return <div>로딩중...</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
 
   const handleNicknameEditClick = async () => {
     const data = await checkOauth2Member(isLoggedIn);
@@ -121,7 +123,7 @@ const ProfileInfo = () => {
           <ProfileInput
             className="nickname-input"
             disabled
-            value={data?.nickName || ""}
+            value={userInfo?.nickName}
           />
           <ProfileInput disabled value={userInfo?.email || ""} />
           <ProfileInput disabled value={userInfo?.roles || ""} />
