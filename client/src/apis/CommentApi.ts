@@ -2,7 +2,7 @@ import tokenRequestApi from "./TokenRequestApi";
 import { CommentData } from "../types/CommentInterfaces";
 import { Base64 } from "js-base64";
 
-const encodedUrl = (el : string | number) => {
+export const encodedUrl = (el : string | number) => {
   if (typeof el === "string") return Base64.encode(el);
   else return Base64.encode(el.toString());
 }
@@ -28,7 +28,7 @@ export const getComments = async (
 
 export const patchComment = async (studyGroupId: number, data: string) => {
   await tokenRequestApi.post(
-    `comment/${Base64.encode(studyGroupId.toString())}`,
+    `comment/${encodedUrl(studyGroupId)}`,
     { content: data }
   );
 };
