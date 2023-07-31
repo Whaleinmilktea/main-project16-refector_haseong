@@ -27,13 +27,9 @@ export const createStudyGroup = async (
 
 export const getStudyGroupList = async (
   currentPage: number
-): Promise<StudyGroupListDto[]> => {
-  // const requestEndpoint = Base64.encode(`$studygroups?page${currentPage}&size=6}`)
-  // const response = await axios.get<StudyGroupListDto[]>(
-  //   `${import.meta.env.VITE_APP_API_URL}/list?p=${currentPage}&s=6`
-  // );
-  const response = await axios.get(
-    `http://localhost:3000/list?_page=${currentPage}&_limit=6`
+): Promise<StudyGroupListDto> => {
+  const response = await tokenRequestApi.get<StudyGroupListDto>(
+    `/study/list?p=${Base64.encode(currentPage.toString())}&s=${Base64.encode("6")}`
   );
   return response.data;
 };
@@ -55,7 +51,7 @@ export const getLeaderRoleStduies = async () => {
   // https://{{local}}/study/leader/list
   const response = await axios.get<StudyGroupListDto[]>(
     "http://localhost:3000/leaderStudies"
-  )
+  );
   return response;
 };
 
@@ -63,7 +59,7 @@ export const getMemberRoleStduies = async () => {
   // https://{{local}}/study/leader/list
   const response = await axios.get<StudyGroupListDto[]>(
     "http://localhost:3000/memberStudies"
-  )
+  );
   return response;
 };
 
@@ -72,12 +68,11 @@ export const getWaitingStudyGroupList = async () => {
     `http://localhost:3000/waitingStudyGroupList`
   );
   return response.data;
-}
-  // async (): Promise<WaitingStudyGroupListDto> => {
-  //   const response = await tokenRequestApi.get<WaitingStudyGroupListDto>(
-  //     `/studygroup/myList?approved=false`
-  //   );
-
+};
+// async (): Promise<WaitingStudyGroupListDto> => {
+//   const response = await tokenRequestApi.get<WaitingStudyGroupListDto>(
+//     `/studygroup/myList?approved=false`
+//   );
 
 export async function cancelStudyGroupApplication(
   id: number,
@@ -87,8 +82,6 @@ export async function cancelStudyGroupApplication(
   await tokenRequestApi.delete(`/studygroup/${id}/join`);
   alert("해당 그룹에 가입신청을 철회합니다");
 }
-
-
 
 export async function updateStudyGroupInfo(
   data: StudyGroupUpdateDto,
@@ -238,6 +231,6 @@ export async function getStudyListOrder(order: string, isAscending: boolean) {
 }
 
 export const setLikeStatus = async (studygroupId: number | undefined) => {
-  if(studygroupId === undefined) return
-  await tokenRequestApi.patch(`/study/${studygroupId}/likes`)
-}
+  if (studygroupId === undefined) return;
+  await tokenRequestApi.patch(`/study/${studygroupId}/likes`);
+};

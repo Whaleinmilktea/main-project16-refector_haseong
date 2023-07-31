@@ -13,13 +13,25 @@ export interface StudyGroupCreateDto {
   tags: string[];
 }
 
-export interface StudyGroupListDto {
-  id?: number;
+export interface Study {
+  id: number;
   title: string;
   image: string;
   tags: string[];
   views: number;
   likes: number;
+}
+
+interface PageInfo {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface StudyGroupListDto {
+  study: Study[];
+  pageInfo: PageInfo;
 }
 
 export interface StudyInfoDto {

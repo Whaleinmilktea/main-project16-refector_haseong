@@ -4,15 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import StudyListTag from "../components/StudyListTag";
 import ListFilter from "../components/ListFilter";
 import Search from "../components/Search";
-import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+import { Study, StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
-  const [list, setList] = useState<StudyGroupListDto[]>([]);
+  const [list, setList] = useState<Study[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterData, setFilterData] = useState<StudyGroupListDto[]>([]);
+  const [filterData, setFilterData] = useState<Study[]>([]);
   const [sortValue, setSortValue] = useState("default");
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const StudyList = () => {
 
   const fetchList = async () => {
     const res = await getStudyGroupList(currentPage);
-    setList((prev) => [...prev, ...res]);
+    setList((prev) => [...prev, ...res.study]);
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
@@ -75,7 +75,7 @@ const StudyList = () => {
           <ListFilter onChange={handleSortOrder} />
         </ListFilterWrapper>
         <StudyBoxContainer>
-          {filterData?.map((item: StudyGroupListDto) => (
+          {filterData?.map((item: Study) => (
             <StudyBox
               key={item?.id}
               onClick={() => navigate(`/studycontent/${item?.id}`)}
@@ -177,13 +177,6 @@ const StudyBoxContainer = styled.div`
   align-items: center;
 `;
 
-const StudyListImage = styled.div<{ image: string }>`
-  width: 260px;
-  height: 180px;
-  background-image: url(${(props) => props.image});
-  background-size: cover;
-  background-color: aliceblue;
-`;
 
 const StudyBox = styled.div`
   flex-basis: 270px;
@@ -205,7 +198,7 @@ const StudyBox = styled.div`
 
   .studylist-title {
     width: 260px;
-    padding: 20px 0 12px;
+    padding: 10px 0 5px;
     color: #1f1f1f;
     display: flex;
     justify-content: flex-start;
@@ -222,6 +215,7 @@ const StudyBox = styled.div`
     justify-content: flex-start;
     align-items: center;
     font-weight: 600;
+    margin-bottom: 10px;
     #studylist-interest_likes {
       word-spacing: 2px;
       margin-right: 10px;
@@ -234,7 +228,7 @@ const StudyBox = styled.div`
   .studylist-tag {
     width: 260px;
     height: 30px;
-    padding-top: 20px;
+    padding-top: 5px;
     margin-bottom: 5px;
     display: flex;
     flex-flow: row wrap;
@@ -245,13 +239,23 @@ const StudyBox = styled.div`
   .studylist-tag > div {
     height: 24px;
     color: #39739d;
-    font-size: 0.8125rem;
+    font-size: 12px;
     border-radius: 4px;
     background-color: #e1ecf4;
-    padding: 4.8px 6px;
+    padding: 4px 5px;
     margin: 0 7px 4px 0;
     cursor: pointer;
   }
 `;
+
+const StudyListImage = styled.div<{ image: string }>`
+  width: 260px;
+  height: 180px;
+  margin-top: -10px;
+  background-image: url(${(props) => props.image});
+  background-size: cover;
+  background-color: aliceblue;
+`;
+
 
 export default StudyList;
