@@ -5,6 +5,7 @@ export interface StudyGroupCreateDto {
   dayOfWeek: number[];
   startTime: string;
   endTime: string;
+  color:  string;
   memberMin: number;
   memberMax: number;
   platform: string;

@@ -8,30 +8,26 @@ import DaysOfWeek from "../components/DaysOfWeek";
 import NewTagInput from "../components/NewTagInput";
 import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 import { createStudyGroup } from "../apis/StudyGroupApi";
-// import { v4 as uuidv4 } from "uuid"; // 테스트용 임시 id 생성
 
 const StudyPost = () => {
   const isLoggedIn = useRecoilValue(LogInState);
   const [studyData, setStudyData] = useState<StudyGroupCreateDto>({
-    // id : "", // 테스트용 임시 id 생성
     studyName: "",
     startDate: "",
     endDate: "",
     dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
     startTime: "10:00",
     endTime: "11:00",
+    color: "#4994da",
     memberMin: 2,
     memberMax: 2,
     platform: "",
     introduction: "",
     tags: [],
   });
-  // 카테고리 상태 => 여러 상태가 맞물려서 작동하기 때문에 별도의 상태로 관리 필요
   const [selectedCategory, setSelectedCategory] =
     useState<string>("프론트엔드");
-  // 스터디 소개 => TextEditor 컴포넌트에서 관리
   const [introduction, setIntroduction] = useState<string>("");
-  // 태그 => TagInput 컴포넌트에서 관리
   const [tags, setTags] = useState<string[]>([]);
   const navigate = useNavigate();
 
@@ -70,6 +66,9 @@ const StudyPost = () => {
   const handlePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStudyData({ ...studyData, platform: e.target.value });
   };
+  const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, color: e.target.value });
+  };
 
   const handlePostButton = async () => {
     if (!isLoggedIn) {
@@ -93,13 +92,13 @@ const StudyPost = () => {
       return;
     }
     const StudyPostData = {
-      // id : uuidv4(), // 테스트용 임시 id 생성
       studyName: studyData.studyName,
       startDate: studyData.startDate,
       endDate: studyData.endDate,
       dayOfWeek: studyData.dayOfWeek,
       startTime: studyData.startTime,
       endTime: studyData.endTime,
+      color: "",
       memberMin: studyData.memberMin,
       memberMax: studyData.memberMax,
       platform: studyData.platform,
@@ -208,11 +207,19 @@ const StudyPost = () => {
               onChange={handlePlatform}
             />
           </StudyPostInfo>
+          <StudyPostInfo>
+            <span>색상</span>
+            <input
+              type="color"
+              value={studyData.color}
+              onChange={handleColor}
+            />
+          </StudyPostInfo>
 
           <StudyTagWrapper>
             <span id="tagTitle">태그</span>
             <span id="tagCategory">{selectedCategory}</span>
-            <NewTagInput setTags={setTags}/>
+            <NewTagInput setTags={setTags} />
           </StudyTagWrapper>
 
           <StudyPostInput>
@@ -369,7 +376,7 @@ const StudyTagWrapper = styled.div`
   }
 
   #tagCategory {
-    color: #17594A;
+    color: #17594a;
     font-size: 15px;
     font-weight: 700;
     margin-right: 15px;
