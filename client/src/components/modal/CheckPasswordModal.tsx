@@ -42,19 +42,17 @@ const CheckPasswordModal = ({
     const passwordCheckResult: MemberPasswordCheckDto = {
       password: passwordState,
     };
-    const result = checkMemberPassword(passwordCheckResult);
-    if ((await result) === true) {
+    const result = await checkMemberPassword(passwordCheckResult);
+    if (result === true) {
       if (editingMode === "nickname") {
         closeModal();
         setIsNicknameEditModalOpen(true);
-      } else if (editingMode === "password") {
+      } if (editingMode === "password") {
         closeModal();
         setIsPasswordEditModalOpen(true);
       }
-    } else {
-      alert("비밀번호가 일치하지 않습니다.");
-      closeModal();
     }
+    if (result === false) alert("비밀번호를 확인해주세요");
   };
 
   return (
@@ -73,7 +71,9 @@ const CheckPasswordModal = ({
             onChange={handleInputChange}
             autoComplete="new-password"
           />
-          <ModalButton type="submit">확인</ModalButton>
+          <ModalButton type="submit">
+            확인
+          </ModalButton>
         </form>
       </Modal>
     </>

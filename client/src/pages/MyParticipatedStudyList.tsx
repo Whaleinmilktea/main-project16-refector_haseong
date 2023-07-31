@@ -39,10 +39,10 @@ const ProfileStudyList = () => {
 
   const StudyCard = ({ id, title, tags }: StudyGroupListDto) => {
     const handleClick = () => {
-      navigate(`/profile/${id}`);
+      navigate(`/${id}`);
     };
 
-    const tagElements = tags.map((tag, index) => (
+    const tagElements = tags?.map((tag, index) => (
       <Tag key={index}>
         <div>{tag}</div>
       </Tag>

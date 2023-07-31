@@ -29,14 +29,6 @@ export const updateMemberProfileImage = async (
   });
 };
 
-export const updateMemberDetail = async (memberDetailDto: MemberDetailDto) => {
-  await tokenRequestApi.patch("/members/aboutme", memberDetailDto);
-};
-
-export const leaveMembership = async () => {
-  await tokenRequestApi.delete("/members");
-};
-
 export const checkMemberPassword = async (
   memberPasswordCheckDto: MemberPasswordCheckDto
 ) => {
@@ -46,8 +38,10 @@ export const checkMemberPassword = async (
       memberPasswordCheckDto
     );
     if (response.status <= 299) return true;
-    else return false;
-  } catch (error) {}
+    if (response.status === 400) return false;
+  } catch (error) {
+    return false;
+  }
 };
 
 export const checkOauth2Member = async (isLoggedIn: boolean) => {
@@ -69,6 +63,14 @@ export const updateUserPassword = async (isLoggedIn : boolean, password: string)
   if(!isLoggedIn) throw new Error("로그인 상태를 확인해주세요.");
   await tokenRequestApi.patch("/members/pass", password );
 }
+
+export const updateMemberDetail = async (memberDetailDto: MemberDetailDto) => {
+  await tokenRequestApi.patch("/members/aboutme", memberDetailDto);
+};
+
+export const leaveMembership = async () => {
+  await tokenRequestApi.delete("/members");
+};
 
 // 리팩토링 이후 더 이상 사용하지 않는 코드
 // export const updateMember = async (

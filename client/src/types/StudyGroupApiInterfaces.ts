@@ -14,15 +14,15 @@ export interface StudyGroupCreateDto {
 
 export interface StudyGroupListDto {
   id?: number;
-  title?: string;
-  image?: string;
-  tags?: string[];
-  views?: number;
-  likes?: number;
+  title: string;
+  image: string;
+  tags: string[];
+  views: number;
+  likes: number;
 }
 
 export interface StudyInfoDto {
-  id: string;
+  id: number | string;
   studyName: string;
   image: string;
   memberMin: number;

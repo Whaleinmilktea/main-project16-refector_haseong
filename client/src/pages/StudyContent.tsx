@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { getStudyGroupInfo, setLikeStatus } from "../apis/StudyGroupApi";
+import { getStudyGroupInfo } from "../apis/StudyGroupApi";
 import StudyComment from "../components/StudyComment";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
@@ -217,7 +217,6 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
   align-items: center;
   background-color: #fff;
   position: relative;
-  /* 추가된 스타일 */
   background-image: ${(props) =>
     props.imageUrl ? `url(${props.imageUrl})` : "none"};
   background-size: cover;
@@ -235,7 +234,7 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
       255,
       255,
       0.92
-    ); /* Adjust the last value (0.7 here) to change the opacity */
+    );
   }
 `;
 const StudyContentBody = styled.div`
@@ -246,7 +245,7 @@ const StudyContentBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   opacity: 0.99;
 `;
 
