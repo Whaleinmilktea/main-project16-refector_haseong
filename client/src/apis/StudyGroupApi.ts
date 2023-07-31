@@ -21,8 +21,7 @@ export const createStudyGroup = async (
   isLoggedIn: boolean
 ) => {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
-  // await tokenRequestApi.post(`${import.meta.env.VITE_APP_API_URL}/study`, data);
-  await axios.post(`http://localhost:3000/study`, data);
+  await tokenRequestApi.post(`${import.meta.env.VITE_APP_API_URL}/study`, data);
   alert("스터디가 생성되었습니다");
 };
 
