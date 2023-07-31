@@ -39,10 +39,7 @@ const StudyContent = () => {
   const [commentsList, setCommentsList] = useState<CommentList[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
-  const [likeStatus, setLikeStatus] = useState({
-    likes: 0,
-    status: false,
-  });
+  const [currentLikeStatus, setCurrentLikeStatus] = useState(0);
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
   const { id } = useParams(); // App.tsx의 Route url에 :id로 명시하면 그걸 가져옴
   const parsedId = Number(id);
@@ -62,10 +59,7 @@ const StudyContent = () => {
         const content = await getStudyGroupInfo(parsedId);
         dayOfWeekMapFunc(content.dayOfWeek);
         setContent(content);
-        setLikeStatus({
-          likes: content.likes,
-          status: false,
-        });
+        setCurrentLikeStatus(content.likes);
         setFetching(false);
       } catch (error) {
         if (!isLoggedIn) setLoginAlertModalOpen(true);
@@ -111,9 +105,14 @@ const StudyContent = () => {
     return { __html: convertIntroduction };
   }; // XSS 방지 로직 추가 필요
 
-  const ClickLikeButton = () => {
+  const ClickLikeButton = async () => {
     if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");
-    updateLikeStatus(parsedId)
+    const response = await updateLikeStatus(parsedId)
+    if (response === 1) {
+      setCurrentLikeStatus(currentLikeStatus + 1);
+    } else if (response === 0) {
+      setCurrentLikeStatus(currentLikeStatus - 1);
+    }
   };
 
   useEffect(() => {
@@ -139,7 +138,7 @@ const StudyContent = () => {
                       id="studylist-interest_likes"
                       onClick={ClickLikeButton}
                     >
-                      ❤️ {likeStatus.likes}
+                      ❤️ {currentLikeStatus}
                     </div>
                     <div id="studylist-interest_views">🧐 {content?.views}</div>
                   </div>

@@ -47,9 +47,10 @@ export const updateLikeStatus = async (studygroupId: number | undefined) => {
   if (studygroupId === undefined) {
     alert("스터디 경로가 전달되지 않습니다. 스터디의 개설 상태를 확인해주세요");
   } else {
-    await tokenRequestApi.patch(
+    const response = await tokenRequestApi.patch(
       `/study/${Base64.encode(studygroupId?.toString())}/likes`
     );
+    return response.data;
   }
 };
 
