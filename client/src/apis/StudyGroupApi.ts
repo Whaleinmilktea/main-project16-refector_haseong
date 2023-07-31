@@ -1,8 +1,9 @@
 import axios from "axios";
 import tokenRequestApi from "./TokenRequestApi";
 import { baseApi } from "./EduApi";
-import { Base64 } from "js-base64";
 import {
+  MyStudyData,
+  Study,
   StudyGroupCreateDto,
   StudyGroupListDto,
   StudyGroupMemberApprovalDto,
@@ -13,13 +14,14 @@ import {
   StudyInfoDto,
   StudyListOrderDto,
 } from "../types/StudyGroupApiInterfaces";
+import { encodedUrl } from "./CommentApi";
 
 export const createStudyGroup = async (
   data: StudyGroupCreateDto,
   isLoggedIn: boolean
 ) => {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
-  await tokenRequestApi.post(`${import.meta.env.VITE_APP_API_URL}/study`, data);
+  await tokenRequestApi.post(`/study`, data);
   alert("스터디가 생성되었습니다");
 };
 
@@ -27,16 +29,14 @@ export const getStudyGroupList = async (
   currentPage: number
 ): Promise<StudyGroupListDto> => {
   const response = await tokenRequestApi.get<StudyGroupListDto>(
-    `/study/list?p=${Base64.encode(currentPage.toString())}&s=${Base64.encode(
-      "6"
-    )}`
+    `/study/list?p=${encodedUrl(currentPage)}&s=${encodedUrl(6)}`
   );
   return response.data;
 };
 
 export async function getStudyGroupInfo(id: number) {
   const response = await tokenRequestApi.get<StudyInfoDto>(
-    `/study/${Base64.encode(id.toString())}`
+    `/study/${encodedUrl(id)}`
   );
   const studyInfo = response.data;
   return studyInfo;
@@ -48,7 +48,7 @@ export const updateLikeStatus = async (studygroupId: number | undefined) => {
     alert("스터디 경로가 전달되지 않습니다. 스터디의 개설 상태를 확인해주세요");
   } else {
     const response = await tokenRequestApi.patch(
-      `/study/${Base64.encode(studygroupId?.toString())}/likes`
+      `/study/${encodedUrl(studygroupId)}/likes`
     );
     return response.data;
   }
@@ -60,7 +60,7 @@ export const applyStudy = async (studygroupId: number | undefined) => {
   } else {
     try {
       await tokenRequestApi.post(
-        `/join/${Base64.encode(studygroupId.toString())}`
+        `/join/${encodedUrl(studygroupId)}`
       );
     } catch (error) {
       alert("이미 가입신청을 하셨습니다");
@@ -69,24 +69,22 @@ export const applyStudy = async (studygroupId: number | undefined) => {
 };
 
 export const getLeaderRoleStduies = async () => {
-  // https://{{local}}/study/leader/list
-  const response = await axios.get<StudyGroupListDto[]>(
-    "http://localhost:3000/leaderStudies"
+  const response = await tokenRequestApi.get<MyStudyData>(
+    "/study/leader/list"
   );
-  return response;
+  return response.data;
 };
 
 export const getMemberRoleStduies = async () => {
-  // https://{{local}}/study/leader/list
-  const response = await axios.get<StudyGroupListDto[]>(
-    "http://localhost:3000/memberStudies"
+  const response = await tokenRequestApi.get<MyStudyData>(
+    `/study/join/list?m=true`
   );
-  return response;
+  return response.data;
 };
 
 export const getWaitingStudyGroupList = async () => {
-  const response = await axios.get<StudyGroupListDto[]>(
-    `http://localhost:3000/waitingStudyGroupList`
+  const response = await tokenRequestApi.get<MyStudyData>(
+    `/study/join/list?m=false`
   );
   return response.data;
 };
@@ -198,7 +196,7 @@ export async function delegateStudyGroupLeader(
     `/studygroup/${id}/privileges`,
     data
   );
-  return response;
+  return response.data;
 }
 
 export async function getStudyGroupMemberWaitingList(

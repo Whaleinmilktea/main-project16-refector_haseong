@@ -8,20 +8,21 @@ interface PropsType {
 
 const NewTagInput = ({ setTags }: PropsType) => {
   const [selected, setSelected] = useState<string[]>([]);
-
-  if (selected.length > 3) {
-    alert("태그는 최대 3개까지 입력 가능합니다.");
-    setSelected(selected.slice(0, 3));
-    setTags(selected);
-  }
-
-
+  const handleTagChange = (tags: string[]) => {
+    if (tags.length > 3) {
+      alert("태그는 최대 3개까지 입력 가능합니다.");
+      setSelected(tags.slice(0, 3));
+    } else {
+      setSelected(tags);
+      setTags(tags);
+    }
+  };
 
   return (
     <TagInputWrapper>
       <TagsInput
         value={selected}
-        onChange={setSelected}
+        onChange={handleTagChange}
         name="tags"
         placeHolder="기술 스택을 입력해주세요"
       />

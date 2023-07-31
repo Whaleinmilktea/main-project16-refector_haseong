@@ -22,6 +22,11 @@ export interface Study {
   likes: number;
 }
 
+export interface MyStudyData {
+  study: Study[];
+}
+
+
 interface PageInfo {
   page: number;
   size: number;

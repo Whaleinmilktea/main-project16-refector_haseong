@@ -19,4 +19,7 @@ describe("인코드 테스트", () => {
   it("'test01'이 입력될 경우, 'dGVzdDAx'가 출력된다", () => {
     expect(encodedUrl("test01")).toEqual("dGVzdDAx");
   })
+  it("불리언 true 값이 입력될 경우 'dHJ1ZQ=='가 출력된다", () => {
+    expect(encodedUrl(true)).toEqual("dHJ1ZQ==");
+  })
 })

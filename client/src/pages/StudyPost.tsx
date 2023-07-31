@@ -29,6 +29,7 @@ const StudyPost = () => {
     useState<string>("프론트엔드");
   const [introduction, setIntroduction] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
+  console.log(tags)
   const navigate = useNavigate();
 
   useEffect(() => {

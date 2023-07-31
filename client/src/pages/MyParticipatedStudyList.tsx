@@ -9,16 +9,14 @@ import {
   getLeaderRoleStduies,
   getMemberRoleStduies,
 } from "../apis/StudyGroupApi";
-import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+import { Study } from "../types/StudyGroupApiInterfaces";
 
 const ProfileStudyList = () => {
   const isLoggedIn = useRecoilValue(LogInState);
-  const [leaderRoleStudies, setLeaderRoleStudies] = useState<
-    StudyGroupListDto[]
-  >([]);
-  const [memberRoleStudies, setMemberRoleStudies] = useState<
-    StudyGroupListDto[]
-  >([]);
+  const [leaderRoleStudies, setLeaderRoleStudies] = useState<Study[]>([]);
+  console.log("leaderRoleStudies",leaderRoleStudies)
+  const [memberRoleStudies, setMemberRoleStudies] = useState<Study[]>([]);
+  console.log("memberRoleStudies",memberRoleStudies)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,18 +24,18 @@ const ProfileStudyList = () => {
       navigate("/login");
     }
     const fetchLeaderRoleStudies = async () => {
-      const { data } = await getLeaderRoleStduies();
-      setLeaderRoleStudies(data);
+      const data = await getLeaderRoleStduies();
+      setLeaderRoleStudies(data.study);
     };
     const fetchMemberRoleStudies = async () => {
-      const { data } = await getMemberRoleStduies();
-      setMemberRoleStudies(data);
+      const data = await getMemberRoleStduies();
+      setMemberRoleStudies(data.study);
     };
     fetchLeaderRoleStudies();
     fetchMemberRoleStudies();
   }, []);
 
-  const StudyCard = ({ id, title, tags }: StudyGroupListDto) => {
+  const StudyCard = ({ id, title, tags }: Study) => {
     const handleClick = () => {
       navigate(`/${id}`);
     };
@@ -63,30 +61,30 @@ const ProfileStudyList = () => {
       <WaitingList />
       <ListTitle>운영중인 스터디</ListTitle>
       <StudyCardContainer>
-        {leaderRoleStudies.map((studies) => (
+        {leaderRoleStudies.map((study) => (
           <StudyCard
-            key={studies.id}
-            id={studies.id}
-            image={studies.image}
-            title={studies.title}
-            tags={studies.tags}
-            views={studies.views}
-            likes={studies.likes}
+            key={study.id}
+            id={study.id}
+            image={study.image}
+            title={study.title}
+            tags={study.tags}
+            views={study.views}
+            likes={study.likes}
           />
         ))}
       </StudyCardContainer>
 
       <ListTitle>가입된 스터디</ListTitle>
       <StudyCardContainer>
-        {memberRoleStudies.map((studies) => (
+        {memberRoleStudies.map((study) => (
           <StudyCard
-            key={studies.id}
-            id={studies.id}
-            image={studies.image}
-            title={studies.title}
-            tags={studies.tags}
-            views={studies.views}
-            likes={studies.likes}
+            key={study.id}
+            id={study.id}
+            image={study.image}
+            title={study.title}
+            tags={study.tags}
+            views={study.views}
+            likes={study.likes}
           />
         ))}
       </StudyCardContainer>
@@ -178,10 +176,10 @@ const Image = styled.div`
 `;
 
 const TagWrapper = styled.div`
-display: flex;
-width: 240px;
-justify-content: flex-start;
-align-items: flex-start;
+  display: flex;
+  width: 240px;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 
 const Tag = styled.div`
