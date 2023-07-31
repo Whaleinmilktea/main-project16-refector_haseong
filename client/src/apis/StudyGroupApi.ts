@@ -13,7 +13,6 @@ import {
   StudyGroupUpdateDto,
   StudyInfoDto,
   StudyListOrderDto,
-  WaitingStudyGroupListDto,
 } from "../types/StudyGroupApiInterfaces";
 
 export const createStudyGroup = async (
@@ -29,23 +28,45 @@ export const getStudyGroupList = async (
   currentPage: number
 ): Promise<StudyGroupListDto> => {
   const response = await tokenRequestApi.get<StudyGroupListDto>(
-    `/study/list?p=${Base64.encode(currentPage.toString())}&s=${Base64.encode("6")}`
+    `/study/list?p=${Base64.encode(currentPage.toString())}&s=${Base64.encode(
+      "6"
+    )}`
   );
   return response.data;
 };
 
-export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
-  if (!isLoggedIn) throw new Error("로그인 상태를 확인하세요");
-  // const encodeId = Base64.encode(id.toString());
-  // const response = await tokenRequestApi.get<StudyInfoDto>(
-  //   `/study/${encodeId}`
-  // );
-  const response = await axios.get<StudyInfoDto>(
-    `http://localhost:3000/study/${id}`
+export async function getStudyGroupInfo(id: number) {
+  const response = await tokenRequestApi.get<StudyInfoDto>(
+    `/study/${Base64.encode(id.toString())}`
   );
   const studyInfo = response.data;
   return studyInfo;
+  3;
 }
+
+export const updateLikeStatus = async (studygroupId: number | undefined) => {
+  if (studygroupId === undefined) {
+    alert("스터디 경로가 전달되지 않습니다. 스터디의 개설 상태를 확인해주세요");
+  } else {
+    await tokenRequestApi.patch(
+      `/study/${Base64.encode(studygroupId?.toString())}/likes`
+    );
+  }
+};
+
+export const applyStudy = async (studygroupId: number | undefined) => {
+  if (studygroupId === undefined) {
+    alert("스터디 경로가 전달되지 않습니다. 스터디의 개설 상태를 확인해주세요");
+  } else {
+    try {
+      await tokenRequestApi.post(
+        `/join/${Base64.encode(studygroupId.toString())}`
+      );
+    } catch (error) {
+      alert("이미 가입신청을 하셨습니다");
+    }
+  }
+};
 
 export const getLeaderRoleStduies = async () => {
   // https://{{local}}/study/leader/list
@@ -69,10 +90,6 @@ export const getWaitingStudyGroupList = async () => {
   );
   return response.data;
 };
-// async (): Promise<WaitingStudyGroupListDto> => {
-//   const response = await tokenRequestApi.get<WaitingStudyGroupListDto>(
-//     `/studygroup/myList?approved=false`
-//   );
 
 export async function cancelStudyGroupApplication(
   id: number,
@@ -229,8 +246,3 @@ export async function getStudyListOrder(order: string, isAscending: boolean) {
   );
   return response.data.data;
 }
-
-export const setLikeStatus = async (studygroupId: number | undefined) => {
-  if (studygroupId === undefined) return;
-  await tokenRequestApi.patch(`/study/${studygroupId}/likes`);
-};

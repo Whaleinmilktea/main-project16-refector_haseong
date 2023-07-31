@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { getStudyGroupInfo } from "../apis/StudyGroupApi";
+import { applyStudy, getStudyGroupInfo, updateLikeStatus } from "../apis/StudyGroupApi";
 import StudyComment from "../components/StudyComment";
-import tokenRequestApi from "../apis/TokenRequestApi";
 import StudyCommentList from "../components/StudyCommentList";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 import { GetCommentDto } from "../types/CommentInterfaces";
 import { v4 as uuidv4 } from "uuid";
-// import { useMutation } from "@tanstack/react-query";
 
 const StudyContent = () => {
   const initialState = {
@@ -41,6 +39,10 @@ const StudyContent = () => {
   const [commentsList, setCommentsList] = useState<GetCommentDto[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
+  const [likeStatus, setLikeStatus] = useState({
+    likes: 0,
+    status: false,
+  });
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
   const { id } = useParams(); // App.tsx의 Route url에 :id로 명시하면 그걸 가져옴
   const parsedId = Number(id);
@@ -57,9 +59,13 @@ const StudyContent = () => {
         return;
       }
       try {
-        const content = await getStudyGroupInfo(parsedId, isLoggedIn);
+        const content = await getStudyGroupInfo(parsedId);
         dayOfWeekMapFunc(content.dayOfWeek);
         setContent(content);
+        setLikeStatus({
+          likes: content.likes,
+          status: false,
+        });
         setFetching(false);
       } catch (error) {
         if (!isLoggedIn) setLoginAlertModalOpen(true);
@@ -96,27 +102,19 @@ const StudyContent = () => {
     setDayOfWeekMap(dayOfWeekArr);
   };
 
-  const handleJoinButton = async () => {
-    try {
-      await tokenRequestApi.post(`/studygroup/${parsedId}/join`);
-      alert("스터디 신청이 완료되었습니다!");
-    } catch (error) {
-      alert("스터디 신청이 실패했습니다!");
-    }
-  };
+  const handleJoinButton = () => {
+    if (!isLoggedIn) alert ("로그인이 필요한 서비스입니다.");
+    applyStudy(parsedId)
+  }
 
   const markUp = (convertIntroduction: string) => {
     return { __html: convertIntroduction };
   }; // XSS 방지 로직 추가 필요
 
-  // const ClickLikeButton = useMutation(() => setLikeStatus(content?.id), {
-  //   onSuccess: () => {
-  //     alert("좋아요가 반영되었습니다.");
-  //   },
-  //   onError: () => {
-  //     alert("좋아요 반영에 실패했습니다.");
-  //   },
-  // });
+  const ClickLikeButton = () => {
+    if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");
+    updateLikeStatus(parsedId)
+  };
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
@@ -137,7 +135,12 @@ const StudyContent = () => {
                 <StudyContentTitle>
                   <h2>{content?.studyName}</h2>
                   <div className="studylist-interest">
-                    <div id="studylist-interest_likes">❤️ {content?.likes}</div>
+                    <div
+                      id="studylist-interest_likes"
+                      onClick={ClickLikeButton}
+                    >
+                      ❤️ {likeStatus.likes}
+                    </div>
                     <div id="studylist-interest_views">🧐 {content?.views}</div>
                   </div>
                 </StudyContentTitle>
@@ -229,12 +232,7 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(
-      255,
-      255,
-      255,
-      0.92
-    );
+    background-color: rgba(255, 255, 255, 0.92);
   }
 `;
 const StudyContentBody = styled.div`
@@ -343,7 +341,7 @@ const StudyContentInfo = styled.div`
 `;
 
 const StudyContentTag = styled.div`
-  width: 260px;
+  width: 350px;
   padding-top: 10px;
   display: flex;
   justify-content: flex-start;

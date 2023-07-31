@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import StudyListTag from "../components/StudyListTag";
 import ListFilter from "../components/ListFilter";
 import Search from "../components/Search";
-import { Study, StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+import { Study } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
 
