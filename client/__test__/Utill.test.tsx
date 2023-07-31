@@ -8,7 +8,8 @@ describe("페이지네이션 테스트", () => {
   });
 });
 
-describe("인코드 함수 테스트", () => {
+
+describe("인코드 테스트", () => {
   it("1이 입력될 경우 'MQ=='가 출력된다.", () => {
     expect(encodedUrl(1)).toEqual("MQ==");
   });
