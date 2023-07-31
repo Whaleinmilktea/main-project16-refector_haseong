@@ -8,6 +8,7 @@ import {
   Oauth2MemberCheckDto,
   OtherMemberInfo,
 } from "../types/MemberApiInterfaces";
+import { encodedUrl } from "./CommentApi";
 // * recoil에서 전역 LogInState를 가져와서 isLogin 변수에 할당
 
 export const getMemberInfo = async (isLoggedIn: boolean) => {
@@ -83,11 +84,8 @@ export const leaveMembership = async () => {
 // };
 
 export const getOtherMemberInfo = async (nickname: string) => {
-  // const response = await tokenRequestApi.get<OtherMemberInfo>(
-  //   `/members/${nickname}`
-  // );
   const response = await tokenRequestApi.get<OtherMemberInfo>(
-    `http://localhost:3000/members/${nickname}`
+    `/members/${encodedUrl(nickname)}`
   );
   if (response.status !== 200) throw new Error("존재하지 않는 사용자입니다.");
   if (response.data.aboutMe === null) response.data.aboutMe = "아직 자기소개가 없습니다."
