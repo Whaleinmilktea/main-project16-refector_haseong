@@ -3,7 +3,6 @@ import tokenRequestApi from "./TokenRequestApi";
 import { baseApi } from "./EduApi";
 import { Base64 } from "js-base64";
 import {
-  MyStudyGroupListDto,
   StudyGroupCreateDto,
   StudyGroupListDto,
   StudyGroupMemberApprovalDto,

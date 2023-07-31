@@ -8,7 +8,7 @@ import StudyComment from "../components/StudyComment";
 import StudyCommentList from "../components/StudyCommentList";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
-import { GetCommentDto } from "../types/CommentInterfaces";
+import { CommentList } from "../types/CommentInterfaces";
 import { v4 as uuidv4 } from "uuid";
 
 const StudyContent = () => {
@@ -36,7 +36,7 @@ const StudyContent = () => {
   };
 
   const [fetching, setFetching] = useState(true);
-  const [commentsList, setCommentsList] = useState<GetCommentDto[]>([]);
+  const [commentsList, setCommentsList] = useState<CommentList[]>([]);
   const [content, setContent] = useState<StudyInfoDto | null>(initialState);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const [likeStatus, setLikeStatus] = useState({

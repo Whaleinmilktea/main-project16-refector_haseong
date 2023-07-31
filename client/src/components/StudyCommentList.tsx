@@ -5,9 +5,10 @@ import styled from "styled-components";
 import { deleteComment, getComments, patchComment } from "../apis/CommentApi";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { useNavigate } from "react-router-dom";
-import { GetCommentDto } from "../types/CommentInterfaces";
+import { CommentList, CommentPageInfo } from "../types/CommentInterfaces";
 import { getOtherMemberInfo } from "../apis/MemberApi";
 import { useQuery } from "@tanstack/react-query";
+import Pagenation from "./Pagenation";
 
 const StudyCommentList = ({
   isLeader,
@@ -17,8 +18,8 @@ const StudyCommentList = ({
 }: {
   isLeader: boolean;
   studyGroupId: number;
-  commentsList: GetCommentDto[];
-  setCommentsList: React.Dispatch<React.SetStateAction<GetCommentDto[]>>;
+  commentsList: CommentList[];
+  setCommentsList: React.Dispatch<React.SetStateAction<CommentList[]>>;
 }) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
@@ -30,6 +31,25 @@ const StudyCommentList = ({
     nickName: "",
     isView: false,
   });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [commentPageInfo, setCommentPageInfo] = useState<CommentPageInfo>({
+    page: 1,
+    size: 10,
+    totalElements: 1,
+    totalPages: 1
+  });
+
+
+  const fetchCommentsData = async () => {
+    const commentData = await getComments(studyGroupId, currentPage);
+    const commentList = commentData.comment
+    setCommentsList(commentList);
+    setCommentPageInfo(commentData.pageInfo);
+  };
+
+  useEffect(() => {
+    fetchCommentsData();
+  }, [!isUpdateMode, currentPage]);
 
   const handleComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputComment(e.target.value);
@@ -79,16 +99,6 @@ const StudyCommentList = ({
       alert("댓글 삭제 실패했습니다.");
     }
   };
-
-  const fetchCommentsData = async () => {
-    try {
-      const newComment = await getComments(studyGroupId);
-      setCommentsList(newComment);
-    } catch (error) {}
-  };
-  useEffect(() => {
-    fetchCommentsData();
-  }, [!isUpdateMode]);
 
   const ClickCommentNickName = (e: React.MouseEvent<HTMLParagraphElement>) => {
     const nickName = e.currentTarget.innerText;
@@ -169,6 +179,11 @@ const StudyCommentList = ({
           );
         })}
       </ul>
+      <Pagenation
+        totalPages={commentPageInfo.totalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        />
     </>
   );
 };
@@ -192,7 +207,6 @@ const OtherMemberInfoWrapper = styled.div`
     transform: scale(1.05);
     transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
   }
-
 
   :first-child {
     border-top: solid #e9e9e9;

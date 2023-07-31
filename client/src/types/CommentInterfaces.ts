@@ -1,12 +1,18 @@
-export interface GetCommentDto {
-  id : number;
+export interface CommentList {
+  id: number;
   nickName: string;
   content: string;
-  isMyComment: boolean
+  isMyComment: boolean;
 }
 
-export interface PatchCommentDto {
-  id : number;
-  content: string;
+export interface CommentPageInfo {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }
 
+export interface CommentData {
+  comment: CommentList[];
+  pageInfo: CommentPageInfo;
+}
