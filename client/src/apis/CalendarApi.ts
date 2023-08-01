@@ -1,73 +1,43 @@
 import { AxiosResponse } from "axios";
 import tokenRequestApi from "./TokenRequestApi";
 import {
+  getMemberRoleStduies,
   getStudyGroupInfo,
-  getStudyGroupList,
 } from "./StudyGroupApi";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
+import { StudyEvent } from "../types/CalendarInterfaces";
+import { DayOfWeekBinaryToNumber } from "../pages/utils/DaysOfWeekMap";
 
-export interface StudyEvent {
-  id: string;
-  title: string;
-  daysOfWeek?: string[];
-  startTime: string;
-  endTime: string;
-  startRecur: string;
-  endRecur: string;
-  description: string;
-  overlap: boolean;
-  divide: string;
-}
-
-export const generateStudyEvents = async (
-  isLoggedIn: boolean
-): Promise<StudyEvent[]> => {
-  const myStudyGroups = await getStudyGroupList();
+export const generateStudyEvents = async (): Promise<StudyEvent[]> => {
+  const myStudyGroups = await getMemberRoleStduies(); // 멤버로 있는 모든 스터디 조회(리더 포함)
   const studyGroupIds: number[] = [];
+  for (const study of myStudyGroups.study) {
+    studyGroupIds.push(study.id);
+  } // 스터디 아이디만 추출
 
-  for (const member of myStudyGroups.data.members) {
-    studyGroupIds.push(member.id);
-  }
+  console.log("내가 속한 스터디 목록", myStudyGroups) // ok ===> 추후 vitest + msw 테스트코드화
+  console.log("아이디만 추출한 목록", studyGroupIds); // ok ===> 추후 vitest + msw 테스트코드화
 
-  const studyGroupInfos: StudyInfoDto[] = [];
-  for (const id of studyGroupIds) {
-    const studyGroupInfo = await getStudyGroupInfo(id, isLoggedIn);
+  const studyGroupInfos: StudyInfoDto[] = []; // 내가 속한 스터디 목록의 스터디 정보를 담을 배열
+  for (const studyId of studyGroupIds) {
+    const studyGroupInfo = await getStudyGroupInfo(studyId);
     studyGroupInfos.push(studyGroupInfo);
   }
 
+  console.log("내가 속한 스터디 목록의 스터디 정보", studyGroupInfos); // ok ===> 추후 vitest + msw 테스트코드화
+
   const events: StudyEvent[] = studyGroupInfos.map(
     (studyGroupInfo: StudyInfoDto) => {
-      const mappedDaysOfWeek: string[] = studyGroupInfo.daysOfWeek.map(
-        (day: string) => {
-          switch (day) {
-            case "월":
-              return "1"; // "월" -> 1
-            case "화":
-              return "2"; // "화" -> 2
-            case "수":
-              return "3"; // "수" -> 3
-            case "목":
-              return "4"; // "목" -> 4
-            case "금":
-              return "5"; // "금" -> 5
-            case "토":
-              return "6"; // "토" -> 6
-            case "일":
-              return "0"; // "일" -> 0
-            default:
-              return "";
-          }
-        }
-      );
+      const mappedDaysOfWeek: string[] = DayOfWeekBinaryToNumber(studyGroupInfo.dayOfWeek)
 
       const event: StudyEvent = {
         id: studyGroupInfo.id.toString(),
         title: studyGroupInfo.studyName,
         daysOfWeek: mappedDaysOfWeek,
-        startTime: `${studyGroupInfo.studyTimeStart}:00`,
-        endTime: `${studyGroupInfo.studyTimeEnd}:00`,
-        startRecur: studyGroupInfo.studyPeriodStart,
-        endRecur: studyGroupInfo.studyPeriodEnd,
+        startTime: `${studyGroupInfo.startTime}:00`,
+        endTime: `${studyGroupInfo.endTime}:00`,
+        startRecur: studyGroupInfo.startDate,
+        endRecur: studyGroupInfo.endDate,
         description: studyGroupInfo.introduction,
         overlap: true,
         divide: "studyGroup"

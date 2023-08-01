@@ -41,12 +41,8 @@ const Calendar = () => {
       navigate("/");
     } else {
       const fetchEvents = async () => {
-        try {
           const generatedStudyEvents = await generateStudyEvents(true);
           setStudyEvents(generatedStudyEvents);
-        } catch (error) {
-          alert("스터디 일정을 불러오는 데 실패했습니다");
-        }
       };
       fetchEvents();
     }
