@@ -40,7 +40,7 @@ const ProfileInfo = () => {
 
   useEffect(() => {
     refetch();
-  }, [isNicknameEditModalOpen])
+  }, [isNicknameEditModalOpen]);
 
   const userInfo = data;
 
@@ -218,7 +218,7 @@ export default ProfileInfo;
 const ProfileInfoContainer = styled.div`
   width: 850px;
   height: 100%;
-  margin-top: 50px
+  margin-top: 50px;
 `;
 
 const ProfileBaseWrapper = styled.div`
@@ -339,7 +339,7 @@ const ButtonWrapper = styled.div`
 const ExitEditButton = styled.button`
   margin-bottom: 10px;
   padding: 8px 16px;
-  background-color: #D8D9DA;
+  background-color: #d8d9da;
   color: white;
   border: none;
   border-radius: 4px;
