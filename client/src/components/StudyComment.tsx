@@ -42,7 +42,7 @@ const StudyComment = ({
         await postComment(studyGroupId, inputComment);
         setInputComment("");
         const fetchData = async () => {
-            const newComment = await getComments(studyGroupId);
+            const newComment = await getComments(studyGroupId, 1);
             setCommentsList(newComment.comment);
         };
         fetchData();

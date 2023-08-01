@@ -13,6 +13,10 @@ export interface StudyGroupCreateDto {
   tags: string[];
 }
 
+export interface MyStudyData {
+  study: Study[];
+}
+
 export interface Study {
   id: number;
   title: string;
@@ -21,11 +25,6 @@ export interface Study {
   views: number;
   likes: number;
 }
-
-export interface MyStudyData {
-  study: Study[];
-}
-
 
 interface PageInfo {
   page: number;
@@ -68,10 +67,6 @@ export interface StudyGroup {
   tagValues: string[];
 }
 
-export interface MyStudyGroupListDto {
-  leaders: StudyGroup[];
-  members: StudyGroup[];
-}
 
 export interface WaitingStudyGroupItemDto {
   id: number;
@@ -116,20 +111,12 @@ export interface StudyGroupRecruitmentStatusUpdateDto {
   state: boolean;
 }
 
-export interface StudyGroupMemberApprovalDto {
-  nickName: string;
-}
-
-export interface StudyGroupMemberApprovalDto {
-  nickName: string;
-}
-
-export interface StudyGroupMemberWaitingListDto {
+export interface StudyGroupMemberList {
   nickName: [string];
 }
 
-export interface StudyGroupMemberListDto {
-  nickName: [string];
+export interface MemberManageAction {
+  nickName: string;
 }
 
 export interface StudyListOrderDto {

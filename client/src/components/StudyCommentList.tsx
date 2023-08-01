@@ -6,9 +6,8 @@ import { deleteComment, getComments, patchComment } from "../apis/CommentApi";
 import { validateEmptyInput } from "../pages/utils/loginUtils";
 import { useNavigate } from "react-router-dom";
 import { CommentList, CommentPageInfo } from "../types/CommentInterfaces";
-import { getOtherMemberInfo } from "../apis/MemberApi";
-import { useQuery } from "@tanstack/react-query";
 import Pagenation from "./Pagenation";
+import OtherMemberInfo from "./ViewOtherMemberInfo";
 
 const StudyCommentList = ({
   isLeader,
@@ -78,7 +77,7 @@ const StudyCommentList = ({
     } else {
       try {
         if (commentId) {
-          await patchComment(commentId, inputComment);
+          await patchComment(studyGroupId, commentId, inputComment);
           setIsUpdateMode(false);
           setCommentId(null);
           setInputComment("");
@@ -105,22 +104,6 @@ const StudyCommentList = ({
       nickName: nickName,
       isView: true,
     });
-  };
-
-  const OtherMemberInfo = () => {
-    const { data, error, isLoading } = useQuery(
-      ["otherMemberInfo", isViewOtherMember.nickName],
-      () => getOtherMemberInfo(isViewOtherMember.nickName)
-    );
-    if (isLoading) return <div>로딩중...</div>;
-    if (error) return <div>에러가 발생했습니다.</div>;
-    if (!data) return <div>데이터가 없습니다.</div>;
-    return (
-      <OtherMemberInfoWrapper>
-        <div>{data.nickName}</div>
-        <div>{data.aboutMe}</div>
-      </OtherMemberInfoWrapper>
-    );
   };
 
   return (
@@ -169,7 +152,7 @@ const StudyCommentList = ({
               {isViewOtherMember.isView &&
               isViewOtherMember.nickName === commentsList.nickName ? (
                 <>
-                  <OtherMemberInfo />
+                  <OtherMemberInfo OtherMember={isViewOtherMember} />
                 </>
               ) : (
                 <></>
@@ -188,34 +171,6 @@ const StudyCommentList = ({
 };
 
 const CommentItemWrapper = styled.div``;
-
-const OtherMemberInfoWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  background-color: #f2f2f2;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px; /* 둥근 테두리 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  :hover {
-    // 만약, 향후 다른 유저 정보를 보여주는 페이지가 설계될 경우 해당 hover 이벤트로 유저에게 특정한 이벤트를 피드백할 수 있습니다.
-    background-color: #d6e3ff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
-  }
-
-  :first-child {
-    border-top: solid #e9e9e9;
-    margin-left: 20px;
-  }
-
-  :last-child {
-    line-height: 20px;
-  }
-`;
 
 const CommentItemDiv = styled.div`
   width: 100%;

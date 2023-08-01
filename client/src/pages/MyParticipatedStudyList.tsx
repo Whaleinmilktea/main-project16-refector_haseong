@@ -14,9 +14,7 @@ import { Study } from "../types/StudyGroupApiInterfaces";
 const ProfileStudyList = () => {
   const isLoggedIn = useRecoilValue(LogInState);
   const [leaderRoleStudies, setLeaderRoleStudies] = useState<Study[]>([]);
-  console.log("leaderRoleStudies",leaderRoleStudies)
   const [memberRoleStudies, setMemberRoleStudies] = useState<Study[]>([]);
-  console.log("memberRoleStudies",memberRoleStudies)
   const navigate = useNavigate();
 
   useEffect(() => {
