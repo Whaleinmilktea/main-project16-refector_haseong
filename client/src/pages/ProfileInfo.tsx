@@ -40,7 +40,7 @@ const ProfileInfo = () => {
 
   useEffect(() => {
     refetch();
-  }, [isNicknameEditModalOpen])
+  }, [isNicknameEditModalOpen]);
 
   const userInfo = data;
 
@@ -216,9 +216,9 @@ const ProfileInfo = () => {
 export default ProfileInfo;
 
 const ProfileInfoContainer = styled.div`
-  width: 900px;
+  width: 850px;
   height: 100%;
-  padding: 40px 0 0 50px;
+  margin-top: 50px;
 `;
 
 const ProfileBaseWrapper = styled.div`
@@ -245,7 +245,7 @@ const ProfileBaseInfo = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
-  width: 100%;
+  width: 90%;
 
   .nickname-input {
     border: solid 0px #ccc;
@@ -314,7 +314,7 @@ const IntroduceTextarea = styled.textarea`
   margin-bottom: 10px;
   padding: 8px;
   width: 90%;
-  height: 500px;
+  height: 400px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f5f5f5;
@@ -332,14 +332,14 @@ const IntroduceTextarea = styled.textarea`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 90%;
 `;
 
 const ExitEditButton = styled.button`
   margin-bottom: 10px;
   padding: 8px 16px;
-  background-color: #666;
+  background-color: #d8d9da;
   color: white;
   border: none;
   border-radius: 4px;

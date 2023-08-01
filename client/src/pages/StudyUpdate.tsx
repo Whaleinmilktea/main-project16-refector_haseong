@@ -1,189 +1,155 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
-// import TagInput from "../components/TagInput";
-import {
-  getStudyGroupInfo,
-  updateStudyGroupContentsInfo,
-} from "../apis/StudyGroupApi";
-import { StudyGroupUpdateDto } from "../types/StudyGroupApiInterfaces";
+import NewTagInput from "../components/NewTagInput";
+import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
+import { getStudyGroupInfo, updateStudyGroup } from "../apis/StudyGroupApi";
 
-const StudyUpdate = () => {
-  const { id } = useParams();
-  const studyGroupId = Number(id);
-  useEffect(() => {
-    getStudyGroupInfo(studyGroupId, isLoggedIn).then((data) => {
-      const key = Object.keys(data.tags)[0];
-      setStudyName(data?.studyName);
-      setStudyPeriodStart(data?.studyPeriodStart);
-      setStudyPeriodEnd(data?.studyPeriodEnd);
-      setChecked(data?.daysOfWeek);
-      setStudyTimeStart(data?.studyTimeStart);
-      setStudyTimeEnd(data?.studyTimeEnd);
-      setMemberCountMin(data?.memberCountMin);
-      setMemberCountMax(data?.memberCountMax);
-      setPlatform(data?.platform);
-      setIntroduction(data?.introduction);
-      setSelectedCategory(key);
-      setTags(data?.tags[key]);
-    });
-  }, []);
-  const [studyName, setStudyName] = useState<string>("");
-  const [studyPeriodStart, setStudyPeriodStart] = useState<string>("");
-  const [studyPeriodEnd, setStudyPeriodEnd] = useState<string>("");
-  const [checked, setChecked] = useState<string[]>([]);
-  const [studyTimeStart, setStudyTimeStart] = useState<string>("00:00");
-  const [studyTimeEnd, setStudyTimeEnd] = useState<string>("00:00");
-  const [memberCountMin, setMemberCountMin] = useState<number>(2);
-  const [memberCountMax, setMemberCountMax] = useState<number>(2);
-  const [platform, setPlatform] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [viewTag, setViewTag] = useState(false);
-  const [isInput, setIsInput] = useState(false);
-  const [introduction, setIntroduction] = useState<string>("");
+const StudyPost = () => {
+  const isLoggedIn = useRecoilValue(LogInState);
+  const [studyData, setStudyData] = useState<StudyGroupCreateDto>({
+    studyName: "",
+    startDate: "",
+    endDate: "",
+    dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
+    startTime: "10:00",
+    endTime: "11:00",
+    color: "#4994da",
+    memberMin: 2,
+    memberMax: 2,
+    platform: "",
+    introduction: "",
+    tags: [],
+  });
   const [selectedCategory, setSelectedCategory] =
     useState<string>("프론트엔드");
-  const [selectedPeriodStart, setSelectedPeriodStart] = useState<string>("");
-  const [selectedPeriodEnd, setSelectedPeriodEnd] = useState<string>("");
-  const [selectedTimeStart, setSelectedTimeStart] = useState<string>("");
-  const [selectedTimeEnd, setSelectedTimeEnd] = useState<string>("");
-  const isLoggedIn = useRecoilValue(LogInState);
+  const [introduction, setIntroduction] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [backgroundImage, setBackgroundImage] = useState<string>("");
+  const navigate = useNavigate();
+  const studyId = useParams().id;
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+    const fetchData = async () => {
+      const data = await getStudyGroupInfo(Number(studyId));
+      setBackgroundImage(data?.image || "");
+      setStudyData({
+        studyName: data?.studyName || "",
+        startDate: data?.startDate || "",
+        endDate: data?.endDate || "",
+        dayOfWeek: data?.dayOfWeek || [0, 0, 0, 0, 0, 0, 0],
+        startTime: data?.startTime || "10:00",
+        endTime: data?.endTime || "11:00",
+        color: data?.color || "#4994da",
+        memberMin: data?.memberMin || 2,
+        memberMax: data?.memberMax || 2,
+        platform: data?.platform || "",
+        introduction: data?.introduction || "",
+        tags: data?.tags || [],
+      });
+    };
+    fetchData();
+  }, []);
 
   const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setViewTag(false);
-    setIsInput(false);
   };
-
   const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStudyName(e.target.value);
+    setStudyData({ ...studyData, studyName: e.target.value });
   };
-
-  const handleStudyPeriodStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const startDateValue = e.target.value;
-    const timeValue = "00:00";
-
-    const formattedPeriodStart = `${startDateValue}T${timeValue}:00`;
-    setSelectedPeriodStart(startDateValue);
-    setStudyPeriodStart(formattedPeriodStart);
+  const handleStartDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, startDate: e.target.value });
   };
-
-  const handleStudyPeriodEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const endDateValue = e.target.value;
-    const timeValue = "00:00";
-
-    const formattedPeriodEnd = `${endDateValue}T${timeValue}:00`;
-    setSelectedPeriodEnd(endDateValue);
-    setStudyPeriodEnd(formattedPeriodEnd);
-    return formattedPeriodEnd;
+  const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, endDate: e.target.value });
   };
-
   const handleStudyTimeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const startTimeValue = e.target.value;
-    const dateValue = "2023-05-04"; // This code seems unnecessary
-
-    const formattedTimeStart = `${dateValue}T${startTimeValue}:00`;
-    setSelectedTimeStart(startTimeValue);
-    setStudyTimeStart(formattedTimeStart);
-    return formattedTimeStart;
+    setStudyData({ ...studyData, startTime: e.target.value });
   };
-
   const handleStudyTimeEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const endTimeValue = e.target.value;
-    const dateValue = "2023-05-04"; // This code seems unnecessary
-
-    const formattedTimeEnd = `${dateValue}T${endTimeValue}:00`;
-    setSelectedTimeEnd(endTimeValue);
-    setStudyTimeEnd(formattedTimeEnd);
-    return formattedTimeEnd;
+    setStudyData({ ...studyData, endTime: e.target.value });
   };
-
   const handleMemberCountMin = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemberCountMin(+e.target.value);
+    setStudyData({ ...studyData, memberMin: +e.target.value });
   };
-
   const handleMemberCountMax = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMemberCountMax(+e.target.value);
+    setStudyData({ ...studyData, memberMax: +e.target.value });
+    if (studyData.memberMin > +e.target.value)
+      alert("최대 인원이 최소 인원보다 적습니다!");
   };
-
   const handlePlatform = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlatform(e.target.value);
+    setStudyData({ ...studyData, platform: e.target.value });
+  };
+  const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudyData({ ...studyData, color: e.target.value });
   };
 
   const handlePostButton = async () => {
-    const StudyPostDto: StudyGroupUpdateDto = {
-      studyName,
-      studyPeriodStart: studyPeriodStart,
-      studyPeriodEnd: studyPeriodEnd,
-      daysOfWeek: checked,
-      studyTimeStart: studyTimeStart,
-      studyTimeEnd: studyTimeEnd,
-      memberCountMin,
-      memberCountMax,
-      platform,
-      introduction,
-      tags: {
-        [selectedCategory]: tags,
-      },
-    };
-
-    if (studyName === "") {
+    if (!isLoggedIn) {
+      alert("로그인한 사람만 스터디 수정이 가능합니다!");
+      return;
+    }
+    if (studyData.studyName === "") {
       alert("제목을 입력해주세요!");
       return;
     }
-    if (!isLoggedIn) {
-      alert("로그인한 사람만 스터디 등록이 가능합니다!");
-      return;
-    }
-    if (memberCountMin > memberCountMax) {
+    if (studyData.memberMin > studyData.memberMax) {
       alert("최대 인원이 최소 인원보다 적습니다!");
       return;
     }
-
-    if (studyPeriodStart > studyPeriodEnd) {
+    if (studyData.startDate > studyData.endDate) {
       alert("스터디 시작일이 종료일보다 늦습니다!");
       return;
     }
-
-    if (checked.length === 0) {
+    if (studyData.dayOfWeek.indexOf(1) === -1) {
       alert("요일을 선택해주세요!");
       return;
     }
-
+    const StudyPostData = {
+      studyName: studyData.studyName,
+      startDate: studyData.startDate,
+      endDate: studyData.endDate,
+      dayOfWeek: studyData.dayOfWeek,
+      startTime: studyData.startTime,
+      endTime: studyData.endTime,
+      color: studyData.color,
+      memberMin: studyData.memberMin,
+      memberMax: studyData.memberMax,
+      platform: studyData.platform,
+      introduction: introduction,
+      tags: tags,
+    };
     try {
-      await updateStudyGroupContentsInfo(
-        StudyPostDto,
-        isLoggedIn,
-        studyGroupId
-      );
-      alert("스터디 수정이 완료되었습니다!");
-      navigate("/studylist");
+      await updateStudyGroup(StudyPostData, isLoggedIn, Number(studyId));
+      navigate(`/${studyId}`);
     } catch (error) {
-      alert("스터디 수정이 실패했습니다!");
+      alert("스터디 수정에 실패했습니다!");
     }
   };
 
-  const navigate = useNavigate();
-
   return (
-    <StudyPostContainer>
+    <StudyPostContainer backgroundImage={backgroundImage}>
       <StudyPostBody>
         <StudyPostTop>
-          <span>스터디 수정</span>
+          <span>스터디 등록</span>
           <input
             type="text"
             placeholder="제목을 입력하세요"
-            value={studyName}
+            value={studyData.studyName}
             onChange={handleTitle}
             required
           />
         </StudyPostTop>
-
         <StudyPostMain>
+          <StudyPostInfo>
+          </StudyPostInfo>
           <StudyPostInfo>
             <span>분야</span>
             <select
@@ -203,36 +169,36 @@ const StudyUpdate = () => {
             <span>날짜</span>
             <input
               type="date"
-              value={selectedPeriodStart}
-              onChange={handleStudyPeriodStart}
+              value={studyData.startDate}
+              onChange={handleStartDate}
               required
             />
             <p>~</p>
             <input
               type="date"
-              value={selectedPeriodEnd}
-              onChange={handleStudyPeriodEnd}
+              value={studyData.endDate}
+              onChange={handleEndDate}
               required
             />
           </StudyPostInfo>
           <StudyPostInfo>
             <span>요일</span>
             <div>
-              <DaysOfWeek checked={checked} setChecked={setChecked} />
+              <DaysOfWeek setStudyData={setStudyData} />
             </div>
           </StudyPostInfo>
           <StudyPostInfo>
             <span>시간</span>
             <input
               type="time"
-              value={selectedTimeStart}
+              value={studyData.startTime}
               onChange={handleStudyTimeStart}
               required
             />
             <p>~</p>
             <input
               type="time"
-              value={selectedTimeEnd}
+              value={studyData.endTime}
               onChange={handleStudyTimeEnd}
               required
             />
@@ -242,37 +208,47 @@ const StudyUpdate = () => {
             <input
               type="number"
               min="2"
-              value={memberCountMin}
+              value={studyData.memberMin}
               onChange={handleMemberCountMin}
               required
             />
             <p>~</p>
             <input
               type="number"
-              min={memberCountMin}
-              value={memberCountMax}
+              min={studyData.memberMin}
+              value={studyData.memberMax}
               onChange={handleMemberCountMax}
               required
             />
           </StudyPostInfo>
           <StudyPostInfo>
             <span>플랫폼</span>
-            <input type="url" value={platform} onChange={handlePlatform} />
-          </StudyPostInfo>
-          <StudyPostInfo>
-            <span>태그</span>
-            <TagInput
-              selectedCategory={selectedCategory}
-              tags={tags}
-              setTags={setTags}
-              viewTag={viewTag}
-              setViewTag={setViewTag}
-              isInput={isInput}
-              setIsInput={setIsInput}
+            <input
+              type="url"
+              value={studyData.platform}
+              onChange={handlePlatform}
             />
           </StudyPostInfo>
+          <StudyPostInfo>
+            <span>색상</span>
+            <input
+              type="color"
+              value={studyData.color}
+              onChange={handleColor}
+            />
+          </StudyPostInfo>
+
+          <StudyTagWrapper>
+            <span id="tagTitle">태그</span>
+            <span id="tagCategory">{selectedCategory}</span>
+            <NewTagInput setTags={setTags} />
+          </StudyTagWrapper>
+
           <StudyPostInput>
-            <TextEditor handleContentChange={setIntroduction} />
+            <TextEditor
+              introduction={studyData?.introduction}
+              setIntroduction={setIntroduction}
+            />
           </StudyPostInput>
           <StudyPostButtonWrapper>
             <StudyPostButton onClick={handlePostButton}>
@@ -285,23 +261,38 @@ const StudyUpdate = () => {
   );
 };
 
-const StudyPostContainer = styled.div`
+const StudyPostContainer = styled.div<{ backgroundImage: string }>`
   width: 100%;
   height: 100%;
-  background-color: #e9e9e9;
+  background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    url(${(props) => props.backgroundImage});
+  background-size: cover;
+  background-position: center;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const StudyPostBody = styled.div`
   width: 960px;
-  padding-top: 120px;
+  padding: 120px 0 100px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  &:hover {
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+    cursor: default;
+  }
 `;
 
 const StudyPostTop = styled.div`
@@ -349,6 +340,24 @@ const StudyPostInfo = styled.form`
   justify-content: flex-start;
   align-items: center;
 
+  select {
+    width: 150px;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6l-6-6l1.41-1.41z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
   span {
     width: 90px;
     text-align: left;
@@ -356,15 +365,17 @@ const StudyPostInfo = styled.form`
     font-weight: 700;
     color: #2759a2;
     margin-right: 15px;
+    border-radius: 5px;
   }
   input {
     width: 240px;
     height: 40px;
     border: 1px solid #ccc;
-    border-radius: 0;
+    border-radius: 5px;
   }
   p {
     padding: 0 10px;
+    border-radius: 5px;
   }
   ul {
     margin: 0 20px;
@@ -373,6 +384,40 @@ const StudyPostInfo = styled.form`
     cursor: pointer;
     background-color: #e9e9e9;
     font-size: 0.8rem;
+  }
+
+  select:hover,
+  input:hover,
+  ul:hover {
+    transform: scale(1.05); /* Hover 시 요소를 확대 */
+  }
+
+  /* transition 속성 추가하여 부드러운 애니메이션 효과 */
+  transition: transform 0.5s ease;
+`;
+
+const StudyTagWrapper = styled.div`
+  font-size: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  #tagTitle {
+    width: 90px;
+    text-align: left;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2759a2;
+    margin-right: 15px;
+    border-radius: 5px;
+  }
+
+  #tagCategory {
+    color: #17594a;
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 15px;
   }
 `;
 
@@ -396,10 +441,12 @@ const StudyPostButton = styled.button`
 
   &:hover {
     opacity: 85%;
+    transition: 0.1s ease-in-out;
+    transform: scale(1.05);
   }
   &:active {
     opacity: 100%;
   }
 `;
 
-export default StudyUpdate;
+export default StudyPost;

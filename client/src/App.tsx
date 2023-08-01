@@ -62,7 +62,7 @@ function AppContent() {
             <Route path={`/studycontent/:id`} element={<StudyContent />} />
             <Route path="/studypost" element={<StudyPost />} />
             <Route path="/calendar" element={<ProfileCalendar />} />
-            <Route path={`/studycontent/:id/edit`} element={<StudyUpdate />} />
+            <Route path={`/edit/:id`} element={<StudyUpdate />} />
             <Route path="/:id" element={<ProfileStudyManage />} />
             <Route />
           </Routes>

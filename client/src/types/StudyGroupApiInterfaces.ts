@@ -5,12 +5,36 @@ export interface StudyGroupCreateDto {
   dayOfWeek: number[];
   startTime: string;
   endTime: string;
-  color:  string;
+  color: string;
   memberMin: number;
   memberMax: number;
   platform: string;
   introduction: string;
   tags: string[];
+}
+
+export interface StudyInfoDto {
+  id: number | string;
+  studyName: string;
+  image: string;
+  memberMin: number;
+  memberMax: number;
+  memberCnt: number;
+  platform: string;
+  introduction: string;
+  isRecruited: boolean;
+  startDate: string;
+  endDate: string;
+  dayOfWeek: number[];
+  startTime: string;
+  endTime: string;
+  color: string;
+  tags: string[];
+  leaderNickName: string;
+  isLeader: boolean;
+  views: number;
+  likes: number;
+  isLikes: boolean;
 }
 
 export interface MyStudyData {
@@ -38,27 +62,8 @@ export interface StudyGroupListDto {
   pageInfo: PageInfo;
 }
 
-export interface StudyInfoDto {
-  id: number | string;
-  studyName: string;
-  image: string;
-  memberMin: number;
-  memberMax: number;
-  memberCnt: number;
-  platform: string;
-  introduction: string;
-  isRecruited: boolean;
-  startDate: string;
-  endDate: string;
-  dayOfWeek: number[];
-  startTime: string;
-  endTime: string;
-  tags: string[];
-  leaderNickName: string;
-  isLeader: boolean;
-  views: number;
-  likes: number;
-  isLikes: boolean;
+export interface StudyListOrderDto {
+  data: StudyGroup[];
 }
 
 export interface StudyGroup {
@@ -67,7 +72,6 @@ export interface StudyGroup {
   tagValues: string[];
 }
 
-
 export interface WaitingStudyGroupItemDto {
   id: number;
   title: string;
@@ -75,21 +79,6 @@ export interface WaitingStudyGroupItemDto {
 
 export interface WaitingStudyGroupListDto {
   beStudys: WaitingStudyGroupItemDto[];
-}
-
-export interface StudyGroupUpdateDto {
-  id?: number;
-  studyName: string;
-  studyPeriodStart: string;
-  studyPeriodEnd: string;
-  daysOfWeek: string[];
-  studyTimeStart: string;
-  studyTimeEnd: string;
-  memberCountMin: number;
-  memberCountMax: number;
-  platform: string;
-  introduction: string;
-  tags: [];
 }
 
 export interface StudyGroupUpdateDto {
@@ -117,8 +106,4 @@ export interface StudyGroupMemberList {
 
 export interface MemberManageAction {
   nickName: string;
-}
-
-export interface StudyListOrderDto {
-  data: StudyGroup[];
 }

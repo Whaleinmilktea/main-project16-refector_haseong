@@ -3,41 +3,21 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { applyStudy, getStudyGroupInfo, updateLikeStatus } from "../apis/StudyGroupApi";
+import {
+  applyStudy,
+  getStudyGroupInfo,
+  updateLikeStatus,
+} from "../apis/StudyGroupApi";
 import StudyComment from "../components/StudyComment";
 import StudyCommentList from "../components/StudyCommentList";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 import { CommentList } from "../types/CommentInterfaces";
-import { v4 as uuidv4 } from "uuid";
 
 const StudyContent = () => {
-  const initialState = {
-    id: uuidv4(),
-    studyName: "",
-    image: "",
-    memberMin: 2,
-    memberMax: 2,
-    memberCnt: 2,
-    platform: "",
-    introduction: "",
-    isRecruited: true,
-    startDate: "",
-    endDate: "",
-    dayOfWeek: [0, 0, 0, 0, 0, 0, 0],
-    startTime: "",
-    endTime: "",
-    tags: [],
-    leaderNickName: "",
-    isLeader: true,
-    views: 0,
-    likes: 0,
-    isLikes: false,
-  };
-
   const [fetching, setFetching] = useState(true);
   const [commentsList, setCommentsList] = useState<CommentList[]>([]);
-  const [content, setContent] = useState<StudyInfoDto | null>(initialState);
+  const [content, setContent] = useState<StudyInfoDto | null>(null);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const [currentLikeStatus, setCurrentLikeStatus] = useState(0);
   const [loginAlertModalOpen, setLoginAlertModalOpen] = useState(false);
@@ -97,9 +77,9 @@ const StudyContent = () => {
   };
 
   const handleJoinButton = () => {
-    if (!isLoggedIn) alert ("로그인이 필요한 서비스입니다.");
-    applyStudy(parsedId)
-  }
+    if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");
+    applyStudy(parsedId);
+  };
 
   const markUp = (convertIntroduction: string) => {
     return { __html: convertIntroduction };
@@ -107,7 +87,7 @@ const StudyContent = () => {
 
   const ClickLikeButton = async () => {
     if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");
-    const response = await updateLikeStatus(parsedId)
+    const response = await updateLikeStatus(parsedId);
     if (response === 1) {
       setCurrentLikeStatus(currentLikeStatus + 1);
     } else if (response === 0) {
@@ -231,7 +211,7 @@ const StudyContentContainer = styled.div<{ imageUrl?: string }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.92);
+    background-color: rgba(255, 255, 255, 0.9);
   }
 `;
 const StudyContentBody = styled.div`

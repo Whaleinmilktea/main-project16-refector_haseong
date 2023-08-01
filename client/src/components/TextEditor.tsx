@@ -7,17 +7,17 @@ type Props = {
   onFocus?: () => void;
   onBlur?: () => void;
   setIntroduction: React.Dispatch<React.SetStateAction<string>>;
+  introduction: string;
 };
 
-function TextEditor({ onFocus, onBlur, setIntroduction }: Props) {
-  const [text, setText] = useState("");
+function TextEditor({ onFocus, onBlur, setIntroduction, introduction }: Props) {
+  const [text, setText] = useState(introduction);
 
-  const handleOnChange = (_event : any, editor: ClassicEditor) => {
+  const handleOnChange = (_event: any, editor: ClassicEditor) => {
     const data = editor.getData();
     setText(data);
     setIntroduction(data);
   };
-
 
   return (
     <EditorContainer>

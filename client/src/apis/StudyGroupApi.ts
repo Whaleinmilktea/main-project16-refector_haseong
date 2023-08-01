@@ -91,22 +91,15 @@ export async function cancelStudyGroupApplication(
   alert("해당 그룹에 가입신청을 철회합니다");
 }
 
-export async function updateStudyGroupInfo(
-  data: StudyGroupUpdateDto,
+export async function updateStudyGroup(
+  data: StudyGroupCreateDto, // 업데이트와 생성 데이터가 동일
   isLoggedIn: boolean,
-  id: number
+  studygroupId: number
 ) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
-  const formattedData = {
-    ...data,
-    studyPeriodStart: `${data.studyPeriodStart}T${data.studyTimeStart}:00`,
-    studyPeriodEnd: `${data.studyPeriodEnd}T${data.studyTimeEnd}:00`,
-    studyTimeStart: `${data.studyPeriodStart}T${data.studyTimeStart}:00`,
-    studyTimeEnd: `${data.studyPeriodEnd}T${data.studyTimeEnd}:00`,
-  };
   const response = await tokenRequestApi.patch(
-    `/studygroup/${id}`,
-    formattedData
+    `/study/${encodedUrl(studygroupId)}`,
+    data
   );
   return response;
 }
