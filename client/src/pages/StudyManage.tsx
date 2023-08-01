@@ -182,7 +182,9 @@ const ProfileStudyManage = () => {
           {`${dayOfWeekMap} ${studyInfo?.startTime} ${" "}
         ~ ${studyInfo?.endTime}`}
         </ManageInfo>
-        <ManageIntro dangerouslySetInnerHTML={markUp(convertIntroduction)}></ManageIntro>
+        <ManageIntro
+          dangerouslySetInnerHTML={markUp(convertIntroduction)}
+        ></ManageIntro>
         <ManageButtonContainer>
           <button type="button" onClick={handleEditClick}>
             스터디 정보 수정
@@ -221,26 +223,13 @@ const StudyManageContainer = styled.div<{ imageUrl?: string }>`
   align-items: center;
   margin-top: 50px;
   position: relative;
-  background-image: ${(props) =>
-    props.imageUrl ? `url(${props.imageUrl})` : "none"};
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    ${(props) => (props.imageUrl ? `url(${props.imageUrl})` : "none")};
   background-size: cover;
   background-position: center;
-
-  ::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(255, 255, 255, 0.9);
-    z-index: 0;
-  }
-
-  > * {
-    position: relative;
-    z-index: 1;
-  }
 `;
 
 const StudyManageBody = styled.div`

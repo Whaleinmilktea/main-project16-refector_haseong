@@ -6,9 +6,7 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import TextEditor from "../components/TextEditor";
 import DaysOfWeek from "../components/DaysOfWeek";
 import NewTagInput from "../components/NewTagInput";
-import {
-  StudyGroupCreateDto,
-} from "../types/StudyGroupApiInterfaces";
+import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupInfo, updateStudyGroup } from "../apis/StudyGroupApi";
 
 const StudyPost = () => {
@@ -31,6 +29,7 @@ const StudyPost = () => {
     useState<string>("프론트엔드");
   const [introduction, setIntroduction] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
+  const [backgroundImage, setBackgroundImage] = useState<string>("");
   const navigate = useNavigate();
   const studyId = useParams().id;
 
@@ -40,6 +39,7 @@ const StudyPost = () => {
     }
     const fetchData = async () => {
       const data = await getStudyGroupInfo(Number(studyId));
+      setBackgroundImage(data?.image || "");
       setStudyData({
         studyName: data?.studyName || "",
         startDate: data?.startDate || "",
@@ -135,7 +135,7 @@ const StudyPost = () => {
   };
 
   return (
-    <StudyPostContainer>
+    <StudyPostContainer backgroundImage={backgroundImage}>
       <StudyPostBody>
         <StudyPostTop>
           <span>스터디 등록</span>
@@ -147,8 +147,9 @@ const StudyPost = () => {
             required
           />
         </StudyPostTop>
-
         <StudyPostMain>
+          <StudyPostInfo>
+          </StudyPostInfo>
           <StudyPostInfo>
             <span>분야</span>
             <select
@@ -240,11 +241,14 @@ const StudyPost = () => {
           <StudyTagWrapper>
             <span id="tagTitle">태그</span>
             <span id="tagCategory">{selectedCategory}</span>
-            <NewTagInput setTags={setTags}/>
+            <NewTagInput setTags={setTags} />
           </StudyTagWrapper>
 
           <StudyPostInput>
-            <TextEditor introduction={studyData?.introduction} setIntroduction={setIntroduction} />
+            <TextEditor
+              introduction={studyData?.introduction}
+              setIntroduction={setIntroduction}
+            />
           </StudyPostInput>
           <StudyPostButtonWrapper>
             <StudyPostButton onClick={handlePostButton}>
@@ -257,17 +261,22 @@ const StudyPost = () => {
   );
 };
 
-const StudyPostContainer = styled.div`
+const StudyPostContainer = styled.div<{ backgroundImage: string }>`
   width: 100%;
   height: 100%;
   background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    url(${(props) => props.backgroundImage});
+  background-size: cover;
+  background-position: center;
   :hover {
-    ::before {
-
-    }
+    cursor: pointer;
   }
 `;
 
@@ -279,7 +288,11 @@ const StudyPostBody = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 추가된 그림자 효과 */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  &:hover {
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+    cursor: default;
+  }
 `;
 
 const StudyPostTop = styled.div`
