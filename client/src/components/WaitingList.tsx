@@ -7,11 +7,11 @@ import {
 import { FiDelete } from "react-icons/fi";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { StudyGroupListDto } from "../types/StudyGroupApiInterfaces";
+import { Study } from "../types/StudyGroupApiInterfaces";
 
 const WaitingList = () => {
   const [isData, setIsData] = useState<boolean>(true);
-  const [waitingList, setWaitingList] = useState<StudyGroupListDto[]>([]);
+  const [waitingList, setWaitingList] = useState<Study[]>([]);
   const isLoggedIn = useRecoilValue(LogInState);
 
   useEffect(() => {
@@ -21,9 +21,9 @@ const WaitingList = () => {
         if (data === null) {
           setIsData(false);
         }
-        setWaitingList(data);
+        setWaitingList(data.study);
       } catch (error) {
-        alert("스터디 그룹 리스트를 불러오는데 실패했습니다.");
+        alert("대기중인 가입 신청을 불러오는데 실패했습니다");
       }
     };
     fetchWaitingList();
@@ -39,14 +39,7 @@ const WaitingList = () => {
     }
   };
 
-  const WaitingStudyGroupItem = ({
-    id,
-    title,
-    views,
-    tags,
-    likes,
-    image,
-  }: StudyGroupListDto) => {
+  const WaitingStudyGroupItem = ({ id, title }: Study) => {
     return (
       <ItemWrapper key={id}>
         <ItemTitle>{title}</ItemTitle>

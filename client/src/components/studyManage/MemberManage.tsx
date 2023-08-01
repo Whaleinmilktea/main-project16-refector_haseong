@@ -5,21 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useParams } from "react-router-dom";
 import {
-  delegateStudyGroupLeader,
-  forceExitStudyGroup,
-  getStudyGroupMemberList,
+  ChangeStudyGroupLeader,
+  forceKickStudyGroup,
+  getGroupMembers,
 } from "../../apis/StudyGroupApi";
 import { AiOutlineCrown, AiOutlineUserDelete } from "react-icons/ai";
 import { getMemberInfo } from "../../apis/MemberApi";
-import { StudyGroupMemberApprovalDto } from "../../types/StudyGroupApiInterfaces";
-
-// TODO: 스터디 그룹에 가입된 회원 리스트 타입
-export interface StudyGroupMemberListDto {
-  nickName: string[];
-}
+import { StudyGroupMemberList } from "../../types/StudyGroupApiInterfaces";
+import OtherMemberInfo from "../ViewOtherMemberInfo";
 
 interface MemberManageProps {
-  // 스터디 리더 === studyInfo에서 받아온 코드
   studyLeader: string | undefined;
 }
 
@@ -27,12 +22,15 @@ const MemberManage = ({ studyLeader }: MemberManageProps) => {
   const isLoggedIn = useRecoilValue(LogInState);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [memberList, setMemberList] = useState<StudyGroupMemberListDto | null>(
+  const [memberList, setMemberList] = useState<StudyGroupMemberList | null>(
     null
   );
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
+  const [isViewOtherMember, setIsViewOtherMember] = useState({
+    nickName: "",
+    isView: false,
+  });
 
-  // TODO : 페이지 진입 시 유저 목록 및 사용중인 유저의 닉네임을 불러오는 함수
   useEffect(() => {
     fetchMemberList();
     getMemberInfo(isLoggedIn).then((response) => {
@@ -44,10 +42,9 @@ const MemberManage = ({ studyLeader }: MemberManageProps) => {
     });
   }, []);
 
-  // 스터디 그룹 멤버 리스트를 불러오는 함수
   const fetchMemberList = async () => {
     try {
-      const response = await getStudyGroupMemberList(Number(id), isLoggedIn);
+      const response = await getGroupMembers(Number(id), isLoggedIn);
       if (response) {
         setMemberList(response);
       } else {
@@ -55,28 +52,22 @@ const MemberManage = ({ studyLeader }: MemberManageProps) => {
       }
     } catch (error) {
       alert("멤버 목록을 불러오는데 실패했습니다");
-      navigate("/login");
     }
   };
 
-  // TODO : 스터디 그룹장의 권한을 위임하는 함수
-  const handlePrivileges = async (nickname: string) => {
+  const handleLeaderChange = async (nickname: string) => {
     if (loggedInUser === nickname) {
       alert("스터디장은 스스로 스터디 그룹장의 권한을 위임할 수 없습니다");
     }
     if (loggedInUser !== studyLeader) {
       alert("스터디 그룹장만 권한을 위임할 수 있습니다");
     }
-    const data: StudyGroupMemberApprovalDto = {
-      nickName: nickname,
-    };
-    await delegateStudyGroupLeader(Number(id), data);
+    await ChangeStudyGroupLeader(Number(id), nickname);
     alert("권한 위임에 성공했습니다");
     navigate("/profile/manage-group");
-    fetchMemberList();
+    location.reload();
   };
 
-  // TODO : 스터디 그룹에서 강제로 퇴출하는 함수
   const handleForcedKicked = async (nickname: string) => {
     if (nickname === studyLeader && loggedInUser === studyLeader) {
       alert("스터디장은 스터디 그룹에서 강제로 퇴출할 수 없습니다");
@@ -84,18 +75,23 @@ const MemberManage = ({ studyLeader }: MemberManageProps) => {
     if (nickname === studyLeader && loggedInUser !== studyLeader) {
       alert("스터디원 따위가 감히?!");
     }
-    if (loggedInUser === studyLeader && loggedInUser !== nickname) {
+    if (loggedInUser !== studyLeader) {
       alert("스터디 그룹장만 그룹원을 강제로 퇴출할 수 있습니다");
     }
-    const data: StudyGroupMemberApprovalDto = {
-      nickName: nickname,
-    };
-    await forceExitStudyGroup(Number(id), data);
+    await forceKickStudyGroup(Number(id), nickname);
     location.reload();
   };
 
+  const ClickCommentNickName = (e: React.MouseEvent<HTMLParagraphElement>) => {
+    const nickName = e.currentTarget.innerText;
+    setIsViewOtherMember({
+      nickName: nickName,
+      isView: true,
+    });
+  };
+
   return (
-    <MemberManageContainer>
+    <Container>
       <MemberManageTitle>
         <h3>회원 목록</h3>
       </MemberManageTitle>
@@ -103,9 +99,9 @@ const MemberManage = ({ studyLeader }: MemberManageProps) => {
         {memberList &&
           memberList.nickName.map((nickname, index) => (
             <MemberList key={index}>
-              {nickname}
+              <div onClick={ClickCommentNickName}>{nickname}</div>
               <MemberButton>
-                <button onClick={() => handlePrivileges(nickname)}>
+                <button onClick={() => handleLeaderChange(nickname)}>
                   <AiOutlineCrown
                     size="24"
                     color="#89920f"
@@ -122,20 +118,22 @@ const MemberManage = ({ studyLeader }: MemberManageProps) => {
               </MemberButton>
             </MemberList>
           ))}
+        {isViewOtherMember.isView ? (
+          <>
+            <OtherMemberInfo OtherMember={isViewOtherMember} />
+          </>
+        ) : (
+          <></>
+        )}
       </>
-    </MemberManageContainer>
+    </Container>
   );
 };
 
 export default MemberManage;
 
-export const MemberManageContainer = styled.div`
-  width: 800px;
-  margin: 0 0 30px 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+export const Container = styled.div`
+  margin: 30px 0px 20px 0px;
 `;
 
 export const MemberManageTitle = styled.div`
@@ -155,8 +153,8 @@ export const MemberManageTitle = styled.div`
 `;
 
 const MemberList = styled.div`
-  width: 700px;
-  height: 60px;
+  width: 95%;
+  height: 50px;
   background-color: #fff;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   border-radius: 4px;
@@ -168,10 +166,19 @@ const MemberList = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  &:hover {
+    box-shadow: rgba(99, 99, 99, 0.4) 0px 4px 12px 0px;
+  }
 `;
 
 const MemberButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  button {
+    transition: transform 0.2s ease;
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
 `;

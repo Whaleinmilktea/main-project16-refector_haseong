@@ -32,7 +32,6 @@ const ProfileStudyManage = () => {
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/login");
-
     const fetchStudyGroupInfo = async () => {
       if (isNaN(parsedId)) {
         alert("잘못된 접근입니다");
@@ -40,19 +39,19 @@ const ProfileStudyManage = () => {
         return;
       }
       try {
-        const data = await getStudyGroupInfo(parsedId, isLoggedIn);
+        const data = await getStudyGroupInfo(parsedId);
         dayOfWeekMapFunc(data.dayOfWeek);
         setStudyInfo(data);
       } catch (error) {}
     };
 
-    // getMemberInfo(isLoggedIn).then((data) => {
-    //   if (data) {
-    //     setLoggedInUser(data.nickName);
-    //   } else {
-    //     setLoggedInUser(null);
-    //   }
-    // });
+    getMemberInfo(isLoggedIn).then((data) => {
+      if (data) {
+        setLoggedInUser(data.nickName);
+      } else {
+        setLoggedInUser(null);
+      }
+    });
     fetchStudyGroupInfo();
   }, [parsedId]);
 
@@ -85,7 +84,7 @@ const ProfileStudyManage = () => {
     window.location.reload(); // 페이지를 새로고침
   };
 
-  const handleRecuitCloseClick = async () => {
+  const handleRecuitChangeClick = async () => {
     getMemberInfo(isLoggedIn).then((data) => {
       if (data.nickName !== studyInfo?.leaderNickName) {
         alert("스터디장만 스터디의 모집 상태를 수정할 수 있습니다");
@@ -140,14 +139,18 @@ const ProfileStudyManage = () => {
             <button
               type="button"
               className="recruit-close-button"
-              onClick={handleRecuitCloseClick}
+              onClick={handleRecuitChangeClick}
             >
-              완료하기
+              모집중
             </button>
           ) : (
-            <div>
-              <strong>모집 완료</strong>
-            </div>
+            <button
+              type="button"
+              className="recruit-reopen-button"
+              onClick={handleRecuitChangeClick}
+            >
+              모집완료
+            </button>
           )}
         </ManageInfo>
 
@@ -195,8 +198,8 @@ const ProfileStudyManage = () => {
             studyInfo={studyInfo}
           />
         )}
-        {/* <MemberManage studyLeader={studyInfo?.leaderNickName} />
-      <CandidateManage studyLeader={studyInfo?.leaderNickName} /> */}
+        <MemberManage studyLeader={studyInfo?.leaderNickName} />
+        <CandidateManage studyLeader={studyInfo?.leaderNickName} />
         <ManageButtonContainer>
           <button
             type="button"
@@ -322,6 +325,20 @@ const ManageInfo = styled.div`
     font-size: 14px;
     color: #ffffff;
     background-color: #47c4c9;
+
+    &:hover {
+      opacity: 85%;
+    }
+    &:active {
+      opacity: 100%;
+    }
+  }
+  .recruit-reopen-button {
+    width: 100px;
+    height: 30px;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #EF6262;
 
     &:hover {
       opacity: 85%;

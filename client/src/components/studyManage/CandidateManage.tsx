@@ -4,33 +4,36 @@ import { useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import {
   approveStudyGroupApplication,
-  getStudyGroupMemberWaitingList,
+  getCandidateMembers,
   rejectStudyGroupApplication,
 } from "../../apis/StudyGroupApi";
 import { useParams } from "react-router-dom";
 import { BsCheckCircle, BsFillXCircleFill } from "react-icons/bs";
-import { MemberManageContainer, MemberManageTitle } from "./MemberManage";
-import { StudyGroupMemberWaitingListDto } from "../../types/StudyGroupApiInterfaces";
+import { MemberManageTitle } from "./MemberManage";
+import { StudyGroupMemberList } from "../../types/StudyGroupApiInterfaces";
+import OtherMemberInfo from "../ViewOtherMemberInfo";
 
 interface CandidateManageProps {
   studyLeader: string | undefined;
 }
 
 const CandidateManage = ({ studyLeader }: CandidateManageProps) => {
-  const [waitingList, setWaitingList] =
-    useState<StudyGroupMemberWaitingListDto | null>(null);
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>(); // 스터디 그룹 id
   const isLoggedIn = useRecoilValue(LogInState);
+  const [memberList, setMemberList] = useState<StudyGroupMemberList | null>(
+    null
+  );
+  const [isViewOtherMember, setIsViewOtherMember] = useState({
+    nickName: "",
+    isView: false,
+  });
 
   useEffect(() => {
     const fetchWaitingList = async () => {
-      const data = await getStudyGroupMemberWaitingList(Number(id), isLoggedIn);
-      setWaitingList(data);
+      const data = await getCandidateMembers(Number(id), isLoggedIn);
+      setMemberList(data);
     };
-
-    if (id) {
-      fetchWaitingList();
-    }
+    fetchWaitingList();
   }, [id]);
 
   const handleApproveCandidate = async (nickname: string) => {
@@ -49,16 +52,26 @@ const CandidateManage = ({ studyLeader }: CandidateManageProps) => {
     location.reload();
   };
 
+  const ClickCommentNickName = (e: React.MouseEvent<HTMLParagraphElement>) => {
+    const nickName = e.currentTarget.innerText;
+    setIsViewOtherMember({
+      nickName: nickName,
+      isView: true,
+    });
+  };
+
   return (
-    <MemberManageContainer>
+    <Container>
       <MemberManageTitle>
         <h3>가입 신청 대기 리스트</h3>
       </MemberManageTitle>
       <>
-        {waitingList &&
-          waitingList.nickName.map((nickname, index) => (
+        {memberList &&
+          memberList.nickName.map((nickname, index) => (
             <WaitingList key={index}>
+              <div onClick={ClickCommentNickName}>
               {nickname}
+              </div>
               <WaitingButton>
                 <button onClick={() => handleApproveCandidate(nickname)}>
                   <BsCheckCircle size="18" color="#0e9220" />
@@ -69,15 +82,24 @@ const CandidateManage = ({ studyLeader }: CandidateManageProps) => {
               </WaitingButton>
             </WaitingList>
           ))}
+        {isViewOtherMember.isView ? (
+          <>
+            <OtherMemberInfo OtherMember={isViewOtherMember} />
+          </>
+        ) : (
+          <></>
+        )}
       </>
-    </MemberManageContainer>
+    </Container>
   );
 };
 
 export default CandidateManage;
 
+const Container = styled.div``;
+
 const WaitingList = styled.div`
-  width: 360px;
+  width: 95%;
   height: 36px;
   background-color: #fff;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -90,10 +112,19 @@ const WaitingList = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  &:hover {
+    box-shadow: rgba(99, 99, 99, 0.4) 0px 4px 12px 0px;
+  }
 `;
 
 const WaitingButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  button {
+    transition: transform 0.2s ease;
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
 `;
