@@ -6,7 +6,6 @@ import {
   getStudyGroupInfo,
 } from "../apis/StudyGroupApi";
 import styled from "styled-components";
-import StudyInfoEditModal from "../components/modal/StudyInfoEditModal";
 import { useParams, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
@@ -17,7 +16,6 @@ import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 
 const ProfileStudyManage = () => {
   const [studyInfo, setStudyInfo] = useState<StudyInfoDto | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
   const [LoggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [dayOfWeekMap, setDayOfWeekMap] = useState<string[]>([]);
   const { id } = useParams();
@@ -25,6 +23,10 @@ const ProfileStudyManage = () => {
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(LogInState);
   const isRecruiting = studyInfo?.isRecruited;
+  const convertIntroduction = `${studyInfo?.introduction}`;
+  const markUp = (convertIntroduction: string) => {
+    return { __html: convertIntroduction };
+  }; // XSS 방지 로직 추가 필요
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/");
@@ -60,7 +62,7 @@ const ProfileStudyManage = () => {
       alert("스터디장만 스터디를 수정할 수 있습니다");
       return;
     }
-    setModalOpen(true);
+    navigate(`/edit/${id}`);
   };
 
   const handleDeleteClick = async () => {
@@ -93,11 +95,6 @@ const ProfileStudyManage = () => {
     });
     await changeStudyGroupRecruitmentStatus(parsedId, isLoggedIn);
     location.reload();
-  };
-
-  const removeHtmlTag = (str: string | undefined) => {
-    if (str === undefined) return str;
-    return str.replace(/(<([^>]+)>)/gi, "");
   };
 
   const dayOfWeekMapFunc = (dayOfWeek: number[]) => {
@@ -185,19 +182,12 @@ const ProfileStudyManage = () => {
           {`${dayOfWeekMap} ${studyInfo?.startTime} ${" "}
         ~ ${studyInfo?.endTime}`}
         </ManageInfo>
-        <ManageIntro>{removeHtmlTag(studyInfo?.introduction)}</ManageIntro>
+        <ManageIntro dangerouslySetInnerHTML={markUp(convertIntroduction)}></ManageIntro>
         <ManageButtonContainer>
           <button type="button" onClick={handleEditClick}>
             스터디 정보 수정
           </button>
         </ManageButtonContainer>
-        {isModalOpen && (
-          <StudyInfoEditModal
-            isOpen={isModalOpen}
-            closeModal={() => setModalOpen(false)}
-            studyInfo={studyInfo}
-          />
-        )}
         <MemberManage studyLeader={studyInfo?.leaderNickName} />
         <CandidateManage studyLeader={studyInfo?.leaderNickName} />
         <ManageButtonContainer>
@@ -243,7 +233,7 @@ const StudyManageContainer = styled.div<{ imageUrl?: string }>`
     right: 0;
     bottom: 0;
     left: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     z-index: 0;
   }
 
@@ -338,7 +328,7 @@ const ManageInfo = styled.div`
     height: 30px;
     font-size: 14px;
     color: #ffffff;
-    background-color: #EF6262;
+    background-color: #ef6262;
 
     &:hover {
       opacity: 85%;

@@ -120,9 +120,10 @@ const StudyPost = () => {
           <span>스터디 등록</span>
           <input
             type="text"
-            placeholder="제목을 입력하세요"
+            placeholder="제목을 입력하세요(25자 이내)"
             value={studyData.studyName}
             onChange={handleTitle}
+            maxLength={25}
             required
           />
         </StudyPostTop>
@@ -223,7 +224,7 @@ const StudyPost = () => {
           </StudyTagWrapper>
 
           <StudyPostInput>
-            <TextEditor setIntroduction={setIntroduction} />
+            <TextEditor introduction={introduction} setIntroduction={setIntroduction} />
           </StudyPostInput>
           <StudyPostButtonWrapper>
             <StudyPostButton onClick={handlePostButton}>
@@ -403,6 +404,8 @@ const StudyPostButton = styled.button`
 
   &:hover {
     opacity: 85%;
+    transition: 0.1s ease-in-out;
+    transform: scale(1.05);
   }
   &:active {
     opacity: 100%;
