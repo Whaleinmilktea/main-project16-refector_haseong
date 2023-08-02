@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import Modal from "react-modal";
-import { generateCustomEvents } from "../../apis/CalendarApi";
+// import { generateCustomEvents } from "../../apis/CalendarApi";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 
@@ -50,7 +50,7 @@ const AddEvent = ({ isOpen, closeModal, onNewEvent }: AddEventProps) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await generateCustomEvents(isLoggedIn, eventInfo);
+    // await generateCustomEvents(isLoggedIn, eventInfo);
     closeModal();
     onNewEvent && onNewEvent();
   };

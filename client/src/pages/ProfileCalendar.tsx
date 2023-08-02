@@ -17,7 +17,6 @@ export default ProfileCalendar;
 
 const Wrapper = styled.div`
   display: flex;
-
   justify-content: center;
   overflow: hidden;
 `;

@@ -1,5 +1,5 @@
-export interface StudyEvent {
-  id: string;
+export interface CalendarEvent {
+  id: string | number;
   title: string;
   daysOfWeek?: string[];
   startTime: string;
@@ -8,5 +8,19 @@ export interface StudyEvent {
   endRecur: string;
   description: string;
   overlap: boolean;
-  divide: string;
+}
+
+export interface ScheduleList {
+  schedule: Schedule[];
+}
+
+export interface Schedule {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+  dayOfWeek: number[];
 }

@@ -71,8 +71,8 @@ const StudyList = () => {
           </Link>
         </StudyListTop>
         <ListFilterWrapper>
-          <Search />
           <ListFilter onChange={handleSortOrder} />
+          <Search />
         </ListFilterWrapper>
         <StudyBoxContainer>
           {filterData?.map((item: Study) => (
@@ -177,7 +177,6 @@ const StudyBoxContainer = styled.div`
   align-items: center;
 `;
 
-
 const StudyBox = styled.div`
   flex-basis: 270px;
   height: 350px;
@@ -256,6 +255,5 @@ const StudyListImage = styled.div<{ image: string }>`
   background-size: cover;
   background-color: aliceblue;
 `;
-
 
 export default StudyList;

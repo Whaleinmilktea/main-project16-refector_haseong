@@ -14,7 +14,6 @@ export interface StudyGroupCreateDto {
 }
 
 export interface StudyInfoDto {
-  id: number | string;
   studyName: string;
   image: string;
   memberMin: number;
