@@ -1,5 +1,5 @@
-export interface CalendarEvent {
-  id: string | number;
+export interface RecurEvent {
+  id: string;
   title: string;
   daysOfWeek?: string[];
   startTime: string;
@@ -9,6 +9,16 @@ export interface CalendarEvent {
   description: string;
   overlap: boolean;
 }
+
+export interface SingleEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  description: string;
+  overlap: boolean;
+}
+
 
 export interface ScheduleList {
   schedule: Schedule[];

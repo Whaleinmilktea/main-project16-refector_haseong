@@ -21,9 +21,9 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 const CalendarWrapper = styled.div`
-  width: 960px;
-  height: 90vh;
+  width: 100%;
+  height: 100%;
   background-color: #ffffff;
-  margin-top: 100px;
+  margin-top: 60px;
   padding: 10px;
 `;
