@@ -17,15 +17,13 @@ export default ProfileCalendar;
 
 const Wrapper = styled.div`
   display: flex;
-
   justify-content: center;
   overflow: hidden;
 `;
 const CalendarWrapper = styled.div`
-  width: 960px;
-  height: 90vh;
+  width: 100%;
+  height: 100%;
   background-color: #ffffff;
-  margin-top: 100px;
+  margin-top: 60px;
   padding: 10px;
-  // z-index 조정 필요 : 헤더보다 아래에 위치할 수 있도록
 `;

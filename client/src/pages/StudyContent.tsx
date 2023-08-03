@@ -13,6 +13,7 @@ import StudyCommentList from "../components/StudyCommentList";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 import { CommentList } from "../types/CommentInterfaces";
+import { DayOfWeekBinaryToStringMap } from "./utils/DaysOfWeekMap";
 
 const StudyContent = () => {
   const [fetching, setFetching] = useState(true);
@@ -37,7 +38,7 @@ const StudyContent = () => {
       }
       try {
         const content = await getStudyGroupInfo(parsedId);
-        dayOfWeekMapFunc(content.dayOfWeek);
+        setDayOfWeekMap(DayOfWeekBinaryToStringMap(content.dayOfWeek));
         setContent(content);
         setCurrentLikeStatus(content.likes);
         setFetching(false);
@@ -53,28 +54,6 @@ const StudyContent = () => {
     };
     fetchData();
   }, [parsedId]);
-
-  const dayOfWeekMapFunc = (dayOfWeek: number[]) => {
-    interface DayOfWeekMap {
-      [key: number]: string;
-    }
-    const dayOfWeekMap: DayOfWeekMap = {
-      0: "월",
-      1: "화",
-      2: "수",
-      3: "목",
-      4: "금",
-      5: "토",
-      6: "일",
-    };
-    const dayOfWeekArr = [];
-    for (let i = 0; i < dayOfWeek.length; i++) {
-      if (dayOfWeek[i] === 1) {
-        dayOfWeekArr.push(dayOfWeekMap[i]);
-      }
-    }
-    setDayOfWeekMap(dayOfWeekArr);
-  };
 
   const handleJoinButton = () => {
     if (!isLoggedIn) alert("로그인이 필요한 서비스입니다.");

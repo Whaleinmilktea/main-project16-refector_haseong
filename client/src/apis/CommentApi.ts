@@ -20,7 +20,7 @@ export const getComments = async (
 ): Promise<CommentData> => {
   const response = await tokenRequestApi.get<CommentData>(
     `comment/${encodedUrl(studyGroupId)}?p=${encodedUrl(page)}&s=${encodedUrl(
-      3
+      5
     )}`
   );
   return response.data;

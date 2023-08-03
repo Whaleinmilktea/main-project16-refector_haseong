@@ -16,7 +16,7 @@ import useRefreshToken from "./hooks/useRefreshToken";
 import Modal from "react-modal";
 import Home from "./pages/Home";
 import StudyUpdate from "./pages/StudyUpdate";
-import ProfileStudyManage from "./pages/StudyManage";
+import ProfileStudyManage from "./pages/StudyManage"
 
 // import { worker } from "./mocks/browser";
 // // 개발 모드로 실행되었을 때, mocking 라이브러리가 실행되도록 명시하는 코드

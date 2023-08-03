@@ -1,0 +1,27 @@
+.fc-timegrid .fc-event,
+.fc-timegrid .fc-bg {
+  color: #1f1f1f;
+}
+
+.fc-timegrid .fc-event {
+  border-width: 1px;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  border: none;
+}
+
+.fc-timegrid .fc-event {
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.fc-timegrid-event-harness {
+  cursor: pointer;
+  :hover {
+    box-shadow: #1f1f1f, 0 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+}
+
+.fc .fc-scrollgrid-liquid {
+  border: none;
+}

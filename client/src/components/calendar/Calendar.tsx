@@ -1,157 +1,71 @@
-import FullCalendar from "@fullcalendar/react";
+import { useEffect, useState } from "react";
+import { getScheduleList } from "../../apis/CalendarApi";
+import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  generateStudyEvents,
-  StudyEvent,
-  getCustomEvent,
-  FullCalendarEvent,
-} from "../../apis/CalendarApi";
-import AddEventModal from "../modal/AddEventModal";
-import ViewCalendarModal from "../modal/ViewCalendarEvent";
-import { useRecoilValue } from "recoil";
-import { LogInState } from "../../recoil/atoms/LogInState";
-import ViewCustomCalendarEvent from "../modal/ViewCustomCalendarEvent";
-import styled from "styled-components";
+import FullCalendar from "@fullcalendar/react";
+import { RecurEvent, SingleEvent } from "../../types/CalendarInterfaces";
+import { useQuery } from "@tanstack/react-query";
+import PostPersonalEvent from "../modal/PostPersonalEvent";
+import "./fullcalendar-custom.css";
+import ViewCalendarEvent from "../modal/ViewCalendarEvent";
 
 const Calendar = () => {
-  const [studyEvents, setStudyEvents] = useState<StudyEvent[]>([]);
-  const [customEvents, setCustomEvents] = useState<FullCalendarEvent[]>([]);
-  const [addEventModalOpen, setAddEventModalOpen] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [viewCalendarEventModalOpen, setViewCalendarEventModalOpen] =
+  const [events, setEvents] = useState<(RecurEvent | SingleEvent)[]>([]);
+  const [viewEventInfo, setViewEventInfo] = useState<boolean>(false);
+  const [postPersonalSchedule, setPostPersonalSchedule] =
     useState<boolean>(false);
-  const [
-    viewCustomCalendarEventModalOpen,
-    setViewCustomCalendarEventModalOpen,
-  ] = useState<boolean>(false);
-  const [selectedStudyEvent, setSelectedStudyEvent] = useState<number | null>(
-    null
+  const { data, isLoading, error } = useQuery(
+    ["scheduleList"],
+    getScheduleList
   );
-  const [selectedCustomEvent, setSelectedCustomEvent] = useState<number | null>(
-    null
-  );
-  const isLoggedIn = useRecoilValue(LogInState);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/");
-    } else {
-      const fetchEvents = async () => {
-        try {
-          const generatedStudyEvents = await generateStudyEvents(true);
-          setStudyEvents(generatedStudyEvents);
-        } catch (error) {
-          alert("스터디 일정을 불러오는 데 실패했습니다");
-        }
-      };
-      fetchEvents();
-    }
-  }, [isLoggedIn, navigate]);
+    if (!data) return;
+    setEvents(data);
+  }, [data]);
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/");
-    } else {
-      const fetchCustomEvents = async () => {
-        try {
-          const generatedCustomEvents = await getCustomEvent(true);
-          setCustomEvents(generatedCustomEvents);
-        } catch (error) {
-          alert("커스텀 이벤트를 불러오는 데 실패했습니다");
-        }
-      };
-      fetchCustomEvents();
-    }
-  }, [isLoggedIn, navigate]);
+  if (isLoading) return <div>로딩중...</div>;
+  if (error) return <div>에러가 발생했습니다</div>;
 
-  const reloadCustomEvents = async () => {
-    try {
-      const generatedCustomEvents = await getCustomEvent(true);
-      setCustomEvents(generatedCustomEvents);
-    } catch (error) {
-      alert("커스텀 이벤트를 불러오는 데 실패했습니다");
-    }
+  const handleDateClick = () => {
+    setPostPersonalSchedule(true);
   };
 
-  useEffect(() => {
-    if (isLoggedIn) reloadCustomEvents();
-  }, [isLoggedIn, navigate]);
-
-  const everyEvents = [...studyEvents, ...customEvents];
-
-  const handleDateClick = (info: { dateStr: string }) => {
-    setAddEventModalOpen(true);
-    setSelectedDate(info.dateStr);
-  };
-
-  const handleEventClick = (event: any) => {
-    if (event.event._def.extendedProps.divide === "studyGroup") {
-      setSelectedStudyEvent(Number(event.event._def.publicId));
-      setViewCalendarEventModalOpen(true);
-    } else if (event.event._def.extendedProps.divide === "customEvent") {
-      setSelectedCustomEvent(Number(event.event._def.publicId));
-      setViewCustomCalendarEventModalOpen(true);
-    }
-  };
-
-  const closeModal = () => {
-    setAddEventModalOpen(false);
-    setSelectedDate(null);
-    setViewCalendarEventModalOpen(false);
-    setViewCustomCalendarEventModalOpen(false);
-    setSelectedStudyEvent(null);
-    setSelectedCustomEvent(null);
+  const handleEventClick = (e) => {
+    const clickedEvent = e.event;
+    setViewEventInfo(true);
   };
 
   return (
-    <CalendarWrapper>
+    <>
       <FullCalendar
-        plugins={[timeGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
+        headerToolbar={{
+          start: "today",
+          center: "title",
+          end: "prev,next",
+        }}
+        height={"100vh"}
+        events={events}
         allDaySlot={false}
-        weekends={true}
-        events={everyEvents}
+        slotMinTime={"06:00:00"}
+        slotMaxTime={"30:00:00"}
         dateClick={handleDateClick}
         eventClick={handleEventClick}
-        slotMinTime={"09:00"}
-        slotMaxTime={"33:00"}
-        slotEventOverlap={true}
-        height={"100%"}
       />
-      {selectedDate && (
-        <AddEventModal
-          isOpen={addEventModalOpen}
-          closeModal={closeModal}
-          onNewEvent={reloadCustomEvents}
-        />
-      )}
-      {selectedStudyEvent && (
-        <ViewCalendarModal
-          isOpen={viewCalendarEventModalOpen}
-          closeModal={closeModal}
-          id={selectedStudyEvent}
-        />
-      )}
-      {selectedCustomEvent && (
-        <ViewCustomCalendarEvent
-          isOpen={viewCustomCalendarEventModalOpen}
-          closeModal={closeModal}
-          id={selectedCustomEvent}
-        />
-      )}
-    </CalendarWrapper>
+      <PostPersonalEvent
+        isOpen={postPersonalSchedule}
+        closeModal={() => setPostPersonalSchedule(false)}
+      />
+      <ViewCalendarEvent
+        isOpen={viewEventInfo}
+        closeModal={() => setViewEventInfo(false)}
+        s
+      />
+    </>
   );
 };
-
-const CalendarWrapper = styled.div`
-:root {
-  --fc-daygrid-event-dot-width: 8px;
-}
-`
-
 
 export default Calendar;
