@@ -39,7 +39,7 @@
 
 - [useQuery-Hook 적용](#usequery-hook-적용)
 - [useMutation-Hook 적용](#usequery-hook-적용)
-- [해시/리스트를 활용한 맵핑 함수 unit-Test](#)
+- [해시/리스트를 활용한 맵핑 함수 unit-Test](#vitest를-활용한-react-testing)
 - [쿼리스트링 난독화](#쿼리스트링-난독화)
 - [image 업로드 요청 형식 변경 ( json -> form-data )](#이미지-업로드-시-json-형식에서-form-data-형식으로-변경)
 - [인터페이스 모듈화 및 분리 + 구체적인 기능을 명시하는 변수 명으로 변경](#인터페이스-모듈화-및-분리)
@@ -121,7 +121,7 @@ useEffect(() => {
 
 <br>
 
-### Vitest를 활용한ㅁ React-testing
+### Vitest를 활용한 React-testing
 - 해시/리스트와 같은 자료구조를 활용한 함수 유닛 테스팅
 ```typescript
 describe("요일 맵핑 테스트", () => {
