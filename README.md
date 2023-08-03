@@ -38,6 +38,8 @@
 ## ⚒️ 주요 개선 내용
 
 - [useQuery-Hook 적용](#usequery-hook-적용)
+- [useMutation-Hook 적용](#usequery-hook-적용)
+- [해시/리스트를 활용한 맵핑 함수 unit-Test](#)
 - [쿼리스트링 난독화](#쿼리스트링-난독화)
 - [image 업로드 요청 형식 변경 ( json -> form-data )](#이미지-업로드-시-json-형식에서-form-data-형식으로-변경)
 - [인터페이스 모듈화 및 분리 + 구체적인 기능을 명시하는 변수 명으로 변경](#인터페이스-모듈화-및-분리)
@@ -50,6 +52,42 @@
 - isLoading, isError 상태를 각 axios 요청 함수별로 따로 리팩토링이 요구되는데, 다수의 반복작업 예상
 - Caching을 활용한 불필요한 요청 최소화 필요
 - React-query의 hook들은 이러한 불필요한 작업을 최소화하고, 필요시 hook에 적용될 수 있는 여러 메서드를 제공하기 때문에 추후 추가적인 요청사항이 있을 시 최소한의 코드로 요청사항 반영 가능
+```typescript
+// 개선 전 코드
+// TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
+import { useState, useEffect } from "react";
+useEffect(() => {
+  if (!isLoggedIn) {
+    navigate("/login");
+  }
+  const fetchMemberInfo = async () => {
+    try {
+      const info = await getMemberInfo(isLoggedIn);
+      setMemberInfo(info);
+      setIntroduceInfo({ aboutMe: info.aboutMe, withMe: info.withMe });
+    } catch (error) {}
+  };
+  fetchMemberInfo();
+}, [isModalOpen, isRendering]);
+```
+```typescript
+// 개선 후 코드
+  import { useQuery } from "@tanstack/react-query";
+  const { data, isLoading, isError } = useQuery(["userInfo"], ()=>{
+    return getMemberInfo(isLoggedIn);
+  })
+  const userInfo = data;
+
+  if (!isLoggedIn) navigate("/login");
+  if (isLoading) return <div>로딩중...</div>
+  if (isError) return <div>에러가 발생했습니다.</div>
+```
+
+<br>
+
+### useMutation Hook 적용
+- isLoading, isError 상태를 각 axios 요청 함수별로 따로 리팩토링이 요구되는데, 다수의 반복작업 예상
+- 수정/삭제 요청 쿼리의 단순화
 ```typescript
 // 개선 전 코드
 // TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
