@@ -10,7 +10,6 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import { Study } from "../types/StudyGroupApiInterfaces";
 
 const WaitingList = () => {
-  const [isData, setIsData] = useState<boolean>(true);
   const [waitingList, setWaitingList] = useState<Study[]>([]);
   const isLoggedIn = useRecoilValue(LogInState);
 
@@ -18,9 +17,6 @@ const WaitingList = () => {
     const fetchWaitingList = async () => {
       try {
         const data = await getWaitingStudyGroupList();
-        if (data === null) {
-          setIsData(false);
-        }
         setWaitingList(data.study);
       } catch (error) {
         alert("대기중인 가입 신청을 불러오는데 실패했습니다");

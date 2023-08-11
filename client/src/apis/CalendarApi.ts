@@ -50,7 +50,6 @@ export const getScheduleList = async () => {
     ...mappedRecurSchedule,
     ...mappedSingleSchedule,
   ];
-
   return combinedSchedule;
 };
 

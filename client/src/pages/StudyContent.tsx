@@ -83,7 +83,7 @@ const StudyContent = () => {
       <StudyContentContainer imageUrl={content?.image}>
         <StudyContentBody>
           {!fetching && (
-            <div key={content?.id}>
+            <div>
               <StudyContentTop>
                 {!isRecruiting ? (
                   <span>모집중</span>

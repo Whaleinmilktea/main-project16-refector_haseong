@@ -18,12 +18,6 @@ import Home from "./pages/Home";
 import StudyUpdate from "./pages/StudyUpdate";
 import ProfileStudyManage from "./pages/StudyManage"
 
-// import { worker } from "./mocks/browser";
-// // 개발 모드로 실행되었을 때, mocking 라이브러리가 실행되도록 명시하는 코드
-// if (process.env.NODE_ENV === "development") {
-//   worker.start();
-// }
-
 const queryClient = new QueryClient();
 
 Modal.setAppElement("#root");

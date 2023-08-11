@@ -1,10 +1,10 @@
 import Modal from "react-modal";
-import { useRecoilValue } from "recoil";
-import { LogInState } from "../../recoil/atoms/LogInState";
-import { useEffect, useState } from "react";
-import { getStudyGroupInfo } from "../../apis/StudyGroupApi";
-import { StudyInfoDto } from "../../types/StudyGroupApiInterfaces";
-import { useNavigate } from "react-router-dom";
+// import { useRecoilValue } from "recoil";
+// import { LogInState } from "../../recoil/atoms/LogInState";
+// import { useEffect, useState } from "react";
+// import { getStudyGroupInfo } from "../../apis/StudyGroupApi";
+// import { StudyInfoDto } from "../../types/StudyGroupApiInterfaces";
+// import { useNavigate } from "react-router-dom";
 
 const customStyles = {
   overlay: {
@@ -32,31 +32,28 @@ const customStyles = {
 interface ViewEventDetailModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  id: number;
 }
 
 const ViewCalendarEvent = ({
   isOpen,
   closeModal,
-  id,
 }: ViewEventDetailModalProps) => {
-  const isLoggedIn = useRecoilValue(LogInState);
-  const [studyInfo, setStudyInfo] = useState<StudyInfoDto | null>(null);
-  const navigate = useNavigate();
+  // const isLoggedIn = useRecoilValue(LogInState);
+  // const [studyInfo, setStudyInfo] = useState<StudyInfoDto | null>(null);
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      alert("로그인 상태를 확인하세요");
-    } else {
-      getStudyGroupInfo(id, isLoggedIn)
-        .then((studyInfo) => setStudyInfo(studyInfo))
-        // .catch((error) => alert(error.message));
-    }
-  }, [id, isLoggedIn]);
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     alert("로그인 상태를 확인하세요");
+  //   } else {
+  //     getStudyGroupInfo(isLoggedIn)
+  //       .then((studyInfo) => setStudyInfo(studyInfo))
+  //   }
+  // }, [isLoggedIn]);
 
-  const goToGroupPage = () => {
-    navigate(`/profile/${id}`);
-  };
+  // const goToGroupPage = () => {
+  //   navigate(`/profile/${id}`);
+  // };
 
   return (
     <>
@@ -66,7 +63,7 @@ const ViewCalendarEvent = ({
         style={customStyles}
         contentLabel="ViewEventDetailModal"
       >
-        {studyInfo ? (
+        {/* {studyInfo ? (
           <>
             <h2 style={{ marginBottom: "10px", color: "#4D74B1" }}>{studyInfo.studyName}</h2>
             <p style={{marginBottom: "2px"}}>스터디 기간: {studyInfo.studyPeriodStart} - {studyInfo.studyPeriodEnd}</p>
@@ -88,7 +85,8 @@ const ViewCalendarEvent = ({
           </>
         ) : (
           <p>Loading study group information...</p>
-        )}
+        )} */}
+        <p>서비스 준비중</p>
       </Modal>
     </>
   );

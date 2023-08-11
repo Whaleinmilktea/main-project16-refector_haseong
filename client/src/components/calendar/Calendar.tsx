@@ -5,37 +5,37 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import { RecurEvent, SingleEvent } from "../../types/CalendarInterfaces";
-import { useQuery } from "@tanstack/react-query";
 import PostPersonalEvent from "../modal/PostPersonalEvent";
 import "./fullcalendar-custom.css";
-import ViewCalendarEvent from "../modal/ViewCalendarEvent";
+// TODO import ViewCalendarEvent from "../modal/ViewCalendarEvent";
+import { useQuery } from "@tanstack/react-query";
 
 const Calendar = () => {
   const [events, setEvents] = useState<(RecurEvent | SingleEvent)[]>([]);
-  const [viewEventInfo, setViewEventInfo] = useState<boolean>(false);
+  // TODO const [viewEventInfo, setViewEventInfo] = useState<boolean>(false);
   const [postPersonalSchedule, setPostPersonalSchedule] =
     useState<boolean>(false);
+
   const { data, isLoading, error } = useQuery(
     ["scheduleList"],
     getScheduleList
   );
 
   useEffect(() => {
-    if (!data) return;
-    setEvents(data);
-  }, [data]);
-
-  if (isLoading) return <div>로딩중...</div>;
-  if (error) return <div>에러가 발생했습니다</div>;
+    if (data === undefined) return
+    setEvents(data)
+  }, [data])
 
   const handleDateClick = () => {
     setPostPersonalSchedule(true);
   };
 
-  const handleEventClick = (e) => {
-    const clickedEvent = e.event;
-    setViewEventInfo(true);
-  };
+  // TODO const handleEventClick = () => {
+  // TODO  setViewEventInfo(true);
+  // TODO };
+
+  if (isLoading) <p>로딩중</p>
+  if (error) <p>에러발생</p>
 
   return (
     <>
@@ -53,17 +53,16 @@ const Calendar = () => {
         slotMinTime={"06:00:00"}
         slotMaxTime={"30:00:00"}
         dateClick={handleDateClick}
-        eventClick={handleEventClick}
+        // TODO eventClick={handleEventClick}
       />
       <PostPersonalEvent
         isOpen={postPersonalSchedule}
         closeModal={() => setPostPersonalSchedule(false)}
       />
-      <ViewCalendarEvent
+      {/* <ViewCalendarEvent
         isOpen={viewEventInfo}
         closeModal={() => setViewEventInfo(false)}
-        s
-      />
+      /> */}
     </>
   );
 };

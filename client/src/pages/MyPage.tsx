@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Routes, Route, useNavigate, Link } from "react-router-dom";
 import ProfileStudyList from "./MyParticipatedStudyList";
 import ProfileCalendar from "./ProfileCalendar";
-import ProfileStudyManage from "./StudyManage";
 
 const Profile = () => {
   const navigate = useNavigate();

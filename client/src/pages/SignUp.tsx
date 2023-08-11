@@ -8,7 +8,6 @@ import KakaoButton from "../components/social-login-button/KakaoButton";
 import NaverButton from "../components/social-login-button/NaverButton";
 import MemberRestoreModal from "../components/modal/MemberRestoreModal";
 import { validateEmptyInput } from "./utils/loginUtils";
-import { Base64 } from "js-base64";
 
 const SignUp = () => {
   const [nickName, setNickName] = useState("");
