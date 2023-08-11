@@ -200,6 +200,109 @@ export const DayOfWeekBinaryToStringMap = (dayOfWeek: number[]) => {
 
 <br>
 
+### useMutation Hook 적용
+- isLoading, isError 상태를 각 axios 요청 함수별로 따로 리팩토링이 요구되는데, 다수의 반복작업 예상
+- 수정/삭제 요청 쿼리의 단순화
+```typescript
+// 개선 전 코드
+// TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
+import { useState, useEffect } from "react";
+useEffect(() => {
+  if (!isLoggedIn) {
+    navigate("/login");
+  }
+  const fetchMemberInfo = async () => {
+    try {
+      const info = await getMemberInfo(isLoggedIn);
+      setMemberInfo(info);
+      setIntroduceInfo({ aboutMe: info.aboutMe, withMe: info.withMe });
+    } catch (error) {}
+  };
+  fetchMemberInfo();
+}, [isModalOpen, isRendering]);
+```
+```typescript
+// 개선 후 코드
+  import { useQuery } from "@tanstack/react-query";
+  const { data, isLoading, isError } = useQuery(["userInfo"], ()=>{
+    return getMemberInfo(isLoggedIn);
+  })
+  const userInfo = data;
+
+  if (!isLoggedIn) navigate("/login");
+  if (isLoading) return <div>로딩중...</div>
+  if (isError) return <div>에러가 발생했습니다.</div>
+```
+
+<br>
+
+### Vitest를 활용한 React-testing
+- 해시/리스트와 같은 자료구조를 활용한 함수 유닛 테스팅
+```typescript
+describe("요일 맵핑 테스트", () => {
+  it("[0,0,0,0,0,0,1]이 파라미터로 전달되면 ['일']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToStringMap([0, 0, 0, 0, 0, 0, 1])).toEqual(["일"]);
+  });
+  it("[1,0,0,1,1,0,0]이 파라미터로 전달되면 ['월', '일']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToStringMap([1, 0, 0, 1, 1, 0, 0])).toEqual(["월", "목", "금"]);
+  });
+  it("[0,0,0,0,0,0,1]이 파라미터로 전달되면 ['0']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToNumber([0, 0, 0, 0, 0, 0, 1])).toEqual(["0"]);
+  });
+  it("[0,1,0,0,1,0,0]이 파라미터로 전달되면 ['2', '5']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToNumber([0, 1, 0, 0, 1, 0, 0])).toEqual(["2", "5"]);
+  });
+});
+
+describe("페이지네이션 테스트", () => {
+  it("totalPages의 값이 3일 경우 [1,2,3]이 출력된다.", () => {
+    expect(getPageArray(3)).toEqual([1, 2, 3]);
+  });
+});
+
+describe("인코드 테스트", () => {
+  it("1이 입력될 경우 'MQ=='가 출력된다.", () => {
+    expect(encodedUrl(1)).toEqual("MQ==");
+  });
+  it("'nickName'이 입력될 경우 'bmlja05hbWU='가 출력된다", () => {
+    expect(encodedUrl("nickName")).toEqual("bmlja05hbWU=");
+  });
+  it("'test01'이 입력될 경우, 'dGVzdDAx'가 출력된다", () => {
+    expect(encodedUrl("test01")).toEqual("dGVzdDAx");
+  });
+  it("불리언 true 값이 입력될 경우 'dHJ1ZQ=='가 출력된다", () => {
+
+    expect(encodedUrl(true)).toEqual("dHJ1ZQ==");
+  });
+});
+```
+```typescript
+export const DayOfWeekBinaryToStringMap = (dayOfWeek: number[]) => {
+  interface DayOfWeekMap {
+    [key: number]: string;
+  }
+  const dayOfWeekMap: DayOfWeekMap = {
+    0: "월",
+    1: "화",
+    2: "수",
+    3: "목",
+    4: "금",
+    5: "토",
+    6: "일",
+  };
+  const dayOfWeekArr = [];
+  for (let i = 0; i < dayOfWeek.length; i++) {
+    if (dayOfWeek[i] === 1) {
+      dayOfWeekArr.push(dayOfWeekMap[i]);
+    }
+  }
+  return dayOfWeekArr;
+};
+
+```
+
+<br>
+
 ### 쿼리스트링 난독화
 
 - 쿼리 전송단계에서 intercept시 url의 query를 조작하여 해커가 원하는 데이터를 임의로 탈취당할 우려
