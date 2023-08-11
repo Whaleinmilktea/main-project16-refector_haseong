@@ -10,7 +10,7 @@ import {
   StudyInfoDto,
   StudyListOrderDto,
 } from "../types/StudyGroupApiInterfaces";
-import { encodedUrl } from "./CommentApi";
+import { encodedUrl } from "../pages/utils/EncodeUrl";
 
 export const createStudyGroup = async (
   data: StudyGroupCreateDto,

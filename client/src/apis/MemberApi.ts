@@ -8,7 +8,7 @@ import {
   Oauth2MemberCheckDto,
   OtherMemberInfo,
 } from "../types/MemberApiInterfaces";
-import { encodedUrl } from "./CommentApi";
+import { encodedUrl } from "../pages/utils/EncodeUrl";
 // * recoil에서 전역 LogInState를 가져와서 isLogin 변수에 할당
 
 export const getMemberInfo = async (isLoggedIn: boolean) => {

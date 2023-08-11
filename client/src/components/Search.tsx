@@ -1,17 +1,18 @@
 import styled from "styled-components";
+import { searchRequest } from "../apis/SearchApi";
 
-const Search = () => {
+const Search =  () => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      alert("Enter 키를 클릭하셨습니다. 검색 기능은 현재 준비중입니다.");
-      return;
+      const newList = searchRequest(e.currentTarget.value)
+      console.log(newList)
     }
   };
 
   return (
     <SearchContainer>
       <form>
-      <SearchInput type="text" placeholder="서비스 준비중입니다" onKeyDown={handleKeyPress}/>
+      <SearchInput type="text" onKeyDown={handleKeyPress}/>
       </form>
     </SearchContainer>
   );
