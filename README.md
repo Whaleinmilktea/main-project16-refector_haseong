@@ -13,6 +13,7 @@
 <br>
 
 ## 🧑‍🤝‍🧑 Participants
+
 <table>
 <thead>
 <tr>
@@ -38,6 +39,8 @@
 ## ⚒️ 주요 개선 내용
 
 - [useQuery-Hook 적용](#usequery-hook-적용)
+- [useMutation-Hook 적용](#usequery-hook-적용)
+- [해시/리스트를 활용한 맵핑 함수 unit-Test](#vitest를-활용한-react-testing)
 - [쿼리스트링 난독화](#쿼리스트링-난독화)
 - [image 업로드 요청 형식 변경 ( json -> form-data )](#이미지-업로드-시-json-형식에서-form-data-형식으로-변경)
 - [인터페이스 모듈화 및 분리 + 구체적인 기능을 명시하는 변수 명으로 변경](#인터페이스-모듈화-및-분리)
@@ -47,9 +50,11 @@
 <br>
 
 ### useQuery Hook 적용
+
 - isLoading, isError 상태를 각 axios 요청 함수별로 따로 리팩토링이 요구되는데, 다수의 반복작업 예상
 - Caching을 활용한 불필요한 요청 최소화 필요
 - React-query의 hook들은 이러한 불필요한 작업을 최소화하고, 필요시 hook에 적용될 수 있는 여러 메서드를 제공하기 때문에 추후 추가적인 요청사항이 있을 시 최소한의 코드로 요청사항 반영 가능
+
 ```typescript
 // 개선 전 코드
 // TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
@@ -68,24 +73,138 @@ useEffect(() => {
   fetchMemberInfo();
 }, [isModalOpen, isRendering]);
 ```
+
 ```typescript
 // 개선 후 코드
-  import { useQuery } from "@tanstack/react-query";
-  const { data, isLoading, isError } = useQuery(["userInfo"], ()=>{
-    return getMemberInfo(isLoggedIn);
-  })
-  const userInfo = data;
+import { useQuery } from "@tanstack/react-query";
+const { data, isLoading, isError } = useQuery(["userInfo"], () => {
+  return getMemberInfo(isLoggedIn);
+});
+const userInfo = data;
 
-  if (!isLoggedIn) navigate("/login");
-  if (isLoading) return <div>로딩중...</div>
-  if (isError) return <div>에러가 발생했습니다.</div>
+if (!isLoggedIn) navigate("/login");
+if (isLoading) return <div>로딩중...</div>;
+if (isError) return <div>에러가 발생했습니다.</div>;
+```
+
+<br>
+
+### useMutation Hook 적용
+
+- isLoading, isError 상태를 각 axios 요청 함수별로 따로 리팩토링이 요구되는데, 다수의 반복작업 예상
+- 수정/삭제 요청 쿼리의 단순화
+
+```typescript
+// 개선 전 코드
+// TODO 최초 페이지 진입 시 유저의 정보를 조회하는 코드
+import { useState, useEffect } from "react";
+useEffect(() => {
+  if (!isLoggedIn) {
+    navigate("/login");
+  }
+  const fetchMemberInfo = async () => {
+    try {
+      const info = await getMemberInfo(isLoggedIn);
+      setMemberInfo(info);
+      setIntroduceInfo({ aboutMe: info.aboutMe, withMe: info.withMe });
+    } catch (error) {}
+  };
+  fetchMemberInfo();
+}, [isModalOpen, isRendering]);
+```
+
+```typescript
+// 개선 후 코드
+import { useQuery } from "@tanstack/react-query";
+const { data, isLoading, isError } = useQuery(["userInfo"], () => {
+  return getMemberInfo(isLoggedIn);
+});
+const userInfo = data;
+
+if (!isLoggedIn) navigate("/login");
+if (isLoading) return <div>로딩중...</div>;
+if (isError) return <div>에러가 발생했습니다.</div>;
+```
+
+<br>
+
+### Vitest를 활용한 React-testing
+
+- 해시/리스트와 같은 자료구조를 활용한 함수 유닛 테스팅
+
+```typescript
+describe("요일 맵핑 테스트", () => {
+  it("[0,0,0,0,0,0,1]이 파라미터로 전달되면 ['일']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToStringMap([0, 0, 0, 0, 0, 0, 1])).toEqual(["일"]);
+  });
+  it("[1,0,0,1,1,0,0]이 파라미터로 전달되면 ['월', '일']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToStringMap([1, 0, 0, 1, 1, 0, 0])).toEqual([
+      "월",
+      "목",
+      "금",
+    ]);
+  });
+  it("[0,0,0,0,0,0,1]이 파라미터로 전달되면 ['0']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToNumber([0, 0, 0, 0, 0, 0, 1])).toEqual(["0"]);
+  });
+  it("[0,1,0,0,1,0,0]이 파라미터로 전달되면 ['2', '5']을 리턴한다", () => {
+    expect(DayOfWeekBinaryToNumber([0, 1, 0, 0, 1, 0, 0])).toEqual(["2", "5"]);
+  });
+});
+
+describe("페이지네이션 테스트", () => {
+  it("totalPages의 값이 3일 경우 [1,2,3]이 출력된다.", () => {
+    expect(getPageArray(3)).toEqual([1, 2, 3]);
+  });
+});
+
+describe("인코드 테스트", () => {
+  it("1이 입력될 경우 'MQ=='가 출력된다.", () => {
+    expect(encodedUrl(1)).toEqual("MQ==");
+  });
+  it("'nickName'이 입력될 경우 'bmlja05hbWU='가 출력된다", () => {
+    expect(encodedUrl("nickName")).toEqual("bmlja05hbWU=");
+  });
+  it("'test01'이 입력될 경우, 'dGVzdDAx'가 출력된다", () => {
+    expect(encodedUrl("test01")).toEqual("dGVzdDAx");
+  });
+  it("불리언 true 값이 입력될 경우 'dHJ1ZQ=='가 출력된다", () => {
+    expect(encodedUrl(true)).toEqual("dHJ1ZQ==");
+  });
+});
+```
+
+```typescript
+export const DayOfWeekBinaryToStringMap = (dayOfWeek: number[]) => {
+  interface DayOfWeekMap {
+    [key: number]: string;
+  }
+  const dayOfWeekMap: DayOfWeekMap = {
+    0: "월",
+    1: "화",
+    2: "수",
+    3: "목",
+    4: "금",
+    5: "토",
+    6: "일",
+  };
+  const dayOfWeekArr = [];
+  for (let i = 0; i < dayOfWeek.length; i++) {
+    if (dayOfWeek[i] === 1) {
+      dayOfWeekArr.push(dayOfWeekMap[i]);
+    }
+  }
+  return dayOfWeekArr;
+};
 ```
 
 <br>
 
 ### 쿼리스트링 난독화
+
 - 쿼리 전송단계에서 intercept시 url의 query를 조작하여 해커가 원하는 데이터를 임의로 탈취당할 우려
 - 이로 인해 쿼리 요청 단계에서 utf-8 형식을 base64 형식으로 인코딩하여 쿼리 요청 적용
+
 ```typescript
 // 개선 전 코드
 export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
@@ -98,6 +217,7 @@ export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
   return studyInfo;
 }
 ```
+
 ```typescript
 // 개선 후 코드
 export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
@@ -115,8 +235,10 @@ export async function getStudyGroupInfo(id: number, isLoggedIn: boolean) {
 <br>
 
 ### 이미지 업로드 시, JSON 형식에서 Form-data 형식으로 변경
+
 - 이미지 업로드 시, 서버 부하로 인해 RDS에 직접 저장 대신 S3에 저장하는 로직 구현 (서버 구현 사항)
 - 이 과정에서 서버 측에서 JSON 형식으로 된 데이터가 아닌 Form-data 형식으로 된 쿼리를 요청
+
 ```typescript
 // 변경 전 코드
 
@@ -131,6 +253,7 @@ export const updateMemberProfileImage = async (
   await tokenRequestApi.patch("/members/profile-image", data);
 };
 ```
+
 ```typescript
 // 변경 후 코드
 export const updateMemberProfileImage = async (
@@ -150,6 +273,7 @@ export const updateMemberProfileImage = async (
 <br>
 
 ### 인터페이스 모듈화 및 분리
+
 ```typescript
 // 개선 전 코드
 // ~/src/apis/MemberApi 에서 interface 타입 및 api 요청 통합 관리
@@ -175,6 +299,7 @@ export const getMemberInfo = async (isLoggedIn: boolean) => {
   return data; // 데이터 반환
 };
 ```
+
 ```typescript
 // 개선 후 코드
 // types/MemberApiInterfaces
@@ -191,8 +316,10 @@ export const getMemberInfo = async (isLoggedIn: boolean) => {
 <br>
 
 ### 비밀번호 유효성 검사 정규화
+
 - 클라이언트와 서버 모두 유효성 검사 수행
 - 유효성 검사 수행 시, 같은 양식의 리턴값을 공유하기 위해 유효성 검증식 정규화
+
 ```typescript
 const passwordTest = (data: string) => {
   // 비밀번호는 8~25자리의 영문 대소문자, 숫자, 특수문자 조합이어야 합니다.
@@ -211,16 +338,20 @@ const handleSignUpButton = () => {
 <br>
 
 ### 스터디 리스트 무한스크롤 구현
+
 - 스터디 리스트의 무한스크롤 기능 추가
 - 서버로 page와 size를 쿼리를 요청하는 방법으로 구현
 - 무한스크롤 기능은 바닐라 JS를 활용하여 구현할 경우 쓰로틀에 의한 이벤트 과다 이슈가 있어, 이를 효과적으로 제어하는 라이브러리를 활용하여 구현
 - 주석으로 처리된 부분은, 서버의 배포 이슈로 인해 임시 json-server로 테스트하여 동작여부 확인한 코드
+
 ```typescript
 // ~/src/apis/StudyGroupApi.ts
 export const getStudyGroupList = async (
   currentPage: number
 ): Promise<StudyGroupListDto[]> => {
-  const requestEndpoint = Base64.encode(`$studygroups?page${currentPage}&size=6}`)
+  const requestEndpoint = Base64.encode(
+    `$studygroups?page${currentPage}&size=6}`
+  );
   const response = await axios.get<StudyGroupListDto[]>(
     `${import.meta.env.VITE_APP_API_URL}/list?p=${currentPage}&s=6`
   );
@@ -230,6 +361,7 @@ export const getStudyGroupList = async (
   return response.data;
 };
 ```
+
 ```typescript
 // ~/src/pages/StudyList
 // ... dependancy
