@@ -37,7 +37,6 @@ const ProfileStudyList = () => {
     const handleClick = () => {
       navigate(`/${id}`);
     };
-
     const tagElements = tags?.map((tag, index) => (
       <Tag key={index}>
         <div>{tag}</div>
@@ -175,9 +174,9 @@ const Image = styled.div`
 
 const TagWrapper = styled.div`
   display: flex;
+  flex-flow: wrap;
   width: 240px;
   justify-content: flex-start;
-  align-items: flex-start;
 `;
 
 const Tag = styled.div`
@@ -186,7 +185,7 @@ const Tag = styled.div`
   div {
     height: 24px;
     color: #39739d;
-    font-size: 0.8125rem;
+    font-size: 12px;
     border-radius: 4px;
     background-color: #e1ecf4;
     padding: 4.8px 6px;
