@@ -38,6 +38,7 @@
 
 ## ⚒️ 주요 개선 내용
 
+- [페이지별 UI 개선](/client/src/pages/README.md)
 - [useQuery-Hook 적용](#usequery-hook-적용)
 - [useMutation-Hook 적용](#usequery-hook-적용)
 - [해시/리스트를 활용한 맵핑 함수 unit-Test](#vitest를-활용한-react-testing)
