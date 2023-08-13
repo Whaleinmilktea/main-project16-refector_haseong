@@ -117,7 +117,10 @@ export async function updateStudyGroupContentsInfo(
   alert("성공적으로 스터디 정보를 업데이트 했습니다");
 }
 
-export async function deleteStudyGroupInfo(studygroupId: number, isLoggedIn: boolean) {
+export async function deleteStudyGroupInfo(
+  studygroupId: number,
+  isLoggedIn: boolean
+) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
   await tokenRequestApi.delete(`/study/${encodedUrl(studygroupId)}`);
   alert("스터디가 삭제되었습니다.");
@@ -176,9 +179,12 @@ export async function forceKickStudyGroup(
   studygroupId: number,
   nickname: string
 ) {
-  const response = await tokenRequestApi.delete(`/join/${encodedUrl(studygroupId)}/kick`, {
-    data: { nickName: nickname },
-  });
+  const response = await tokenRequestApi.delete(
+    `/join/${encodedUrl(studygroupId)}/kick`,
+    {
+      data: { nickName: nickname },
+    }
+  );
   return response;
 }
 
@@ -193,9 +199,14 @@ export async function ChangeStudyGroupLeader(
   return response.data;
 }
 
-export async function exitStudyGroup(studygroupId: number, isLoggedIn: boolean) {
+export async function exitStudyGroup(
+  studygroupId: number,
+  isLoggedIn: boolean
+) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
-  const response = await tokenRequestApi.delete(`/join/${encodedUrl(studygroupId)}`);
+  const response = await tokenRequestApi.delete(
+    `/join/${encodedUrl(studygroupId)}`
+  );
   return response.data;
 }
 
@@ -204,7 +215,7 @@ export async function changeStudyGroupRecruitmentStatus(
   isLoggedIn: boolean
 ) {
   if (!isLoggedIn) throw new Error("로그인 상태를 확인해주세요");
-  await tokenRequestApi.patch(`/study/${encodedUrl(studygroupId)}/status`, );
+  await tokenRequestApi.patch(`/study/${encodedUrl(studygroupId)}/status`);
   alert("스터디 모집 상태를 변경했습니다");
 }
 

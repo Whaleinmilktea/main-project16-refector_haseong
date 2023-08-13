@@ -1,63 +1,45 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import StudyListTag from "../components/StudyListTag";
-import ListFilter from "../components/ListFilter";
-import Search from "../components/Search";
 import { Study } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
+import StudyListTag from "../components/StudyListTag";
+import { SearchRequest } from "../apis/SearchApi";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
   const [list, setList] = useState<Study[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterData, setFilterData] = useState<Study[]>([]);
-  const [sortValue, setSortValue] = useState("default");
+  const [searchTxt, setSearchTxt] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
+  console.log(searchTxt)
 
   useEffect(() => {
-    if (inView) fetchList();
+    if (inView) fetchList(searchTxt);
   }, [inView]);
 
-  const fetchList = async () => {
-    const res = await getStudyGroupList(currentPage);
-    setList((prev) => [...prev, ...res.study]);
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  useEffect(() => {
-    filterList(sortValue);
-  }, [list]);
-
-  const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortValue(e.target.value);
-  };
-
-  const filterList = (sortValue: string) => {
-    const value = sortValue;
-    if (value === "default") {
-      setFilterData(list);
-    }
-    if (value === "koAlpabetical") {
-      const sortedList = list.sort((a, b) => {
-        return a.title.localeCompare(b.title);
-      });
-      setFilterData(sortedList);
-    }
-    if (value === "views") {
-      const sortedList = list.sort((a, b) => {
-        return b.views - a.views;
-      });
-      setFilterData(sortedList);
-    }
-    if (value === "likes") {
-      const sortedList = list.sort((a, b) => {
-        return b.likes - a.likes;
-      });
-      setFilterData(sortedList);
+  const fetchList = async (searchTxt: string) => {
+    if (searchTxt.length === 0) {
+      const data = await getStudyGroupList(currentPage);
+      setList((prev) => [...prev, ...data.study]);
+      setCurrentPage((prevPage) => prevPage + 1);
+    } else if (searchTxt.length > 0) {
+      const data = await SearchRequest(searchTxt);
+      setList(data);
     }
   };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSearchTxt(inputValue)
+  };
+
+  const handleInputChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.currentTarget.value)
+  }
+
 
   return (
     <StudyListContainer>
@@ -71,17 +53,20 @@ const StudyList = () => {
           </Link>
         </StudyListTop>
         <ListFilterWrapper>
-          <ListFilter onChange={handleSortOrder} />
-          <Search />
+          <SearchContainer>
+            <form onSubmit={handleSubmit}>
+              <SearchInput type="text" value={inputValue} onChange={handleInputChange}/>
+              <button type="submit"></button>
+            </form>
+          </SearchContainer>
         </ListFilterWrapper>
         <StudyBoxContainer>
-          {filterData?.map((item: Study) => (
+          {list?.map((item: Study) => (
             <StudyBox
               key={item?.id}
               onClick={() => navigate(`/studycontent/${item?.id}`)}
             >
               <StudyListImage image={item?.image}></StudyListImage>
-
               <div>
                 <div className="studylist-title">
                   <h3>{item?.title}</h3>
@@ -254,6 +239,23 @@ const StudyListImage = styled.div<{ image: string }>`
   background-image: url(${(props) => props.image});
   background-size: cover;
   background-color: aliceblue;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+  height: 30px;
+`;
+
+const SearchInput = styled.input`
+  padding: 8px;
+  border: none;
+  border-bottom: 1px solid #ccc; /* 밑줄 스타일 추가 */
+  font-size: 14px;
+  color: #333;
+  flex: 1;
+  margin-right: 8px;
+  background-color: transparent; /* 배경색 투명으로 설정 */
+  outline: none; /* 포커스 시 브라우저 기본 스타일 제거 */
 `;
 
 export default StudyList;

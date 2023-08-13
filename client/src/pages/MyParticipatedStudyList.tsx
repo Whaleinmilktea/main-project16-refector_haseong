@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import studyImage from "../assets/studyImage.webp";
 import WaitingList from "../components/WaitingList";
 import {
   getLeaderRoleStduies,
@@ -33,7 +32,7 @@ const ProfileStudyList = () => {
     fetchMemberRoleStudies();
   }, []);
 
-  const StudyCard = ({ id, title, tags }: Study) => {
+  const StudyCard = ({ id, title, tags, image }: Study) => {
     const handleClick = () => {
       navigate(`/${id}`);
     };
@@ -45,7 +44,7 @@ const ProfileStudyList = () => {
 
     return (
       <CardProfileStudyListContainer onClick={handleClick}>
-        <Image />
+        <Image image={image}/>
         <Title>
           <h3>{title}</h3>
         </Title>
@@ -53,6 +52,7 @@ const ProfileStudyList = () => {
       </CardProfileStudyListContainer>
     );
   };
+
   return (
     <MyStudyListContainer>
       <WaitingList />
@@ -164,10 +164,10 @@ const Title = styled.div`
     font-weight: 700;
   }
 `;
-const Image = styled.div`
+const Image = styled.div<{ image : string}>`
   width: 240px;
   height: 180px;
-  background-image: url(${studyImage});
+  background-image: ${(props) => `url(${props.image})`};
   background-size: cover;
   background-color: aliceblue;
 `;
