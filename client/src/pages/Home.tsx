@@ -5,13 +5,22 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import { TbUsers } from "react-icons/tb";
 import { TbNotebook } from "react-icons/tb";
 import { TbCalendar } from "react-icons/tb";
+import { collection, getDocs } from "firebase/firestore"
+import { db } from "../firebase"
 
 const Home = () => {
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(LogInState);
 
+  const handshake = async () => {
+    const querySnapshot = await getDocs(collection(db, 'handshake'));
+    return querySnapshot.docs.map((doc) => ({id:doc.id,...doc.data()}));
+  }
+
   return (
     <HomeContainer>
+      <div>
+      </div>
       <TitlePage>
         <h1>
           스터디 통합 관리 앱, <span>EduSync</span>입니다.
