@@ -9,14 +9,16 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
+const metaEnv = import.meta.env
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBy5YncCV6kHfbvTudcbn6TrCPIz7Q2M7A",
-  authDomain: "edusync-refector.firebaseapp.com",
+  apiKey: metaEnv.VITE_FIREBASE_API_KEY,
+  authDomain: metaEnv.VITE_AUTH_DOMAIN,
   projectId: "edusync-refector",
-  storageBucket: "edusync-refector.appspot.com",
-  messagingSenderId: "860527999064",
-  appId: "1:860527999064:web:6d930ab20d53019197b22d",
-  measurementId: "G-66KMX0V3M9"
+  storageBucket: metaEnv.VITE_STORAGE_BUCKET,
+  messagingSenderId: metaEnv.VITE_MESSAGING_SENDER_ID,
+  appId: metaEnv.VITE_APP_ID,
+  measurementId: metaEnv.VITE_MEASUREMENT_ID
 };
 
 

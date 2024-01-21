@@ -17,10 +17,10 @@ const Home = () => {
     return querySnapshot.docs.map((doc) => ({id:doc.id,...doc.data()}));
   }
 
+  const metaEnv = import.meta.env
+
   return (
     <HomeContainer>
-      <div>
-      </div>
       <TitlePage>
         <h1>
           스터디 통합 관리 앱, <span>EduSync</span>입니다.
@@ -72,6 +72,7 @@ const Home = () => {
             </p>
           </IntroBox>
         </IntroMain>
+
       </IntroPage>
     </HomeContainer>
   );
