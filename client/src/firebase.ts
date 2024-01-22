@@ -21,9 +21,7 @@ const firebaseConfig = {
   measurementId: metaEnv.VITE_MEASUREMENT_ID
 };
 
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig); // 초기화 코드
-
 export const db = getFirestore(app)
 const analytics = getAnalytics(app);

@@ -16,7 +16,9 @@ import useRefreshToken from "./hooks/useRefreshToken";
 import Modal from "react-modal";
 import Home from "./pages/Home";
 import StudyUpdate from "./pages/StudyUpdate";
-import ProfileStudyManage from "./pages/StudyManage"
+import ProfileStudyManage from "./pages/StudyManage";
+import { docRef } from "./apis/Test_Firebase";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,14 @@ function App() {
 }
 
 function AppContent() {
+
+  useEffect(() => {
+    console.log(docRef)
+    docRef.forEach((doc) => {
+      console.log(doc.data());
+    });
+  }, []);
+
   const fetched = useRefreshToken(); // 이 코드 때문에, 개발서버에서 렌더링이 되지 않고 있음!
   return (
     <>
