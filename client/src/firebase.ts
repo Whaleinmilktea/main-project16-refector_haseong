@@ -23,5 +23,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig); // 초기화 코드
+export const analytics = getAnalytics(app);
 export const db = getFirestore(app)
-const analytics = getAnalytics(app);
