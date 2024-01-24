@@ -16,86 +16,93 @@ import MemberRestoreModal from "../components/modal/MemberRestoreModal";
 import Input from "../components/Input";
 
 const Login = () => {
-  // const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
-  // const setIsLoggedIn = useSetRecoilState(LogInState);
-  // const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
+  const setIsLoggedIn = useSetRecoilState(LogInState);
+  const navigate = useNavigate();
 
-  // const loginMutation = useMutation<AxiosResponse, AxiosError>(
-  //   () =>
-  //     tokenRequestApi.post("/members/login", {
-  //       email,
-  //       password,
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       setIsLoggedIn(true);
-  //       const accessToken = data.headers.authorization;
-  //       const refreshToken = data.headers.refresh;
-  //       tokenRequestApi.setAccessToken(accessToken);
-  //       setRefreshToken(refreshToken);
-  //       navigate("/");
-  //     },
-  //     onError: (error) => {
-  //       if (error.message === "Request failed with status code 403") {
-  //         setMemberRestoreModalOpen(true);
-  //       } else {
-  //         alert("이메일과 패스워드를 올바르게 입력했는지 확인해주세요!!");
-  //       }
-  //     },
-  //   }
-  // );
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
-  // const handleLoginButton = () => {
-  //   if (validateEmptyInput(email) || validateEmptyInput(password)) {
-  //     alert("이메일과 패스워드를 올바르게 입력했는지 확인해주세요!");
-  //   } else {
-  //     loginMutation.mutate();
-  //   }
-  // };
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
 
-  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     handleLoginButton();
-  //   }
-  // };
+  const loginMutation = useMutation<AxiosResponse, AxiosError>(
+    () =>
+      tokenRequestApi.post("/members/login", {
+        email,
+        password,
+      }),
+    {
+      onSuccess: (data) => {
+        setIsLoggedIn(true);
+        const accessToken = data.headers.authorization;
+        const refreshToken = data.headers.refresh;
+        tokenRequestApi.setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        navigate("/");
+      },
+      onError: (error) => {
+        if (error.message === "Request failed with status code 403") {
+          setMemberRestoreModalOpen(true);
+        } else {
+          alert("이메일과 패스워드를 올바르게 입력했는지 확인해주세요!!");
+        }
+      },
+    }
+  );
+
+  const handleLoginButton = () => {
+    if (validateEmptyInput(email) || validateEmptyInput(password)) {
+      alert("이메일과 패스워드를 올바르게 입력했는지 확인해주세요!");
+    } else {
+      loginMutation.mutate();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleLoginButton();
+    }
+  };
 
   return (
     <Container>
-      {/* <LoginDiv onKeyDown={handleKeyDown}> */}
-      <LoginDiv>
+      <LoginDiv onKeyDown={handleKeyDown}>
         <LogoDiv>
           <img src={logo} />
         </LogoDiv>
         <LoginForm>
-          <Input type="email" placeholder="Email" required />
+          <input
+            onChange={handleEmail}
+            type="email"
+            placeholder="Email"
+            required
+          />
         </LoginForm>
         <LoginForm>
-          {/* <input
+          <input
             onChange={handlePassword}
-            type="password"
-            placeholder="Password"
-            autoComplete="new-password"
-            required
-          /> */}
-          <Input
             type="password"
             placeholder="Password"
             autoComplete="new-password"
             required
           />
         </LoginForm>
-        <LoginForm></LoginForm>
-        {/* <ButtonDiv>
+        <ButtonDiv>
           <button onClick={handleLoginButton}>Log In</button>
-        </ButtonDiv> */}
+        </ButtonDiv>
       </LoginDiv>
-
-      {/* <MemberRestoreModal
+      <Input />
+      <MemberRestoreModal
         isOpen={memberRestoreModalOpen}
         closeModal={() => setMemberRestoreModalOpen(false)}
         email={email}
-      /> */}
+      />
       <SignUpLink to="/signup">회원가입하러 가기</SignUpLink>
       <SocialLoginDiv>
         <GoogleButton />
