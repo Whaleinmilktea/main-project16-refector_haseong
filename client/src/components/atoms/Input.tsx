@@ -2,18 +2,17 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const StyledInput = styled.input`
-  width: 100%;
   padding: 10px;
 `;
 
-interface InputProps {
+interface Props {
   type: string;
   placeholder?: string;
   autoComplete?: string;
   required?: true;
 }
 
-const Input = ({ type, placeholder, autoComplete, required }: InputProps) => {
+const Input = ({ type, placeholder, autoComplete, required }: Props) => {
   const [val, setVal] = useState("");
 
   if (placeholder == undefined) {

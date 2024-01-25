@@ -8,6 +8,7 @@ import KakaoButton from "../components/social-login-button/KakaoButton";
 import NaverButton from "../components/social-login-button/NaverButton";
 import MemberRestoreModal from "../components/modal/MemberRestoreModal";
 import { validateEmptyInput } from "./utils/loginUtils";
+import Input from "../components/atoms/Input";
 
 const SignUp = () => {
   const [nickName, setNickName] = useState("");
@@ -16,17 +17,6 @@ const SignUp = () => {
   const [passwordValidation, setPasswordValidation] = useState(false);
   const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
   const navigate = useNavigate();
-
-  const handleNickName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickName(e.target.value);
-  };
-  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    handlePasswordValidation(password);
-  };
 
   const handlePasswordValidation = (password: string) => {
     const passwordTest = (data: string) => {
@@ -92,16 +82,14 @@ const SignUp = () => {
           <img src={logo} />
         </LogoDiv>
         <SignUpForm>
-          <input
-            onChange={handleNickName}
+          <Input
             type="text"
             placeholder="Nickname"
             required
           />
         </SignUpForm>
         <SignUpForm>
-          <input
-            onChange={handleEmail}
+          <Input
             type="email"
             placeholder="Email"
             required
@@ -110,25 +98,37 @@ const SignUp = () => {
         <SignUpForm>
           {passwordValidation ? (
             <>
-              <input
-                onChange={handlePassword}
+              <Input
                 type="password"
                 placeholder="Password"
                 autoComplete="new-password"
                 required
               />
-              <p style={{ marginTop : "10px", fontSize : "12px", color: "#4682A9" }}>사용할 수 있는 비밀번호입니다</p>
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontSize: "12px",
+                  color: "#4682A9",
+                }}
+              >
+                사용할 수 있는 비밀번호입니다
+              </p>
             </>
           ) : (
             <>
-              <input
-                onChange={handlePassword}
+              <Input
                 type="password"
                 placeholder="Password"
                 autoComplete="new-password"
                 required
               />
-              <p style={{ marginTop : "10px", fontSize : "12px", color: "#C51605" }}>
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontSize: "12px",
+                  color: "#C51605",
+                }}
+              >
                 비밀번호는 8~25자리의 영문, 숫자, 특수문자 조합이어야 합니다
               </p>
             </>

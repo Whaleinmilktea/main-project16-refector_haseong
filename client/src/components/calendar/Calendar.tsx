@@ -7,12 +7,10 @@ import FullCalendar from "@fullcalendar/react";
 import { RecurEvent, SingleEvent } from "../../types/CalendarInterfaces";
 import PostPersonalEvent from "../modal/PostPersonalEvent";
 import "./fullcalendar-custom.css";
-// TODO import ViewCalendarEvent from "../modal/ViewCalendarEvent";
 import { useQuery } from "@tanstack/react-query";
 
 const Calendar = () => {
   const [events, setEvents] = useState<(RecurEvent | SingleEvent)[]>([]);
-  // TODO const [viewEventInfo, setViewEventInfo] = useState<boolean>(false);
   const [postPersonalSchedule, setPostPersonalSchedule] =
     useState<boolean>(false);
 
@@ -29,10 +27,6 @@ const Calendar = () => {
   const handleDateClick = () => {
     setPostPersonalSchedule(true);
   };
-
-  // TODO const handleEventClick = () => {
-  // TODO  setViewEventInfo(true);
-  // TODO };
 
   if (isLoading) <p>로딩중</p>
   if (error) <p>에러발생</p>
@@ -59,10 +53,6 @@ const Calendar = () => {
         isOpen={postPersonalSchedule}
         closeModal={() => setPostPersonalSchedule(false)}
       />
-      {/* <ViewCalendarEvent
-        isOpen={viewEventInfo}
-        closeModal={() => setViewEventInfo(false)}
-      /> */}
     </>
   );
 };

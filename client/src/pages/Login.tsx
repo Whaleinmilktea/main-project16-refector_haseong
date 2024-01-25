@@ -13,12 +13,13 @@ import GoogleButton from "../components/social-login-button/GoogleButton";
 import KakaoButton from "../components/social-login-button/KakaoButton";
 import NaverButton from "../components/social-login-button/NaverButton";
 import MemberRestoreModal from "../components/modal/MemberRestoreModal";
-import Input from "../components/Input";
+import Input from "../components/atoms/Input";
+import Button from "../components/atoms/Button";
 
 const Login = () => {
   // const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
   // const setIsLoggedIn = useSetRecoilState(LogInState);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // const loginMutation = useMutation<AxiosResponse, AxiosError>(
   //   () =>
@@ -71,13 +72,6 @@ const Login = () => {
           <Input type="email" placeholder="Email" required />
         </LoginForm>
         <LoginForm>
-          {/* <input
-            onChange={handlePassword}
-            type="password"
-            placeholder="Password"
-            autoComplete="new-password"
-            required
-          /> */}
           <Input
             type="password"
             placeholder="Password"
@@ -85,10 +79,9 @@ const Login = () => {
             required
           />
         </LoginForm>
-        <LoginForm></LoginForm>
-        {/* <ButtonDiv>
-          <button onClick={handleLoginButton}>Log In</button>
-        </ButtonDiv> */}
+        <ButtonDiv>
+          <Button textContents={"Log In"}/>
+        </ButtonDiv>
       </LoginDiv>
 
       {/* <MemberRestoreModal

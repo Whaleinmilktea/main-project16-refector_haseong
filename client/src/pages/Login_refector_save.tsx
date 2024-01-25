@@ -13,7 +13,7 @@ import GoogleButton from "../components/social-login-button/GoogleButton";
 import KakaoButton from "../components/social-login-button/KakaoButton";
 import NaverButton from "../components/social-login-button/NaverButton";
 import MemberRestoreModal from "../components/modal/MemberRestoreModal";
-import Input from "../components/Input";
+import Input from "../components/atoms/Input";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -97,7 +97,7 @@ const Login = () => {
           <button onClick={handleLoginButton}>Log In</button>
         </ButtonDiv>
       </LoginDiv>
-      <Input />
+      
       <MemberRestoreModal
         isOpen={memberRestoreModalOpen}
         closeModal={() => setMemberRestoreModalOpen(false)}
