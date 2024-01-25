@@ -9,25 +9,28 @@ interface Props {
   type: string;
   placeholder?: string;
   autoComplete?: string;
+  onChange?: (value: string) => void
+  value?: string
   required?: true;
 }
 
-const Input = ({ type, placeholder, autoComplete, required }: Props) => {
-  const [val, setVal] = useState("");
-
+const Input = ({ type, placeholder, autoComplete, onChange, value, required }: Props) => {
   if (placeholder == undefined) {
     placeholder = "";
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVal(e.currentTarget.value);
+    const newVal = e.currentTarget.value
+    if (onChange != undefined) {
+      onChange(newVal)
+    }
   };
 
   return (
     <>
       <StyledInput
         type={type}
-        value={val}
+        value={value}
         placeholder={placeholder}
         onChange={handleChange}
         autoComplete={autoComplete}

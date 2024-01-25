@@ -9,6 +9,7 @@ import NaverButton from "../components/social-login-button/NaverButton";
 import MemberRestoreModal from "../components/modal/MemberRestoreModal";
 import { validateEmptyInput } from "./utils/loginUtils";
 import Input from "../components/atoms/Input";
+import SignUpForm from "../components/molecules/signup-form";
 
 const SignUp = () => {
   const [nickName, setNickName] = useState("");
@@ -81,7 +82,7 @@ const SignUp = () => {
         <LogoDiv>
           <img src={logo} />
         </LogoDiv>
-        <SignUpForm>
+        {/* <SignUpForm>
           <Input
             type="text"
             placeholder="Nickname"
@@ -133,7 +134,8 @@ const SignUp = () => {
               </p>
             </>
           )}
-        </SignUpForm>
+        </SignUpForm> */}
+        <SignUpForm />
         <ButtonDiv>
           <button type="button" onClick={handleSignUpButton}>
             Sign up
@@ -192,14 +194,14 @@ const SignUpDiv = styled.div`
     }
   }
 `;
-const SignUpForm = styled.form`
-  width: 75%;
-  margin: 15px;
-  input {
-    width: 100%;
-    padding: 10px;
-  }
-`;
+// const SignUpForm = styled.form`
+//   width: 75%;
+//   margin: 15px;
+//   input {
+//     width: 100%;
+//     padding: 10px;
+//   }
+// `;
 
 const ButtonDiv = styled.div`
   margin-top: 1rem;

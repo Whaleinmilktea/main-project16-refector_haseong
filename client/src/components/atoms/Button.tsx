@@ -1,10 +1,11 @@
 import { useState } from "react";
 
 interface Props {
-  textContents: string;
+  type? : "button" | "submit" | "reset" | undefined;
+  textContent? : string;
 }
 
-const Button = ({ textContents }: Props) => {
+const Button = ({ type, textContent }: Props) => {
   const [clicked, setClicked] = useState(false)
 
   const handleClick = () => {
@@ -13,7 +14,7 @@ const Button = ({ textContents }: Props) => {
 
   return (
     <>
-      <button onClick={handleClick}>{textContents}</button>
+      <button type={type} onClick={handleClick}>{textContent}</button>
     </>
   );
 };
