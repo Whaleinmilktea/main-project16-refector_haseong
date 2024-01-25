@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 const StyledInput = styled.input`
@@ -10,19 +9,18 @@ interface Props {
   placeholder?: string;
   autoComplete?: string;
   onChange?: (value: string) => void
-  value?: string
   required?: true;
 }
 
-const Input = ({ type, placeholder, autoComplete, onChange, value, required }: Props) => {
+const Input = ({ type, placeholder, autoComplete, onChange, required }: Props) => {
+
   if (placeholder == undefined) {
     placeholder = "";
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVal = e.currentTarget.value
     if (onChange != undefined) {
-      onChange(newVal)
+      onChange(e.currentTarget.value)
     }
   };
 
@@ -30,7 +28,6 @@ const Input = ({ type, placeholder, autoComplete, onChange, value, required }: P
     <>
       <StyledInput
         type={type}
-        value={value}
         placeholder={placeholder}
         onChange={handleChange}
         autoComplete={autoComplete}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
+import { passwordTest } from "../tools/validator";
 
 const Container = styled.div`
   width: 75%;
@@ -30,25 +31,23 @@ const SignUpForm = () => {
     email: "",
     password: "",
   });
-  const [passwordValidation, setPasswordValidation] = useState<boolean | null>(
-    null
-  );
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean | null>(null);
 
-  // if (info.password == "") {
-  //   setPasswordValidation(true)
-  // } else {
-  //   setPasswordValidation(false)
-  // }
-
-  const handleFormData = (field : string, value : string) => {
+  const handleFormData = (field: string, value: string) => {
     setFormData((prevData) => ({
-        ...prevData,
-        [field] : value
-      }))
-  }
+      ...prevData,
+      [field]: value,
+    }));
+
+    if (passwordTest(formData.password)) {
+      setIsPasswordValid(true)
+    } else {
+      setIsPasswordValid(false)
+    }
+  };
 
   const renderMessage = () => {
-    switch (passwordValidation) {
+    switch (isPasswordValid) {
       case false:
         return (
           <p
@@ -85,15 +84,20 @@ const SignUpForm = () => {
           type="text"
           placeholder="Nickname"
           onChange={(val) => handleFormData("nickname", val)}
-          value={formData.nickname}
           required
         />
-        <Input type="email" placeholder="Email" required />
+        <Input
+          type="email"
+          placeholder="Email"
+          onChange={(val) => handleFormData("email", val)}
+          required
+        />
         <>
           <Input
             type="password"
             placeholder="Password"
             autoComplete="new-password"
+            onChange={(val) => handleFormData("password", val)}
             required
           />
           {renderMessage()}
