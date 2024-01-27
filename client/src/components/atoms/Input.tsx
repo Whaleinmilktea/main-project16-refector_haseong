@@ -6,13 +6,14 @@ const StyledInput = styled.input`
 
 interface Props {
   type: string;
+  name?: string;
   placeholder?: string;
   autoComplete?: string;
   onChange?: (value: string) => void
   required?: true;
 }
 
-const Input = ({ type, placeholder, autoComplete, onChange, required }: Props) => {
+const Input = ({ type, name, placeholder, autoComplete, onChange, required }: Props) => {
 
   if (placeholder == undefined) {
     placeholder = "";
@@ -28,6 +29,7 @@ const Input = ({ type, placeholder, autoComplete, onChange, required }: Props) =
     <>
       <StyledInput
         type={type}
+        name={name}
         placeholder={placeholder}
         onChange={handleChange}
         autoComplete={autoComplete}

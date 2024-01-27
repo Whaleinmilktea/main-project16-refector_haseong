@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest --coverage"
   },
   "dependencies": {
     "@babel/preset-react": "^7.22.5",
@@ -52,9 +53,8 @@
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-typescript": "^7.22.5",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
-    "@types/jest": "^29.5.3",
+    "@testing-library/jest-dom": "^6.3.0",
+    "@testing-library/react": "^14.1.2",
     "@types/node": "^18.16.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
@@ -66,7 +66,6 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
-    "jest": "^29.7.0",
     "msw": "^1.2.2",
     "typescript": "^5.1.6",
     "vite": "^4.3.2",

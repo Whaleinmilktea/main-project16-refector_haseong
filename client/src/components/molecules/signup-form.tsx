@@ -26,7 +26,7 @@ const ButtonDiv = styled.div`
 `;
 
 const SignUpForm = () => {
-  const [formData, setFormData] = useState({
+  const [_formData, setFormData] = useState({
     nickname: "",
     email: "",
     password: "",
@@ -39,7 +39,11 @@ const SignUpForm = () => {
       [field]: value,
     }));
 
-    if (passwordTest(formData.password)) {
+    const updatedPassword = passwordTest(value);
+
+    if (updatedPassword== null) {
+      setIsPasswordValid(null)
+    } else if (updatedPassword === true) {
       setIsPasswordValid(true)
     } else {
       setIsPasswordValid(false)
@@ -47,33 +51,32 @@ const SignUpForm = () => {
   };
 
   const renderMessage = () => {
-    switch (isPasswordValid) {
-      case false:
-        return (
-          <p
-            style={{
-              marginTop: "10px",
-              fontSize: "12px",
-              color: "#4682A9",
-            }}
-          >
-            사용할 수 있는 비밀번호입니다
-          </p>
-        );
-      case true:
-        return (
-          <p
-            style={{
-              marginTop: "10px",
-              fontSize: "12px",
-              color: "#C51605",
-            }}
-          >
-            비밀번호는 8~25자리의 영문, 숫자, 특수문자 조합이어야 합니다
-          </p>
-        );
-      default:
-        return null;
+    if (isPasswordValid === false) {
+      return (
+        <p
+          style={{
+            marginTop: "10px",
+            fontSize: "12px",
+            color: "#C51605",
+          }}
+        >
+          비밀번호는 8~25자리의 영문, 숫자, 특수문자 조합이어야 합니다
+        </p>
+      );
+    } else if (isPasswordValid === true) {
+      return (
+        <p
+          style={{
+            marginTop: "10px",
+            fontSize: "12px",
+            color: "#4682A9",
+          }}
+        >
+          사용할 수 있는 비밀번호입니다
+        </p>
+      );
+    } else {
+      return null;
     }
   };
 
