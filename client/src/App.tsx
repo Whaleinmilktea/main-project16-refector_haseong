@@ -17,9 +17,6 @@ import Modal from "react-modal";
 import Home from "./pages/Home";
 import StudyUpdate from "./pages/StudyUpdate";
 import ProfileStudyManage from "./pages/StudyManage";
-import { docRef } from "./apis/Test_Firebase";
-import { useEffect } from "react";
-import { auth } from "./firebase";
 
 const queryClient = new QueryClient();
 

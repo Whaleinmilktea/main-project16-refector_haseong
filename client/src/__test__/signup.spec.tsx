@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react"
-import { passwordTest } from "../components/tools/validator";
+import { passwordTest } from "../service/validator";
 
 describe("passwordTest 함수 테스트", () => {
   test("유효한 비밀번호가 제공될 때 통과", () => {
