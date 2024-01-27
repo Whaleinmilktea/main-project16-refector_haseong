@@ -3,19 +3,28 @@ import styled from "styled-components";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../tools/validator";
+import { createUserWithEmailAndPassword } from "@firebase/auth";
+import { auth } from "../../firebase";
 
 const Container = styled.div`
   width: 75%;
   margin: 15px;
   input {
     width: 100%;
+    margin-top: 10px;
     margin-bottom: 10px;
     padding: 10px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
 const ButtonDiv = styled.div`
-  margin-top: 1rem;
+  margin-top: 2rem;
   width: 75%;
   display: flex;
   justify-content: space-between;
@@ -26,7 +35,7 @@ const ButtonDiv = styled.div`
 `;
 
 const SignUpForm = () => {
-  const [_formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     nickname: "",
     email: "",
     password: "",
@@ -39,14 +48,15 @@ const SignUpForm = () => {
       [field]: value,
     }));
 
-    const updatedPassword = passwordTest(value);
-
-    if (updatedPassword== null) {
-      setIsPasswordValid(null)
-    } else if (updatedPassword === true) {
-      setIsPasswordValid(true)
-    } else {
-      setIsPasswordValid(false)
+    if (field == "password") {
+      const updatedPassword = passwordTest(value);
+      if (updatedPassword == null) {
+        setIsPasswordValid(null);
+      } else if (updatedPassword === true) {
+        setIsPasswordValid(true);
+      } else {
+        setIsPasswordValid(false);
+      }
     }
   };
 
@@ -80,9 +90,21 @@ const SignUpForm = () => {
     }
   };
 
+  const signUp = async () => {
+    try {
+      await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Container>
-      <form>
+      <form onSubmit={signUp}>
         <Input
           type="text"
           placeholder="Nickname"
