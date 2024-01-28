@@ -2,7 +2,7 @@ import googleLogo from "../../assets/google-icon.png";
 import styled from "styled-components";
 import { socialLoginApi } from "../../apis/EduApi";
 
-function GoogleButton() {
+function SocialButton() {
   const googleHref = `${socialLoginApi}/google`;
 
   return (
@@ -23,4 +23,4 @@ const GoogleLoginButton = styled.div`
     margin: 15px;
   }
 `;
-export default GoogleButton;
+export default SocialButton;

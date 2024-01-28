@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Calendar from "../components/calendar/Calendar";
+import Calendar from "../components/atoms/Calendar";
 
 const ProfileCalendar = () => {
   return (

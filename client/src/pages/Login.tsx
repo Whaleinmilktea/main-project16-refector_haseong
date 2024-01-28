@@ -1,66 +1,11 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/edusync-logo.png";
-import tokenRequestApi from "../apis/TokenRequestApi";
-import { AxiosResponse, AxiosError } from "axios";
-import { validateEmptyInput } from "./utils/loginUtils";
-import { useSetRecoilState } from "recoil";
-import { LogInState } from "../recoil/atoms/LogInState";
-import { setRefreshToken } from "./utils/Auth";
-import GoogleButton from "../components/social-login-button/GoogleButton";
-import KakaoButton from "../components/social-login-button/KakaoButton";
-import NaverButton from "../components/social-login-button/NaverButton";
-import MemberRestoreModal from "../components/modal/MemberRestoreModal";
+import GoogleButton from "../components/atoms/SocialLoginButton";
 import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
 
 const Login = () => {
-  // const [memberRestoreModalOpen, setMemberRestoreModalOpen] = useState(false);
-  // const setIsLoggedIn = useSetRecoilState(LogInState);
-  const navigate = useNavigate();
-
-  // const loginMutation = useMutation<AxiosResponse, AxiosError>(
-  //   () =>
-  //     tokenRequestApi.post("/members/login", {
-  //       email,
-  //       password,
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       setIsLoggedIn(true);
-  //       const accessToken = data.headers.authorization;
-  //       const refreshToken = data.headers.refresh;
-  //       tokenRequestApi.setAccessToken(accessToken);
-  //       setRefreshToken(refreshToken);
-  //       navigate("/");
-  //     },
-  //     onError: (error) => {
-  //       if (error.message === "Request failed with status code 403") {
-  //         setMemberRestoreModalOpen(true);
-  //       } else {
-  //         alert("이메일과 패스워드를 올바르게 입력했는지 확인해주세요!!");
-  //       }
-  //     },
-  //   }
-  // );
-
-  // const handleLoginButton = () => {
-  //   if (validateEmptyInput(email) || validateEmptyInput(password)) {
-  //     alert("이메일과 패스워드를 올바르게 입력했는지 확인해주세요!");
-  //   } else {
-  //     loginMutation.mutate();
-  //   }
-  // };
-
-  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     handleLoginButton();
-  //   }
-  // };
-
   return (
     <Container>
       {/* <LoginDiv onKeyDown={handleKeyDown}> */}
@@ -92,8 +37,6 @@ const Login = () => {
       <SignUpLink to="/signup">회원가입하러 가기</SignUpLink>
       <SocialLoginDiv>
         <GoogleButton />
-        <KakaoButton />
-        <NaverButton />
       </SocialLoginDiv>
     </Container>
   );

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/edusync-logo.png";
-import GoogleButton from "../components/social-login-button/GoogleButton";
+import GoogleButton from "../components/atoms/SocialLoginButton";
 import SignUpForm from "../components/molecules/signup-form";
 
 const SignUp = () => {
