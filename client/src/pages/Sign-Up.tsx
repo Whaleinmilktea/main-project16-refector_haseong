@@ -2,13 +2,10 @@ import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/edusync-logo.png";
 import GoogleButton from "../components/atoms/SocialLoginButton";
-import SignUpForm from "../components/molecules/signup-form";
+import SignUpForm from "../components/molecules/sign-up-form";
 
 const SignUp = () => {
-  const navigate = useNavigate();
-
   // ! 아이디&비밀번호 찾기 기능은 별도의 페이지로 설계 : Modal은 단순 안내 혹은 경고에만 사용!
-
   return (
     <Container>
     <SignUpDiv>
@@ -51,7 +48,7 @@ const SignUpDiv = styled.div`
   background-color: #ffffff;
   border-radius: 10px;
   width: 20rem;
-  height: 30rem;
+  height: 27rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

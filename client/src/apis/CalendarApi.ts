@@ -6,7 +6,7 @@ import {
   ScheduleList,
   SingleEvent,
 } from "../types/CalendarInterfaces";
-import { DayOfWeekBinaryToNumber } from "../pages/utils/DaysOfWeekMap";
+import { DayOfWeekBinaryToNumber } from "../utils/DaysOfWeekMap";
 
 export const getScheduleList = async () => {
   const recurSchedule: Schedule[] = [];

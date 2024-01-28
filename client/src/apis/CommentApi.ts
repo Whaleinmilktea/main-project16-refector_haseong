@@ -1,6 +1,6 @@
 import tokenRequestApi from "./TokenRequestApi";
 import { CommentData } from "../types/CommentInterfaces";
-import { encodedUrl } from "../pages/utils/EncodeUrl";
+import { encodedUrl } from "../utils/EncodeUrl";
 
 
 export const postComment = async (studyGroupId: number, data: string) => {

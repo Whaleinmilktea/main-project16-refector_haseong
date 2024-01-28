@@ -1,4 +1,4 @@
-import { encodedUrl } from "../pages/utils/EncodeUrl"
+import { encodedUrl } from "../utils/EncodeUrl"
 import { Study } from "../types/StudyGroupApiInterfaces"
 import tokenRequestApi from "./TokenRequestApi"
 

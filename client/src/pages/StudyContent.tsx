@@ -13,7 +13,7 @@ import StudyCommentList from "../components/StudyCommentList";
 import LoginAlertModal from "../components/modal/LoginAlertModal";
 import { StudyInfoDto } from "../types/StudyGroupApiInterfaces";
 import { CommentList } from "../types/CommentInterfaces";
-import { DayOfWeekBinaryToStringMap } from "./utils/DaysOfWeekMap";
+import { DayOfWeekBinaryToStringMap } from "../utils/DaysOfWeekMap";
 
 const StudyContent = () => {
   const [fetching, setFetching] = useState(true);

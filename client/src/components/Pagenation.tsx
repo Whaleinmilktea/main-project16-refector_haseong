@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getPageArray } from "../pages/utils/getPagesArray";
+import { getPageArray } from "../utils/getPagesArray";
 import { SetStateAction } from "react";
 
 interface PagenationProps {

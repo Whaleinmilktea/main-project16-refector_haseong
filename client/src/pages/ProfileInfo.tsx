@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import tokenRequestApi from "../apis/TokenRequestApi";
-import { removeTokens } from "./utils/Auth";
+import { removeTokens } from "../utils/Auth";
 import CheckPasswordModal from "../components/modal/CheckPasswordModal";
 import {
   getMemberInfo,

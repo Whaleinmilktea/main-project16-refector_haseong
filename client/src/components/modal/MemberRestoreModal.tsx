@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { baseApi } from "../../apis/EduApi";
-import { validateEmptyInput } from "../../pages/utils/loginUtils";
+import { validateEmptyInput } from "../../utils/loginUtils";
 
 const customStyles = {
   overlay: {

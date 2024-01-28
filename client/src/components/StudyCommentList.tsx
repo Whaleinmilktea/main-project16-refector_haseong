@@ -3,7 +3,7 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { deleteComment, getComments, patchComment } from "../apis/CommentApi";
-import { validateEmptyInput } from "../pages/utils/loginUtils";
+import { validateEmptyInput } from "../utils/loginUtils";
 import { useNavigate } from "react-router-dom";
 import { CommentList, CommentPageInfo } from "../types/CommentInterfaces";
 import Pagenation from "./Pagenation";

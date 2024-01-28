@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import tokenRequestApi from "../apis/TokenRequestApi";
 import { baseApi } from "../apis/EduApi";
 import { useState } from "react";
-import { getRefreshToken } from "../pages/utils/Auth";
+import { getRefreshToken } from "../utils/Auth";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { removeTokens } from "../pages/utils/Auth";
+import { removeTokens } from "../utils/Auth";
 
 function useRefreshToken() {
   const [isLoginState, setIsLoggedIn] = useRecoilState(LogInState);

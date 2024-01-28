@@ -1,15 +1,14 @@
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./GlobalStyle";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+import SignUp from "./pages/Sign-Up";
 import Mypage from "./pages/MyPage";
 import StudyPost from "./pages/StudyPost";
 import "./App.css";
 import StudyList from "./pages/StudyList";
 import StudyContent from "./pages/StudyContent";
-import GNB from "./components/gnb/GNB";
-import Footer from "./components/Footer";
+import GNB from "./layouts/gnb/GNB";
+import Footer from "./layouts/Footer";
 import ProfileCalendar from "./pages/ProfileCalendar";
 import Redirect from "./pages/Redirect";
 import useRefreshToken from "./hooks/useRefreshToken";
@@ -17,6 +16,7 @@ import Modal from "react-modal";
 import Home from "./pages/Home";
 import StudyUpdate from "./pages/StudyUpdate";
 import ProfileStudyManage from "./pages/StudyManage";
+import SignIn from "./pages/Sign-in";
 
 const queryClient = new QueryClient();
 
@@ -50,7 +50,7 @@ function AppContent() {
               }
             />
             <Route path="/profile/*" element={<Mypage />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/signIn" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/oauth/redirect" element={<Redirect />} />
             <Route path="/studylist" element={<StudyList />} />

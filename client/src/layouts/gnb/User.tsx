@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import tokenRequestApi from "../../apis/TokenRequestApi";
 import { useNavigate } from "react-router-dom";
-import { getRefreshToken, removeTokens } from "../../pages/utils/Auth";
+import { getRefreshToken, removeTokens } from "../../utils/Auth";
 import { baseApi } from "../../apis/EduApi";
 
 type GNB = {

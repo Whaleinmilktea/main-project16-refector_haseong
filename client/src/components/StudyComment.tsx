@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { useState } from "react";
-import { validateEmptyInput } from "../pages/utils/loginUtils";
+import { validateEmptyInput } from "../utils/loginUtils";
 import { postComment, getComments } from "../apis/CommentApi";
 import { CommentList } from "../types/CommentInterfaces";
 import { useNavigate } from "react-router-dom";
