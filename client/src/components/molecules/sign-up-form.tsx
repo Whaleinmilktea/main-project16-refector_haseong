@@ -5,8 +5,11 @@ import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { auth } from "../../firebase";
+import { useRecoilState } from "recoil";
+import { LogInState } from "../../recoil/atoms/LogInState";
 
 const SignUpForm = () => {
+  const isLoggedIn = useRecoilState(LogInState)
   const [formData, setFormData] = useState({
     nickname: "",
     email: "",
@@ -73,6 +76,8 @@ const SignUpForm = () => {
       alert(error)
     }
   };
+
+  console.log(isLoggedIn)
 
   return (
     <Container>

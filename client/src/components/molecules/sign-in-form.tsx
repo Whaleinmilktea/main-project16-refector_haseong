@@ -1,18 +1,29 @@
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
-import { signInWithEmailAndPassword } from "@firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "@firebase/auth";
 import { auth } from "../../firebase";
 import { useRecoilState } from "recoil";
+import { LogInState } from "../../recoil/atoms/LogInState";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [isPasswordValid, setIsPasswordValid] = useState<boolean | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
+  
+  useEffect(() => {
+    if (isLoggedIn) {
+      alert("이미 로그인 되어 있습니다");
+      navigate("/");
+    }
+  }, []);
 
   const handleFormData = (field: string, value: string) => {
     setFormData((prevData) => ({
@@ -63,13 +74,31 @@ const LoginForm = () => {
     }
   };
 
-  const signIn = async () => {
+  const signIn = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      const { user } = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      // const { sysTokenManager, uid } = user;
+      setIsLoggedIn(true);
+      navigate("/");
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("로그인 되어 있음!");
+      } else {
+        console.log("로그인되어 있지 않음!");
+      }
+    });
+  }, []);
 
   return (
     <Container>

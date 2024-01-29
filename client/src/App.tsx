@@ -7,11 +7,10 @@ import StudyPost from "./pages/StudyPost";
 import "./App.css";
 import StudyList from "./pages/StudyList";
 import StudyContent from "./pages/StudyContent";
-import GNB from "./layouts/gnb/GNB";
+import GNB from "./layouts/GNB";
 import Footer from "./layouts/Footer";
 import ProfileCalendar from "./pages/ProfileCalendar";
 import Redirect from "./pages/Redirect";
-import useRefreshToken from "./hooks/useRefreshToken";
 import Modal from "react-modal";
 import Home from "./pages/Home";
 import StudyUpdate from "./pages/StudyUpdate";
@@ -32,11 +31,8 @@ function App() {
 }
 
 function AppContent() {
-
-  const fetched = useRefreshToken(); // 이 코드 때문에, 개발서버에서 렌더링이 되지 않고 있음!
   return (
     <>
-      {fetched && (
         <>
           <GNB />
           <GlobalStyle />
@@ -49,21 +45,20 @@ function AppContent() {
                 </>
               }
             />
-            <Route path="/profile/*" element={<Mypage />} />
+            {/* <Route path="/profile/*" element={<Mypage />} /> */}
             <Route path="/signIn" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/oauth/redirect" element={<Redirect />} />
+            {/* <Route path="/oauth/redirect" element={<Redirect />} />
             <Route path="/studylist" element={<StudyList />} />
             <Route path={`/studycontent/:id`} element={<StudyContent />} />
             <Route path="/studypost" element={<StudyPost />} />
             <Route path="/calendar" element={<ProfileCalendar />} />
             <Route path={`/edit/:id`} element={<StudyUpdate />} />
-            <Route path="/:id" element={<ProfileStudyManage />} />
+            <Route path="/:id" element={<ProfileStudyManage />} /> */}
             <Route />
           </Routes>
           <Footer />
         </>
-      )}
     </>
   );
 }
