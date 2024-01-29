@@ -1,15 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { createUserWithEmailAndPassword } from "@firebase/auth";
+import { auth } from "../../firebase";
+import { LogInState } from "../../recoil/atoms/LogInState";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
-import { createUserWithEmailAndPassword } from "@firebase/auth";
-import { auth } from "../../firebase";
-import { useRecoilState } from "recoil";
-import { LogInState } from "../../recoil/atoms/LogInState";
 
 const SignUpForm = () => {
-  const isLoggedIn = useRecoilState(LogInState)
+  const isLoggedIn = useRecoilValue(LogInState);
   const [formData, setFormData] = useState({
     nickname: "",
     email: "",
@@ -73,11 +73,11 @@ const SignUpForm = () => {
         formData.password
       );
     } catch (error) {
-      alert(error)
+      alert(error);
     }
   };
 
-  console.log(isLoggedIn)
+  console.log(isLoggedIn);
 
   return (
     <Container>

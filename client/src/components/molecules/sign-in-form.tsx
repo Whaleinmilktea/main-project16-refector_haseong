@@ -1,9 +1,9 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import styled from "styled-components";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "@firebase/auth";
+import { signInWithEmailAndPassword } from "@firebase/auth";
 import { auth } from "../../firebase";
 import { useRecoilState } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
@@ -16,14 +16,7 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
-  
-  useEffect(() => {
-    if (isLoggedIn) {
-      alert("이미 로그인 되어 있습니다");
-      navigate("/");
-    }
-  }, []);
+  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
 
   const handleFormData = (field: string, value: string) => {
     setFormData((prevData) => ({
@@ -89,16 +82,6 @@ const LoginForm = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("로그인 되어 있음!");
-      } else {
-        console.log("로그인되어 있지 않음!");
-      }
-    });
-  }, []);
 
   return (
     <Container>
