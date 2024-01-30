@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/edusync-logo.png";
-import User from "../components/atoms/User";
+import User from "../components/molecules/gnb-user";
 // import { useRecoilState, useRecoilValue } from "recoil";
 
 const GNB = () => {

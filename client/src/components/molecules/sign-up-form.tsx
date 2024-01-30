@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
-import { createUserWithEmailAndPassword } from "@firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "@firebase/auth";
 import { auth } from "../../firebase";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import Input from "../atoms/Input";
@@ -67,17 +67,19 @@ const SignUpForm = () => {
 
   const signUp = async () => {
     try {
-      await createUserWithEmailAndPassword(
+      const credentials = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
+      await updateProfile(credentials.user, {
+        displayName: formData.nickname,
+        photoURL: "",
+      });
     } catch (error) {
       alert(error);
     }
   };
-
-  console.log(isLoggedIn);
 
   return (
     <Container>
