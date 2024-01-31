@@ -9,6 +9,7 @@ import Footer from "./layouts/Footer";
 import Modal from "react-modal";
 import Home from "./pages/Home";
 import SignIn from "./pages/Sign-In";
+import ProfilePage from "./pages/ProfileInfo";
 
 
 const queryClient = new QueryClient();
@@ -41,7 +42,7 @@ function AppContent() {
               </>
             }
           />
-          {/* <Route path="/profile/*" element={<Mypage />} /> */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           {/* <Route path="/oauth/redirect" element={<Redirect />} />

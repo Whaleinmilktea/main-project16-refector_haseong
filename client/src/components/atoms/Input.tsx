@@ -9,19 +9,27 @@ interface Props {
   name?: string;
   placeholder?: string;
   autoComplete?: string;
-  onChange?: (value: string) => void
-  required?: true;
+  onChange?: (value: string) => void;
+  required?: boolean;
+  disabled?: boolean;
 }
 
-const Input = ({ type, name, placeholder, autoComplete, onChange, required }: Props) => {
-
+const Input = ({
+  type,
+  name,
+  placeholder,
+  autoComplete,
+  onChange,
+  required,
+  disabled,
+}: Props) => {
   if (placeholder == undefined) {
     placeholder = "";
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange != undefined) {
-      onChange(e.currentTarget.value)
+      onChange(e.currentTarget.value);
     }
   };
 
@@ -34,6 +42,7 @@ const Input = ({ type, name, placeholder, autoComplete, onChange, required }: Pr
         onChange={handleChange}
         autoComplete={autoComplete}
         required={required}
+        disabled={disabled}
       ></StyledInput>
     </>
   );

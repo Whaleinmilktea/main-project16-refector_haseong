@@ -5,12 +5,12 @@ import GoogleButton from "../components/atoms/SocialLoginButton";
 import SignUpForm from "../components/molecules/sign-up-form";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
-import { useCheckLoginStatus } from "../hooks/useCheckLoginState";
+import { useLoginCheck } from "../hooks/useCheckLoginState";
 
 const SignUp = () => {
   // ! 아이디&비밀번호 찾기 기능은 별도의 페이지로 설계 : Modal은 단순 안내 혹은 경고에만 사용!
   const isLoggedIn = useRecoilValue(LogInState);
-  useCheckLoginStatus(isLoggedIn, "/", "로그인 되어 있습니다");
+  useLoginCheck(isLoggedIn, "/", "로그인 되어 있습니다");
 
   return (
     <Container>

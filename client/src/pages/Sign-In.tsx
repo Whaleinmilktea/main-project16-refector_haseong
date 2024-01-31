@@ -2,13 +2,13 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/edusync-logo.png";
 import LoginForm from "../components/molecules/sign-in-form";
-import { useCheckLoginStatus } from "../hooks/useCheckLoginState";
+import { useLoginCheck } from "../hooks/useCheckLoginState";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 
 const SignIn = () => {
   const isLoggedIn = useRecoilValue(LogInState);
-  useCheckLoginStatus(isLoggedIn, "/", "로그인 되어 있습니다");
+  useLoginCheck(isLoggedIn, "/", "이미 로그인이 되어 있습니다");
   
   return (
     <Container>

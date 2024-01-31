@@ -1,4 +1,4 @@
-import ProfileInfo from "./ProfileInfo";
+import ProfileInfo from "./ProfileInfo_before";
 import styled from "styled-components";
 import { Routes, Route, useNavigate, Link } from "react-router-dom";
 import ProfileStudyList from "./MyParticipatedStudyList";
