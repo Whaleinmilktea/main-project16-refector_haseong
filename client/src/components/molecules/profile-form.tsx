@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { FormEvent } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoState } from "../../recoil/atoms/UserInfoState";
+import { deleteUser } from "@firebase/auth";
+import { auth } from "../../firebase";
 
 interface ButtonProps {
   backgroundColor?: string;
@@ -14,10 +16,19 @@ interface ButtonProps {
 
 const ProfileForm = () => {
   const navigate = useNavigate();
-  const user = useRecoilValue(UserInfoState);
+  const userInfo = useRecoilValue(UserInfoState);
+  const user = auth.currentUser;
 
-  const leaveService = () => {
-    // firebase leave service
+  const leaveService = async (e : FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    alert("정말로 탈퇴하시겠습니까?");
+    try {
+      if (user == null) throw new Error("유저 정보가 존재하지 않습니다")
+      await deleteUser(user)
+      navigate("/")
+    } catch (error) {
+      alert("예기치 못한 에러가 발생했습니다.")
+    }
   };
 
   const editProfile = (e: FormEvent<HTMLFormElement>) => {
@@ -29,7 +40,7 @@ const ProfileForm = () => {
     <Wrapper>
       <CredentialContainer>
         <UserImg />
-        <Input type={"text"} value={user.nickName} disabled={true} />
+        <Input type={"text"} value={userInfo.nickName} disabled={true} />
       </CredentialContainer>
       <RefernceContainer>
         <Divider textContent={"Reference"}></Divider>
@@ -40,7 +51,7 @@ const ProfileForm = () => {
         <BtnForm onSubmit={editProfile}>
           <Button textContent={"정보수정"} />
         </BtnForm>
-        <BtnForm onSubmit={editProfile} backgroundColor="#C7C8CC">
+        <BtnForm onSubmit={leaveService} backgroundColor="#C7C8CC">
           <Button textContent={"회원탈퇴"} />
         </BtnForm>
       </ButtonContainer>
