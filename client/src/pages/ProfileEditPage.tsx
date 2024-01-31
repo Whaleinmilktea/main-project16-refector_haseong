@@ -10,8 +10,8 @@ const ProfilePage = () => {
 
   return (
     <>
-      <p>새롭게 리팩토링된 페이지</p>
       <ProfileForm />
+      <p>새롭게 리팩토링된 Edit 페이지</p>
     </>
   );
 };

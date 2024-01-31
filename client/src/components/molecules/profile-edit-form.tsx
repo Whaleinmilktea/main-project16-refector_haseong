@@ -6,7 +6,7 @@ import Button from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
 import { FormEvent } from "react";
 
-const ProfileForm = () => {
+const ProfileEditForm = () => {
   const navigate = useNavigate();
 
   const leaveService = () => {
@@ -41,7 +41,7 @@ const ProfileForm = () => {
   );
 };
 
-export default ProfileForm;
+export default ProfileEditForm;
 
 const Wrapper = styled.div`
   display: flex;
