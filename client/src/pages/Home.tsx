@@ -5,13 +5,10 @@ import { LogInState } from "../recoil/atoms/LogInState";
 import { TbUsers } from "react-icons/tb";
 import { TbNotebook } from "react-icons/tb";
 import { TbCalendar } from "react-icons/tb";
-import { UserInfoState } from "../recoil/atoms/UserInfoState";
 
 const Home = () => {
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(LogInState);
-  const userInfo = useRecoilValue(UserInfoState);
-  console.log(userInfo);
 
   return (
     <HomeContainer>

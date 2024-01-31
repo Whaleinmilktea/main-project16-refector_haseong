@@ -5,8 +5,9 @@ import avator from "../../assets/default-avator.svg";
 const UserImg = () => {
   const userInfo = useRecoilValue(UserInfoState)
   // "../../assets/default-avator.svg"
-  let profileImage = userInfo.photoUrl
-  if (profileImage === "") {
+  let profileImage = userInfo.photoURL
+
+  if (profileImage === "default") {
     profileImage = avator
   }
 

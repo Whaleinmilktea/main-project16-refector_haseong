@@ -8,6 +8,7 @@ import { auth } from "../../firebase";
 import { useRecoilState } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useNavigate } from "react-router-dom";
+import { UserInfoState } from "../../recoil/atoms/UserInfoState";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const LoginForm = () => {
     password: "",
   });
   const [_isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
-
+  const [_userInfo, setUserInfo] = useRecoilState(UserInfoState);
 
   const handleFormData = (field: string, value: string) => {
     setFormData((prevData) => ({
@@ -76,7 +77,13 @@ const LoginForm = () => {
         formData.email,
         formData.password
       );
-      
+      const user = auth.currentUser;
+      if (user) {
+        setUserInfo({
+          nickName: user.displayName,
+          photoURL: user.photoURL,
+        });
+      }
       setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
