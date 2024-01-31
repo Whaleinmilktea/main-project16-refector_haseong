@@ -8,7 +8,6 @@ import UserImg from "../atoms/user-img";
 const User = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
-  // const [isLoading, setIsLoading] = useState(false);
 
   const signOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

@@ -18,6 +18,7 @@ const LoginForm = () => {
   });
   const [_isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
 
+
   const handleFormData = (field: string, value: string) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -70,18 +71,20 @@ const LoginForm = () => {
   const signIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { user } = await signInWithEmailAndPassword(
+        await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-      // const { sysTokenManager, uid } = user;
+      
       setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
+
+  
 
   return (
     <Container>

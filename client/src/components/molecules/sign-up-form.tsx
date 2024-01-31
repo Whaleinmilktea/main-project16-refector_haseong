@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { createUserWithEmailAndPassword, updateProfile } from "@firebase/auth";
@@ -7,9 +7,11 @@ import { LogInState } from "../../recoil/atoms/LogInState";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
+import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
   const isLoggedIn = useRecoilValue(LogInState);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nickname: "",
     email: "",
@@ -65,19 +67,23 @@ const SignUpForm = () => {
     }
   };
 
-  const signUp = async () => {
+  const signUp = async (e : FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
-      const credentials = await createUserWithEmailAndPassword(
+      const credential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-      await updateProfile(credentials.user, {
+      await updateProfile(credential.user, {
         displayName: formData.nickname,
         photoURL: "",
       });
+      alert("회원가입이 완료되었습니다");
+      navigate("/signin");
     } catch (error) {
-      alert(error);
+      console.error(error);
+      // Handle the error appropriately
     }
   };
 

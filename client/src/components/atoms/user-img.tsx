@@ -1,6 +1,15 @@
+import { useRecoilValue } from "recoil";
+import { UserInfoState } from "../../recoil/atoms/UserInfoState";
+import avator from "../../assets/default-avator.svg";
+
 const UserImg = () => {
-  // ! 추후에는 서버에서 받아오는 데이터로 변경
-  const profileImage = ""
+  const userInfo = useRecoilValue(UserInfoState)
+  // "../../assets/default-avator.svg"
+  let profileImage = userInfo.photoUrl
+  if (profileImage === "") {
+    profileImage = avator
+  }
+
   return (
     <div>
       <img src={profileImage} alt="Profile Avatar" />
