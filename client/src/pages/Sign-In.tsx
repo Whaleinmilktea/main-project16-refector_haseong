@@ -5,11 +5,13 @@ import LoginForm from "../components/molecules/sign-in-form";
 import { useLoginCheck } from "../hooks/useCheckLoginState";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
+import GoogleLoginBtn from "../components/atoms/google-login-btn";
+import GithubLoginBtn from "../components/atoms/github-login-btn";
 
 const SignIn = () => {
   const isLoggedIn = useRecoilValue(LogInState);
   useLoginCheck(isLoggedIn, "/", "이미 로그인이 되어 있습니다");
-  
+
   return (
     <Container>
       <LoginDiv>
@@ -24,6 +26,10 @@ const SignIn = () => {
         email={email}
       /> */}
       <SignUpLink to="/signup">회원가입하러 가기</SignUpLink>
+      <SocialLoginDiv>
+        <GoogleLoginBtn />
+        <GithubLoginBtn />
+      </SocialLoginDiv>
     </Container>
   );
 };
@@ -68,6 +74,12 @@ const SignUpLink = styled(Link)`
   text-decoration-line: none;
   color: #ffffff;
   font-size: 11px;
+`;
+
+const SocialLoginDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default SignIn;

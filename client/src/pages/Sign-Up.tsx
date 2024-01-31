@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "../assets/edusync-logo.png";
-import GoogleButton from "../components/atoms/SocialLoginButton";
 import SignUpForm from "../components/molecules/sign-up-form";
 import { useRecoilValue } from "recoil";
 import { LogInState } from "../recoil/atoms/LogInState";
 import { useLoginCheck } from "../hooks/useCheckLoginState";
+import GithubLoginBtn from "../components/atoms/github-login-btn";
+import GoogleLoginBtn from "../components/atoms/google-login-btn";
 
 const SignUp = () => {
   // ! 아이디&비밀번호 찾기 기능은 별도의 페이지로 설계 : Modal은 단순 안내 혹은 경고에만 사용!
@@ -14,23 +15,23 @@ const SignUp = () => {
 
   return (
     <Container>
-    <SignUpDiv>
-      <LogoDiv>
-        <img src={logo} />
-      </LogoDiv>
-      <SignUpForm />
-    </SignUpDiv>
-    {/* <MemberRestoreModal
+      <SignUpDiv>
+        <LogoDiv>
+          <img src={logo} />
+        </LogoDiv>
+        <SignUpForm />
+      </SignUpDiv>
+      {/* <MemberRestoreModal
       isOpen={memberRestoreModalOpen}
       closeModal={() => setMemberRestoreModalOpen(false)}
       email={email}
     /> */}
-    <LoginLink to="/login">로그인하러 가기</LoginLink>
-    <SocialLoginDiv>
-      <GoogleButton />
-      {/* <GithubButton /> */}
-    </SocialLoginDiv>
-  </Container>
+      <LoginLink to="/login">로그인하러 가기</LoginLink>
+      <SocialLoginDiv>
+        <GoogleLoginBtn />
+        <GithubLoginBtn />
+      </SocialLoginDiv>
+    </Container>
   );
 };
 

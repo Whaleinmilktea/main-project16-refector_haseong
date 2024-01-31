@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth"
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth } from "firebase/auth"
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -27,3 +27,5 @@ const app = initializeApp(firebaseConfig); // 초기화 코드
 export const analytics = getAnalytics(app);
 export const db = getFirestore(app)
 export const auth = getAuth(app)
+export const googleProvider = new GoogleAuthProvider()
+export const githubProvider = new GithubAuthProvider()
