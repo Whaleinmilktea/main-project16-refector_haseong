@@ -63,7 +63,6 @@ const Home = () => {
             </p>
           </IntroBox>
         </IntroMain>
-
       </IntroPage>
     </HomeContainer>
   );

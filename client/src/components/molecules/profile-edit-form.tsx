@@ -32,10 +32,7 @@ const ProfileEditForm = () => {
         <Input type={"text"} disabled={true} />
       </RefernceContainer>
       <form onSubmit={editProfile}>
-        <Button textContent={"정보수정"} />
-      </form>
-      <form>
-        <Button textContent={"회원탈퇴"} />
+        <Button textContent={"저장"} />
       </form>
     </Wrapper>
   );
@@ -49,6 +46,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 50px;
+  border: 1px solid black;
 `;
 
 const CredentialContainer = styled.div`

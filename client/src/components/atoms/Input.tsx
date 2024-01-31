@@ -7,6 +7,7 @@ const StyledInput = styled.input`
 interface Props {
   type: string;
   name?: string;
+  value?: string;
   placeholder?: string;
   autoComplete?: string;
   onChange?: (value: string) => void;
@@ -17,6 +18,7 @@ interface Props {
 const Input = ({
   type,
   name,
+  value,
   placeholder,
   autoComplete,
   onChange,
@@ -38,6 +40,7 @@ const Input = ({
       <StyledInput
         type={type}
         name={name}
+        value={value}
         placeholder={placeholder}
         onChange={handleChange}
         autoComplete={autoComplete}
