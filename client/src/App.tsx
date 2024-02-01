@@ -44,7 +44,7 @@ function AppContent() {
           <Route path="/profile/edit" element={<ProfileEditPage />} />
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          {/* <Route path="/oauth/redirect" element={<Redirect />} />
+          {/* 
             <Route path="/studylist" element={<StudyList />} />
             <Route path={`/studycontent/:id`} element={<StudyContent />} />
             <Route path="/studypost" element={<StudyPost />} />

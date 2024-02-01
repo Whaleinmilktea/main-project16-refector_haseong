@@ -11,7 +11,7 @@ const Home = () => {
   const isLoggedIn = useRecoilValue(LogInState);
 
   return (
-    <HomeContainer>
+    <Wrapper>
       <TitlePage>
         <h1>
           스터디 통합 관리 앱, <span>EduSync</span>입니다.
@@ -64,13 +64,13 @@ const Home = () => {
           </IntroBox>
         </IntroMain>
       </IntroPage>
-    </HomeContainer>
+    </Wrapper>
   );
 };
 
 export default Home;
 
-const HomeContainer = styled.div`
+const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: #0093e9;
