@@ -4,14 +4,22 @@ import Input from "../atoms/Input";
 import Divider from "../atoms/Divider";
 import Button from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { UserInfoState } from "../../recoil/atoms/UserInfoState";
 
 interface ButtonProps {
   backgroundColor?: string;
 }
 
 const ProfileEditForm = () => {
+  const userInfo = useRecoilValue(UserInfoState);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    nickname: userInfo.nickName,
+    photoUl: userInfo.photoUrl,
+  });
+  const [reference, setReference] = useState<string[]>([]);
 
   const saveProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

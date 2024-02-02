@@ -1,11 +1,12 @@
 import { FormEvent, useState } from "react";
 import styled from "styled-components";
 import { createUserWithEmailAndPassword, updateProfile } from "@firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
 import { useNavigate } from "react-router-dom";
+import { addDoc, collection } from "firebase/firestore";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -64,8 +65,8 @@ const SignUpForm = () => {
     }
   };
 
-  const signUp = async (e : FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const signUp = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const credential = await createUserWithEmailAndPassword(
         auth,
@@ -76,11 +77,13 @@ const SignUpForm = () => {
         displayName: formData.nickname,
         photoURL: "default",
       });
+      await addDoc(collection(db, "users"), {
+        reference: [""],
+      });
       alert("회원가입이 완료되었습니다");
       navigate("/signin");
     } catch (error) {
-      console.error(error);
-      // Handle the error appropriately
+      alert("회원가입에 실패했습니다");
     }
   };
 
