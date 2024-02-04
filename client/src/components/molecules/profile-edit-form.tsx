@@ -34,6 +34,10 @@ const ProfileEditForm = () => {
     getReference(docRef)
   );
 
+  if (isError) {
+    isError.valueOf();
+  }
+
   useEffect(() => {
     if (data) {
       setReference(data.reference);
@@ -41,10 +45,6 @@ const ProfileEditForm = () => {
       setReference([""]);
     }
   }, [data]);
-
-  if (isError) {
-    isError.valueOf();
-  }
 
   const renderReference = () => {
     return reference.map((ref, index) => {

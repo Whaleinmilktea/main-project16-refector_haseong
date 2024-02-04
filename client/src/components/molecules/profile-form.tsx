@@ -4,11 +4,15 @@ import Input from "../atoms/Input";
 import Divider from "../atoms/Divider";
 import Button from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
-import { FormEvent } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoState } from "../../recoil/atoms/UserInfoState";
 import { deleteUser } from "@firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { doc } from "firebase/firestore";
+import { useDocQuery } from "../../hooks/useDocQuery";
+import { getReference } from "../../apis/MemberApi";
+import Loading from "../atoms/loading";
 
 interface ButtonProps {
   backgroundColor?: string;
@@ -18,35 +22,60 @@ const ProfileForm = () => {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(UserInfoState);
   const user = auth.currentUser;
+  const [reference, setReference] = useState<string[]>([]);
+  const docRef = doc(db, "users", `${user?.uid}`);
 
-  const leaveService = async (e : FormEvent<HTMLFormElement>) => {
+  const { data, isLoading, isError } = useDocQuery(
+    "reference",
+    getReference(docRef)
+  );
+
+  if (isError) {
+    isError.valueOf();
+  }
+
+  useEffect(() => {
+    if (data) {
+      setReference(data.reference);
+    } else {
+      setReference([""]);
+    }
+  }, [data]);
+
+  const renderReference = () => {
+    return reference.map((ref, index) => {
+      return <Input type={"text"} value={ref} disabled={true} key={index} />;
+    });
+  };
+
+  const leaveService = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     alert("정말로 탈퇴하시겠습니까?");
     try {
-      if (user == null) throw new Error("유저 정보가 존재하지 않습니다")
-      await deleteUser(user)
-      navigate("/")
+      if (user == null) throw new Error("유저 정보가 존재하지 않습니다");
+      await deleteUser(user);
+      navigate("/");
     } catch (error) {
-      alert("예기치 못한 에러가 발생했습니다.")
+      alert("예기치 못한 에러가 발생했습니다.");
     }
   };
 
   const editProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     navigate("/profile/edit");
   };
 
   return (
     <Wrapper>
+      {isLoading && <Loading />}
       <CredentialContainer>
         <UserImg />
         <Input type={"text"} value={userInfo.nickName} disabled={true} />
       </CredentialContainer>
       <RefernceContainer>
         <Divider textContent={"Reference"}></Divider>
-        {/* 동적 렌더링 예정 */}
-        <Input type={"text"} disabled={true} />
+        {renderReference()}
       </RefernceContainer>
       <ButtonContainer>
         <BtnForm onSubmit={editProfile}>
@@ -69,8 +98,6 @@ const Wrapper = styled.div`
   align-items: center;
   width: 600px;
   height: 100%;
-  border-radius: 30px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* 그림자 효과 추가 */
 `;
 
 const CredentialContainer = styled.div`
@@ -80,23 +107,14 @@ const CredentialContainer = styled.div`
   align-items: center;
   margin-top: 50px;
   img {
-    width: 175px;
-    height: 175px;
+    width: 100px;
+    height: 100px;
   }
   input {
     margin: 20px 0px 10px 0;
     padding: 10px;
     width: 120%;
     height: 36px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 8px rgba(77, 116, 177, 0.6);
-    }
   }
 `;
 
@@ -111,15 +129,6 @@ const RefernceContainer = styled.div`
     padding: 10px;
     width: 120%;
     height: 36px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 8px rgba(77, 116, 177, 0.6);
-    }
   }
 `;
 
@@ -136,17 +145,15 @@ const BtnForm = styled.form<ButtonProps>`
   margin-top: 20px;
 
   button {
+    font-size: 1rem;
     width: 100%;
-    height: 45px;
+    height: 40px;
     padding: 10px;
     margin: 30px;
     background-color: ${(props) =>
       props.backgroundColor ||
       "#DBE7C9"}; /* 색상을 인자로 받아 배경색으로 사용 */
     border: none;
-    border-radius: 5px; /* 모서리를 둥글게 만들기 위한 속성 추가 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-    transition: transform 0.2s ease-in-out; /* 애니메이션을 위한 트랜지션 속성 추가 */
 
     &:hover {
       transform: scale(1.05); /* Hover 시 약간 확대되는 효과 */
