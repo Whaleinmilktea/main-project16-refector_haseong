@@ -1,6 +1,6 @@
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ChakraProvider, Spinner } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import GlobalStyle from "./GlobalStyle";
 import SignUp from "./pages/Sign-Up";
 import "./App.css";
@@ -10,7 +10,8 @@ import Home from "./pages/Home";
 import SignIn from "./pages/Sign-In";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
-import Loading from "./components/atoms/loading";
+import StudyPost from "./pages/StudyPost";
+import styled from "styled-components";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +30,7 @@ function App() {
 function AppContent() {
   return (
     <>
-      <>
+      <Wrapper>
         <GNB />
         <GlobalStyle />
         <Routes>
@@ -45,19 +46,26 @@ function AppContent() {
           <Route path="/profile/edit" element={<ProfileEditPage />} />
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          {/* 
-            <Route path="/studylist" element={<StudyList />} />
-            <Route path={`/studycontent/:id`} element={<StudyContent />} />
+          
+            {/* <Route path="/studylist" element={<StudyList />} />
+            <Route path={`/studycontent/:id`} element={<StudyContent />} /> */}
             <Route path="/studypost" element={<StudyPost />} />
-            <Route path="/calendar" element={<ProfileCalendar />} />
+            {/* <Route path="/calendar" element={<ProfileCalendar />} />
             <Route path={`/edit/:id`} element={<StudyUpdate />} />
             <Route path="/:id" element={<ProfileStudyManage />} /> */}
           <Route />
         </Routes>
         <Footer />
         {/* <Loading /> */}
-      </>
+      </Wrapper>
     </>
   );
 }
 export default App;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;

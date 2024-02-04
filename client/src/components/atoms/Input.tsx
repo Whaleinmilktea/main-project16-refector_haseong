@@ -6,6 +6,7 @@ const StyledInput = styled.input`
 
 interface Props {
   type: string;
+  step?: string;
   name?: string;
   value?: string;
   placeholder?: string;
@@ -17,6 +18,7 @@ interface Props {
 
 const Input = ({
   type,
+  step,
   name,
   value,
   placeholder,
@@ -39,6 +41,7 @@ const Input = ({
     <>
       <StyledInput
         type={type}
+        step={step}
         name={name}
         value={value}
         placeholder={placeholder}
