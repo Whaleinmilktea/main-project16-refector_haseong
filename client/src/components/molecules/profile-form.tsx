@@ -70,7 +70,7 @@ const ProfileForm = () => {
     <Wrapper>
       {isLoading && <Loading />}
       <CredentialContainer>
-        <UserImg />
+        <UserImg profileImage={userInfo.photoUrl}/>
         <Input type={"text"} value={userInfo.nickName} disabled={true} />
       </CredentialContainer>
       <RefernceContainer>
@@ -105,7 +105,7 @@ const CredentialContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin: 50px 0px 30px 0px;
   img {
     width: 100px;
     height: 100px;

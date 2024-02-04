@@ -49,10 +49,14 @@ const LoginForm = () => {
       );
       const user = auth.currentUser;
       if (user) {
-        setUserInfo({
-          nickName: user.displayName,
-          photoURL: user.photoURL,
-        });
+        if (typeof(user.displayName) === "string" && typeof(user.photoURL) === "string") {
+          setUserInfo({
+            nickName: user.displayName,
+            photoUrl: user.photoURL,
+          });  
+        } else {
+          throw new Error("유저 정보가 유효하지 않습니다");
+        }
       }
       setIsLoggedIn(true);
       navigate("/");

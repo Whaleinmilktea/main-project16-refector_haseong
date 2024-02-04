@@ -3,11 +3,10 @@ import UserImg from "../atoms/user-img";
 import Input from "../atoms/Input";
 import Divider from "../atoms/Divider";
 import Button from "../atoms/Button";
-import { useNavigate } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoState } from "../../recoil/atoms/UserInfoState";
-import { doc, getDoc, query } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import Loading from "../atoms/loading";
 import { getReference } from "../../apis/MemberApi";
@@ -19,21 +18,18 @@ interface ButtonProps {
 
 const ProfileEditForm = () => {
   const userInfo = useRecoilValue(UserInfoState);
-  console.log(userInfo);
   const user = auth.currentUser;
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    nickname: userInfo.nickName,
+    nickName: userInfo.nickName,
     photoUrl: userInfo.photoUrl,
   });
   const [reference, setReference] = useState<string[]>([]);
   const docRef = doc(db, "users", `${user?.uid}`);
-  
   const { data, isLoading, isError } = useDocQuery(
     "reference",
     getReference(docRef)
   );
-
+  
   if (isError) {
     isError.valueOf();
   }
@@ -48,9 +44,18 @@ const ProfileEditForm = () => {
 
   const renderReference = () => {
     return reference.map((ref, index) => {
-      return <Input type={"text"} value={ref} disabled={true} key={index} />;
+      return <Input key={index} type={"text"} value={ref} />;
     });
   };
+
+  const handleFormData = (field: string, value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  }
+
+  console.log(formData)
 
   const saveProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,9 +65,9 @@ const ProfileEditForm = () => {
     <Wrapper>
       {isLoading && <Loading />}
       <CredentialContainer>
-        <UserImg />
-        <Input type={"text"} value={userInfo.nickName} disabled={true} />
-        <Input type={"password"} disabled={false} />
+        <UserImg profileImage={formData.photoUrl}/>
+        <Input type={"text"} value={formData.nickName} onChange={(val) => handleFormData("nickName",val)} disabled={false} />
+        <Input type={"text"} value={"비밀번호 변경"} disabled={true} />
       </CredentialContainer>
       <Divider textContent={"Reference"}></Divider>
       <RefernceContainer>{renderReference()}</RefernceContainer>
@@ -93,24 +98,21 @@ const CredentialContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin: 50px 0px 30px 0px;
   img {
-    width: 175px;
-    height: 175px;
+    width: 100px;
+    height: 100px;
   }
   input {
-    margin: 20px 0px 10px 0;
+    margin: 20px 0px 0px 0px;
     padding: 10px;
     width: 120%;
     height: 36px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
 
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 8px rgba(77, 116, 177, 0.6);
+    :nth-child(3) {
+      :hover {
+        cursor: pointer;
+      }
     }
   }
 `;
@@ -126,10 +128,6 @@ const RefernceContainer = styled.div`
     padding: 10px;
     width: 120%;
     height: 36px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
 
     &:focus {
       outline: none;
@@ -158,11 +156,6 @@ const BtnForm = styled.form<ButtonProps>`
     background-color: ${(props) =>
       props.backgroundColor ||
       "#DBE7C9"}; /* 색상을 인자로 받아 배경색으로 사용 */
-    border: none;
-    border-radius: 5px; /* 모서리를 둥글게 만들기 위한 속성 추가 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-    transition: transform 0.2s ease-in-out; /* 애니메이션을 위한 트랜지션 속성 추가 */
-
     &:hover {
       transform: scale(1.05); /* Hover 시 약간 확대되는 효과 */
     }

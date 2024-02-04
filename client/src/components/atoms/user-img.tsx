@@ -1,14 +1,12 @@
-import { useRecoilValue } from "recoil";
-import { UserInfoState } from "../../recoil/atoms/UserInfoState";
 import avator from "../../assets/default-avator.svg";
 
-const UserImg = () => {
-  const userInfo = useRecoilValue(UserInfoState)
-  // "../../assets/default-avator.svg"
-  let profileImage = userInfo.photoURL
+interface Props {
+  profileImage: string;
+}
 
+const UserImg = ({ profileImage }: Props) => {
   if (profileImage === "default") {
-    profileImage = avator
+    profileImage = avator;
   }
 
   return (

@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { auth } from "../../firebase";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import UserImg from "../atoms/user-img";
+import { UserInfoState } from "../../recoil/atoms/UserInfoState";
 
 const User = () => {
   const navigate = useNavigate();
+  const userInfo = useRecoilValue(UserInfoState);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LogInState);
 
   const signOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,7 +27,7 @@ const User = () => {
       {isLoggedIn ? (
         <UserDiv>
           <ProfileLink to="/profile">
-            <UserImg />
+            <UserImg profileImage={userInfo.photoUrl}/>
           </ProfileLink>
           <button onClick={signOut}>로그아웃</button>
         </UserDiv>
