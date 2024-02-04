@@ -9,6 +9,7 @@ import { useRecoilState } from "recoil";
 import { LogInState } from "../../recoil/atoms/LogInState";
 import { useNavigate } from "react-router-dom";
 import { UserInfoState } from "../../recoil/atoms/UserInfoState";
+import { renderMessage } from "../atoms/password-vaild-render-msg";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -38,37 +39,6 @@ const LoginForm = () => {
     }
   };
 
-  // ! 비슷한 안내메세지가 많으면, 컴포넌트 분리 예정
-  const renderMessage = () => {
-    if (isPasswordValid === false) {
-      return (
-        <p
-          style={{
-            marginTop: "10px",
-            fontSize: "12px",
-            color: "#C51605",
-          }}
-        >
-          비밀번호는 8~25자리의 영문, 숫자, 특수문자 조합이어야 합니다
-        </p>
-      );
-    } else if (isPasswordValid === true) {
-      return (
-        <p
-          style={{
-            marginTop: "10px",
-            fontSize: "12px",
-            color: "#4682A9",
-          }}
-        >
-          사용할 수 있는 비밀번호입니다
-        </p>
-      );
-    } else {
-      return null;
-    }
-  };
-
   const signIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -91,8 +61,6 @@ const LoginForm = () => {
     }
   };
 
-  
-
   return (
     <Container>
       <form onSubmit={signIn}>
@@ -109,7 +77,7 @@ const LoginForm = () => {
           onChange={(val) => handleFormData("password", val)}
           required
         />
-        {renderMessage()}
+        {renderMessage(isPasswordValid)}
         <ButtonDiv>
           <Button type="submit" textContent="Sign Up" />
         </ButtonDiv>
