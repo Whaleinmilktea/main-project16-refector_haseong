@@ -6,7 +6,7 @@ import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { passwordTest } from "../../service/validator";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -77,13 +77,17 @@ const SignUpForm = () => {
         displayName: formData.nickname,
         photoURL: "default",
       });
-      await addDoc(collection(db, "users"), {
+      await setDoc(doc(db, "users", `${credential.user?.uid}`), {
         reference: [""],
       });
       alert("회원가입이 완료되었습니다");
       navigate("/signin");
     } catch (error) {
-      alert("회원가입에 실패했습니다");
+      if (error instanceof Error) {
+        if (error.message.includes("auth/email-already-in-use")) {
+          alert("이미 사용중인 이메일입니다.");
+        }
+      }
     }
   };
 

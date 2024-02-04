@@ -33,6 +33,7 @@ const ProfileForm = () => {
 
   const editProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     navigate("/profile/edit");
   };
 

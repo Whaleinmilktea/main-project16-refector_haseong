@@ -4,9 +4,14 @@ import Input from "../atoms/Input";
 import Divider from "../atoms/Divider";
 import Button from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoState } from "../../recoil/atoms/UserInfoState";
+import { doc, getDoc, query } from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import Loading from "../atoms/loading";
+import { getReference } from "../../apis/MemberApi";
+import { useDocQuery } from "../../hooks/useDocQuery";
 
 interface ButtonProps {
   backgroundColor?: string;
@@ -14,12 +19,38 @@ interface ButtonProps {
 
 const ProfileEditForm = () => {
   const userInfo = useRecoilValue(UserInfoState);
+  console.log(userInfo);
+  const user = auth.currentUser;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nickname: userInfo.nickName,
-    photoUl: userInfo.photoUrl,
+    photoUrl: userInfo.photoUrl,
   });
   const [reference, setReference] = useState<string[]>([]);
+  const docRef = doc(db, "users", `${user?.uid}`);
+  
+  const { data, isLoading, isError } = useDocQuery(
+    "reference",
+    getReference(docRef)
+  );
+
+  useEffect(() => {
+    if (data) {
+      setReference(data.reference);
+    } else {
+      setReference([""]);
+    }
+  }, [data]);
+
+  if (isError) {
+    isError.valueOf();
+  }
+
+  const renderReference = () => {
+    return reference.map((ref, index) => {
+      return <Input type={"text"} value={ref} disabled={true} key={index} />;
+    });
+  };
 
   const saveProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,16 +58,14 @@ const ProfileEditForm = () => {
 
   return (
     <Wrapper>
+      {isLoading && <Loading />}
       <CredentialContainer>
         <UserImg />
-        <Input type={"text"} disabled={true} />
-        <Input type={"text"} disabled={true} />
+        <Input type={"text"} value={userInfo.nickName} disabled={true} />
+        <Input type={"password"} disabled={false} />
       </CredentialContainer>
       <Divider textContent={"Reference"}></Divider>
-      <RefernceContainer>
-        {/* 동적 렌더링 예정 */}
-        <Input type={"text"} disabled={true} />
-      </RefernceContainer>
+      <RefernceContainer>{renderReference()}</RefernceContainer>
       <ButtonContainer>
         <BtnForm onSubmit={saveProfile}>
           <Button textContent={"저장"} />

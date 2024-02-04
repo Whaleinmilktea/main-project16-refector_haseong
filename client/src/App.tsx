@@ -1,6 +1,6 @@
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, Spinner } from "@chakra-ui/react";
 import GlobalStyle from "./GlobalStyle";
 import SignUp from "./pages/Sign-Up";
 import "./App.css";
@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import SignIn from "./pages/Sign-In";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
+import Loading from "./components/atoms/loading";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ function AppContent() {
           <Route />
         </Routes>
         <Footer />
+        {/* <Loading /> */}
       </>
     </>
   );
