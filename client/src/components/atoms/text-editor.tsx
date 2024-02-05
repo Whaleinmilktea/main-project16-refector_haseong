@@ -7,16 +7,14 @@ type Props = {
   onFocus?: () => void;
   onBlur?: () => void;
   setIntroduction: React.Dispatch<React.SetStateAction<string>>;
-  introduction: string;
 };
 
-function TextEditor({ onFocus, onBlur, setIntroduction, introduction }: Props) {
-  const [text, setText] = useState(introduction);
+function TextEditor({ onFocus, onBlur, setIntroduction }: Props) {
+  const [text, setText] = useState("");
 
   const handleOnChange = (_event: any, editor: ClassicEditor) => {
     const data = editor.getData();
     setText(data);
-    setIntroduction(data);
   };
 
   return (
@@ -37,7 +35,8 @@ function TextEditor({ onFocus, onBlur, setIntroduction, introduction }: Props) {
 export default TextEditor;
 
 const EditorContainer = styled.div`
-  width: 800px;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,7 +44,6 @@ const EditorContainer = styled.div`
 
 const Editor = styled.div`
   width: 100%;
-  height: 500px;
 
   &:focus-within {
     box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);

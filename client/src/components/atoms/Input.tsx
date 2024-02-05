@@ -1,3 +1,4 @@
+import { HTMLInputTypeAttribute } from "react";
 import styled from "styled-components";
 
 const StyledInput = styled.input`
@@ -5,10 +6,10 @@ const StyledInput = styled.input`
 `;
 
 interface Props {
-  type: string;
+  type: HTMLInputTypeAttribute | undefined;
   step?: string;
   name?: string;
-  value?: string;
+  value?: string | number;
   placeholder?: string;
   autoComplete?: string;
   onChange?: (value: string) => void;

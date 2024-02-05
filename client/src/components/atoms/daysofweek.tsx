@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { StudyGroupCreateDto } from "../types/StudyGroupApiInterfaces";
 
 interface DaysOfWeekProps {
-  setStudyData: React.Dispatch<React.SetStateAction<StudyGroupCreateDto>>;
+  value: number[];
+  onChange: (value: number[]) => void;
 }
 
-const DaysOfWeek = ({ setStudyData }: DaysOfWeekProps) => {
+const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
   const [clicked, setClicked] = useState<boolean[]>([
     false,
     false,
@@ -16,7 +16,9 @@ const DaysOfWeek = ({ setStudyData }: DaysOfWeekProps) => {
     false,
     false,
   ]);
-  const [selectedDays, setSelectedDays] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [selectedDays, setSelectedDays] = useState<number[]>([
+    0, 0, 0, 0, 0, 0, 0,
+  ]);
 
   const handleClickedData = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -35,10 +37,9 @@ const DaysOfWeek = ({ setStudyData }: DaysOfWeekProps) => {
       const currentSelected = [...selectedDays];
       currentSelected[dayId] = currentSelected[dayId] === 0 ? 1 : 0;
       setSelectedDays(currentSelected);
-      setStudyData((prevStudyData) => {
+      onChange((prevStudyData) => {
         return { ...prevStudyData, dayOfWeek: currentSelected };
-      }
-      );
+      });
     }
   };
 
@@ -127,9 +128,9 @@ const DaysOfWeek = ({ setStudyData }: DaysOfWeekProps) => {
 };
 
 const DaysOfWeekContainer = styled.div`
-  width: 640px;
+  width: 100%;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -145,8 +146,9 @@ const WeekDay = styled.div<{ clicked: boolean }>`
   border-radius: 30%;
   margin-right: 15px;
   :hover {
-    background-color: ${(props) => (props.clicked ? "#ccc" : "#2759a2")}};
-    color: ${(props) => (props.clicked ? "white" : "1f1f1f")};
+    background-color: ${(props) => (props.clicked ? "#ccc" : "#2759a2")};
+  }
+  color: ${(props) => (props.clicked ? "white" : "1f1f1f")};
 `;
 
 export default DaysOfWeek;

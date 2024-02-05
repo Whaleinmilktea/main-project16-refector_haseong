@@ -6,7 +6,7 @@ interface PropsType {
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const NewTagInput = ({ setTags }: PropsType) => {
+const TagInput = ({ setTags }: PropsType) => {
   const [selected, setSelected] = useState<string[]>([]);
 
   const handleTagChange = (tags: string[]) => {
@@ -20,19 +20,19 @@ const NewTagInput = ({ setTags }: PropsType) => {
   };
 
   return (
-    <TagInputWrapper>
+    <Wrapper>
       <TagsInput
         value={selected}
         onChange={handleTagChange}
         name="tags"
         placeHolder="기술 스택을 입력해주세요"
       />
-    </TagInputWrapper>
+    </Wrapper>
   );
 };
 
-const TagInputWrapper = styled.div`
+const Wrapper = styled.div`
   display: block;
 `;
 
-export default NewTagInput;
+export default TagInput;

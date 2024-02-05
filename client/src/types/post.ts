@@ -1,5 +1,5 @@
 export interface CreatePostInterface {
-  studyName: string;
+  title: string;
   startDate: string;
   endDate: string;
   dayOfWeek: number[];
