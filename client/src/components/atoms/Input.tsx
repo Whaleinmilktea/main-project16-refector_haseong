@@ -9,6 +9,7 @@ interface Props {
   type: HTMLInputTypeAttribute | undefined;
   step?: string;
   name?: string;
+  className?: string;
   value?: string | number;
   placeholder?: string;
   autoComplete?: string;
@@ -21,6 +22,7 @@ const Input = ({
   type,
   step,
   name,
+  className,
   value,
   placeholder,
   autoComplete,
@@ -44,6 +46,7 @@ const Input = ({
         type={type}
         step={step}
         name={name}
+        className={className}
         value={value}
         placeholder={placeholder}
         onChange={handleChange}

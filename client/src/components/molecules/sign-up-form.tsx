@@ -50,6 +50,8 @@ const SignUpForm = () => {
       });
       await setDoc(doc(db, "users", `${credential.user?.uid}`), {
         reference: [""],
+        participated: [""],
+        master: [""],
       });
       alert("회원가입이 완료되었습니다");
       navigate("/signin");

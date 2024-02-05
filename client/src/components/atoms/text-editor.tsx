@@ -2,12 +2,11 @@ import styled from "styled-components";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useEffect, useState } from "react";
-import { sanitizeInput } from "../../utils/xss-filter";
 
 type Props = {
   onFocus?: () => void;
   onBlur?: () => void;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
 };
 
 function TextEditor({ onFocus, onBlur, onChange }: Props) {
@@ -15,21 +14,15 @@ function TextEditor({ onFocus, onBlur, onChange }: Props) {
 
   const handleOnChange = (_event: any, editor: ClassicEditor) => {
     const data = editor.getData();
-    if (!sanitizeInput(data)) {
-      alert("잘못된 입력입니다.");
-    } else {
-      setText(data);
-    }
+    setText(data);
   };
 
   useEffect(() => {
-    if (onChange) {
-      onChange(text);
-    }
+    onChange(text);
   }, [text]);
 
   return (
-    <EditorContainer>
+    <Wrapper>
       <Editor>
         <CKEditor
           editor={ClassicEditor}
@@ -39,22 +32,23 @@ function TextEditor({ onFocus, onBlur, onChange }: Props) {
           onBlur={onBlur}
         />
       </Editor>
-    </EditorContainer>
+    </Wrapper>
   );
 }
 
 export default TextEditor;
 
-const EditorContainer = styled.div`
+const Wrapper = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
 `;
 
 const Editor = styled.div`
   width: 100%;
+  height: 700px;
 
   &:focus-within {
     box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);

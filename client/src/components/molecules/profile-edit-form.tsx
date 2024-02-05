@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import UserImg from "../atoms/user-img";
 import Input from "../atoms/Input";
-import Divider from "../atoms/Divider";
+import Divider from "../atoms/divider";
 import Button from "../atoms/Button";
 import { FormEvent, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -54,8 +54,6 @@ const ProfileEditForm = () => {
       [field]: value,
     }));
   }
-
-  console.log(formData)
 
   const saveProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

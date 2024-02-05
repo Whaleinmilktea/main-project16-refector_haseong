@@ -33,28 +33,29 @@ function AppContent() {
       <Wrapper>
         <GNB />
         <GlobalStyle />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Home />
-              </>
-            }
-          />
-          <Route path="/profile/*" element={<ProfilePage />} />
-          <Route path="/profile/edit" element={<ProfileEditPage />} />
-          <Route path="/signIn" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          
+        <Main>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Home />
+                </>
+              }
+            />
+            <Route path="/profile/*" element={<ProfilePage />} />
+            <Route path="/profile/edit" element={<ProfileEditPage />} />
+            <Route path="/signIn" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
             {/* <Route path="/studylist" element={<StudyList />} />
             <Route path={`/studycontent/:id`} element={<StudyContent />} /> */}
             <Route path="/studypost" element={<StudyPost />} />
             {/* <Route path="/calendar" element={<ProfileCalendar />} />
             <Route path={`/edit/:id`} element={<StudyUpdate />} />
             <Route path="/:id" element={<ProfileStudyManage />} /> */}
-          <Route />
-        </Routes>
+            <Route />
+          </Routes>
+          </Main>
         <Footer />
         {/* <Loading /> */}
       </Wrapper>
@@ -68,4 +69,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
 `;
+
+const Main = styled.div`
+  width: 100%;
+  height: 100%;
+`

@@ -30,7 +30,13 @@ const DaysOfWeek = ({ value, onClick }: DaysOfWeekProps) => {
 
   return (
     <Wrapper>
-      <WeekDay id="월" clicked={value[0]}>
+      <WeekDay
+        id="월"
+        onClick={(e) => {
+          handleClickedData(e);
+        }}
+        clicked={value[0]}
+      >
         월
       </WeekDay>
       <WeekDay

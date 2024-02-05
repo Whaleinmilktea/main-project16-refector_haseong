@@ -10,5 +10,4 @@ export interface CreatePostInterface {
   platform: string;
   introduction: string;
   tags: string[];
-  color: string;
 }

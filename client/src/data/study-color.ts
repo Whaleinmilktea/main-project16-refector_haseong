@@ -1,4 +1,8 @@
-export const studyColor = {
+interface StudyColor {
+  [key: string]: string;
+}
+
+export const studyColor: StudyColor = {
   javascript: "#f7df1e",
   typescript: "#007acc",
   react: "#61dafb",
@@ -37,5 +41,5 @@ export const studyColor = {
   scala: "#dc322f",
   clojure: "#5881d8",
   groovy: "#4298b8",
-  etc: "#000000",
+  "": "#000000",
 };

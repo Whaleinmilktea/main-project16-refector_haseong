@@ -51,6 +51,29 @@ const TagInput = ({ onChange }: PropsType) => {
 
 const Wrapper = styled.div`
   display: block;
+  margin-bottom: 10px;
+  input:nth-child(1) {
+    border: none;
+    background-color: transparent;
+    font-size: 0.75rem;
+    border-bottom: none;
+    ::placeholder {
+      font-size: 0.75rem;
+      color: #d8d3d3;
+    }
+  }
+  .rti--tag {
+    height: 10%;
+    span {
+      font-size: 0.75rem;
+    }
+    button {
+      font-size: 0.75rem;
+    }
+  }
+  .rti--input {
+    font-size: 0.75rem;
+  }
 `;
 
 export default TagInput;

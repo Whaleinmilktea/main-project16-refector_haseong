@@ -2,15 +2,15 @@ import styled from "styled-components";
 
 const Footer = () => {
   return (
-    <FooterContainer>
+    <Wrapper>
       <p>Created by EduSync Team.</p>
-    </FooterContainer>
+    </Wrapper>
   );
 };
 
-const FooterContainer = styled.div`
+const Wrapper = styled.div`
   width: 100%;
-  height: 100px;
+  height: 50px;
   background-color: #e9e9e9;
   display: flex;
   flex-direction: column;
