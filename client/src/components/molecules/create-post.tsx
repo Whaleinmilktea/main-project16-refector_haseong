@@ -72,9 +72,8 @@ const CreatePost = () => {
           onChange={(val) => handleFormData("memberMax", val)}
         />
         <Input type="text" placeholder="스터디 진행 플랫폼 URL" />
-        <DaysOfWeek />
+        <DaysOfWeek value={formData.dayOfWeek} onClick={(val) => handleFormData("dayOfWeek", val)}/>
         <TagInput />
-        
       </PostForm>
       <TextEditor />
     </Wrapper>

@@ -1,25 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 interface DaysOfWeekProps {
   value: number[];
-  onChange: (value: number[]) => void;
+  onClick: (value: number[]) => void;
 }
 
-const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
-  const [clicked, setClicked] = useState<boolean[]>([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
-  const [selectedDays, setSelectedDays] = useState<number[]>([
-    0, 0, 0, 0, 0, 0, 0,
-  ]);
-
+const DaysOfWeek = ({ value, onClick }: DaysOfWeekProps) => {
   const handleClickedData = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -32,44 +19,26 @@ const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
       토: 5,
       일: 6,
     };
+
     const dayId = dayIdMap[event.currentTarget.id];
     if (dayId !== undefined) {
-      const currentSelected = [...selectedDays];
-      currentSelected[dayId] = currentSelected[dayId] === 0 ? 1 : 0;
-      setSelectedDays(currentSelected);
-      onChange((prevStudyData) => {
-        return { ...prevStudyData, dayOfWeek: currentSelected };
-      });
+      const newValue = [...value];
+      newValue[dayId] = newValue[dayId] === 1 ? 0 : 1;
+      onClick(newValue);
     }
   };
 
-  const handleClickedState = (dayIndex: number) => {
-    setClicked((prevClicked) => {
-      const newClicked = [...prevClicked];
-      newClicked[dayIndex] = !prevClicked[dayIndex];
-      return newClicked;
-    });
-  };
-
   return (
-    <DaysOfWeekContainer>
-      <WeekDay
-        id="월"
-        onClick={(e) => {
-          handleClickedData(e);
-          handleClickedState(0);
-        }}
-        clicked={clicked[0]}
-      >
+    <Wrapper>
+      <WeekDay id="월" clicked={value[0]}>
         월
       </WeekDay>
       <WeekDay
         id="화"
         onClick={(e) => {
           handleClickedData(e);
-          handleClickedState(1);
         }}
-        clicked={clicked[1]}
+        clicked={value[1]}
       >
         화
       </WeekDay>
@@ -77,9 +46,8 @@ const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
         id="수"
         onClick={(e) => {
           handleClickedData(e);
-          handleClickedState(2);
         }}
-        clicked={clicked[2]}
+        clicked={value[2]}
       >
         수
       </WeekDay>
@@ -87,9 +55,8 @@ const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
         id="목"
         onClick={(e) => {
           handleClickedData(e);
-          handleClickedState(3);
         }}
-        clicked={clicked[3]}
+        clicked={value[3]}
       >
         목
       </WeekDay>
@@ -97,9 +64,8 @@ const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
         id="금"
         onClick={(e) => {
           handleClickedData(e);
-          handleClickedState(4);
         }}
-        clicked={clicked[4]}
+        clicked={value[4]}
       >
         금
       </WeekDay>
@@ -107,9 +73,8 @@ const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
         id="토"
         onClick={(e) => {
           handleClickedData(e);
-          handleClickedState(5);
         }}
-        clicked={clicked[5]}
+        clicked={value[5]}
       >
         토
       </WeekDay>
@@ -117,38 +82,37 @@ const DaysOfWeek = ({ value, onChange }: DaysOfWeekProps) => {
         id="일"
         onClick={(e) => {
           handleClickedData(e);
-          handleClickedState(6);
         }}
-        clicked={clicked[6]}
+        clicked={value[6]}
       >
         일
       </WeekDay>
-    </DaysOfWeekContainer>
+    </Wrapper>
   );
 };
 
-const DaysOfWeekContainer = styled.div`
+const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 `;
 
-const WeekDay = styled.div<{ clicked: boolean }>`
-  color: ${(props) => (props.clicked ? "white" : "##1f1f1f")};
+const WeekDay = styled.div<{ clicked: number }>`
+  color: ${(props) => (props.clicked === 1 ? "white" : "##1f1f1f")};
   display: flex;
   justify-content: center;
   align-items: center;
   width: 42px;
   height: 42px;
-  background-color: ${(props) => (props.clicked ? "#2759a2" : "white")};
+  background-color: ${(props) => (props.clicked === 1 ? "#2759a2" : "white")};
   border: 1px solid #ccc;
   border-radius: 30%;
   margin-right: 15px;
   :hover {
-    background-color: ${(props) => (props.clicked ? "#ccc" : "#2759a2")};
+    background-color: ${(props) => (props.clicked === 1 ? "#ccc" : "#2759a2")};
   }
-  color: ${(props) => (props.clicked ? "white" : "1f1f1f")};
+  color: ${(props) => (props.clicked === 1 ? "white" : "1f1f1f")};
 `;
 
 export default DaysOfWeek;
