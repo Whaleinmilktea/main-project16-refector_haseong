@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import UserImg from "../atoms/user-img";
 import Input from "../atoms/Input";
-import Divider from "../atoms/Divider";
+import Divider from "../atoms/divider";
 import Button from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";

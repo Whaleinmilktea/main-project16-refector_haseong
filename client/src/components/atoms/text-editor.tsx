@@ -1,21 +1,32 @@
 import styled from "styled-components";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { sanitizeInput } from "../../utils/xss-filter";
 
 type Props = {
   onFocus?: () => void;
   onBlur?: () => void;
-  setIntroduction: React.Dispatch<React.SetStateAction<string>>;
+  onChange?: (value: string) => void;
 };
 
-function TextEditor({ onFocus, onBlur, setIntroduction }: Props) {
+function TextEditor({ onFocus, onBlur, onChange }: Props) {
   const [text, setText] = useState("");
 
   const handleOnChange = (_event: any, editor: ClassicEditor) => {
     const data = editor.getData();
-    setText(data);
+    if (!sanitizeInput(data)) {
+      alert("잘못된 입력입니다.");
+    } else {
+      setText(data);
+    }
   };
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(text);
+    }
+  }, [text]);
 
   return (
     <EditorContainer>
