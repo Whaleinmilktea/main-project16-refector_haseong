@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Search from "../components/molecules/search";
 
 const StudyList = () => {
   return (
@@ -9,6 +10,7 @@ const StudyList = () => {
             <h3>Searching Study!</h3>
           </div>
         </Top>
+        <Search />
       </Body>
     </Wrapper>
   );
