@@ -15,9 +15,6 @@ export const createStudyGroup = async (data: CreatePostInterface) => {
     likes: 0,
     createdAt: new Date(),
   });
-  await setDoc(doc(db, "", user.uid), {
-    master: [newGroupId],
-  });
   await setDoc(doc(db, "users", user.uid), {
     master: [newGroupId],
   });

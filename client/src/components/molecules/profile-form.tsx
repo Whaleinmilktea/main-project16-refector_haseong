@@ -22,7 +22,7 @@ const ProfileForm = () => {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(UserInfoState);
   const user = auth.currentUser;
-  const [reference, setReference] = useState<string[]>([]);
+  const [refer, setRefer] = useState<string[]>([]);
   const docRef = doc(db, "users", `${user?.uid}`);
 
   const { data, isLoading, isError } = useDocQuery(
@@ -36,14 +36,17 @@ const ProfileForm = () => {
 
   useEffect(() => {
     if (data) {
-      setReference(data.reference);
+      setRefer(data.reference);
     } else {
-      setReference([""]);
+      setRefer([""]);
     }
   }, [data]);
 
   const renderReference = () => {
-    return reference.map((ref, index) => {
+    if (refer == null) {
+      return <Input type={"text"} value={"참여 중인 스터디가 없습니다"} disabled={true} />;
+    }
+    return refer.map((ref, index) => {
       return <Input type={"text"} value={ref} disabled={true} key={index} />;
     });
   };
@@ -62,7 +65,6 @@ const ProfileForm = () => {
 
   const editProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     navigate("/profile/edit");
   };
 
@@ -70,7 +72,7 @@ const ProfileForm = () => {
     <Wrapper>
       {isLoading && <Loading />}
       <CredentialContainer>
-        <UserImg profileImage={userInfo.photoUrl}/>
+        <UserImg profileImage={userInfo.photoUrl} />
         <Input type={"text"} value={userInfo.nickName} disabled={true} />
       </CredentialContainer>
       <RefernceContainer>

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Study } from "../types/StudyGroupApiInterfaces";
 import { getStudyGroupList } from "../apis/StudyGroupApi";
 import { useInView } from "react-intersection-observer";
 import StudyListTag from "../components/StudyListTag";
@@ -9,37 +8,25 @@ import { SearchRequest } from "../apis/SearchApi";
 
 const StudyList = () => {
   const [ref, inView] = useInView();
-  const [list, setList] = useState<Study[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [list, setList] = useState<Study[]>([]);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [searchTxt, setSearchTxt] = useState("");
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
-  console.log(searchTxt)
-
-  useEffect(() => {
-    if (inView) fetchList(searchTxt);
-  }, [inView]);
-
-  const fetchList = async (searchTxt: string) => {
-    if (searchTxt.length === 0) {
-      const data = await getStudyGroupList(currentPage);
-      setList((prev) => [...prev, ...data.study]);
-      setCurrentPage((prevPage) => prevPage + 1);
-    } else if (searchTxt.length > 0) {
-      const data = await SearchRequest(searchTxt);
-      setList(data);
-    }
-  };
+  console.log(searchTxt);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSearchTxt(inputValue)
+    setSearchTxt(inputValue);
   };
 
-  const handleInputChange = (e : React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.currentTarget.value)
-  }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.currentTarget.value);
+  };
 
+  const navCreatePost = () => {
+    navigate("/studypost");
+  }
 
   return (
     <StudyListContainer>
@@ -48,40 +35,20 @@ const StudyList = () => {
           <div>
             <h3>Searching Study!</h3>
           </div>
-          <Link to="/studypost">
-            <StudyPostButton>스터디 모집!</StudyPostButton>
-          </Link>
+          <StudyPostButton onClick={navCreatePost}>스터디 모집!</StudyPostButton>
         </StudyListTop>
         <ListFilterWrapper>
           <SearchContainer>
             <form onSubmit={handleSubmit}>
-              <SearchInput type="text" value={inputValue} onChange={handleInputChange}/>
+              <SearchInput
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+              />
               <button type="submit"></button>
             </form>
           </SearchContainer>
         </ListFilterWrapper>
-        <StudyBoxContainer>
-          {list?.map((item: Study) => (
-            <StudyBox
-              key={item?.id}
-              onClick={() => navigate(`/studycontent/${item?.id}`)}
-            >
-              <StudyListImage image={item?.image}></StudyListImage>
-              <div>
-                <div className="studylist-title">
-                  <h3>{item?.title}</h3>
-                </div>
-                <div className="studylist-interest">
-                  <div id="studylist-interest_likes">❤️ {item?.likes}</div>
-                  <div id="studylist-interest_views">🧐 {item?.views}</div>
-                </div>
-                <div className="studylist-tag">
-                  <StudyListTag item={item?.tags} />
-                </div>
-              </div>
-            </StudyBox>
-          ))}
-        </StudyBoxContainer>
       </StudyListBody>
       <div ref={ref}></div>
     </StudyListContainer>

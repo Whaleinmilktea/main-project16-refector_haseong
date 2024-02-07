@@ -29,7 +29,7 @@ const ProfileEditForm = () => {
     "reference",
     getReference(docRef)
   );
-  
+
   if (isError) {
     isError.valueOf();
   }
@@ -43,9 +43,13 @@ const ProfileEditForm = () => {
   }, [data]);
 
   const renderReference = () => {
-    return reference.map((ref, index) => {
-      return <Input key={index} type={"text"} value={ref} />;
-    });
+    if (reference == null) {
+      return <Input type={"text"} value={"참여 중인 스터디가 없습니다"} />;
+    } else {
+      return reference.map((ref, index) => {
+        return <Input key={index} type={"text"} value={ref} />;
+      });
+    }
   };
 
   const handleFormData = (field: string, value: string) => {
@@ -53,7 +57,7 @@ const ProfileEditForm = () => {
       ...prevData,
       [field]: value,
     }));
-  }
+  };
 
   const saveProfile = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,8 +67,13 @@ const ProfileEditForm = () => {
     <Wrapper>
       {isLoading && <Loading />}
       <CredentialContainer>
-        <UserImg profileImage={formData.photoUrl}/>
-        <Input type={"text"} value={formData.nickName} onChange={(val) => handleFormData("nickName",val)} disabled={false} />
+        <UserImg profileImage={formData.photoUrl} />
+        <Input
+          type={"text"}
+          value={formData.nickName}
+          onChange={(val) => handleFormData("nickName", val)}
+          disabled={false}
+        />
         <Input type={"text"} value={"비밀번호 변경"} disabled={true} />
       </CredentialContainer>
       <Divider textContent={"Reference"}></Divider>

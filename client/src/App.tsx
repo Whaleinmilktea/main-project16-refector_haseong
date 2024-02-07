@@ -12,6 +12,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import StudyPost from "./pages/StudyPost";
 import styled from "styled-components";
+import StudyList from "./pages/StudyList";
 
 const queryClient = new QueryClient();
 
@@ -47,15 +48,15 @@ function AppContent() {
             <Route path="/profile/edit" element={<ProfileEditPage />} />
             <Route path="/signIn" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            {/* <Route path="/studylist" element={<StudyList />} />
-            <Route path={`/studycontent/:id`} element={<StudyContent />} /> */}
+            <Route path="/studylist" element={<StudyList />} />
+            {/*<Route path={`/studycontent/:id`} element={<StudyContent />} /> */}
             <Route path="/studypost" element={<StudyPost />} />
             {/* <Route path="/calendar" element={<ProfileCalendar />} />
             <Route path={`/edit/:id`} element={<StudyUpdate />} />
             <Route path="/:id" element={<ProfileStudyManage />} /> */}
             <Route />
           </Routes>
-          </Main>
+        </Main>
         <Footer />
         {/* <Loading /> */}
       </Wrapper>
@@ -76,4 +77,4 @@ const Wrapper = styled.div`
 const Main = styled.div`
   width: 100%;
   height: 100%;
-`
+`;

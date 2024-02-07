@@ -24,8 +24,7 @@ export const getReference = async (
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     return docSnap.data();
-  } else
-    (error: any) => {
-      console.log(error);
-    };
+  } else {
+    return null;
+  }
 };
