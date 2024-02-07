@@ -1,23 +1,27 @@
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { CreatePostInterface } from "../types/post";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-export const createStudyGroup = async (data : CreatePostInterface) => {
-  const user = auth.currentUser
+export const createStudyGroup = async (data: CreatePostInterface) => {
+  const user = auth.currentUser;
   if (!user) throw new Error("User not found");
   const newGroupId = uuidv4();
   await setDoc(doc(db, "studygroups", newGroupId), {
     ...data,
-    leader: user.displayName,
-    members: [user.displayName],
+    id: newGroupId,
+    leader: user.uid,
+    members: [user.uid],
     likes: 0,
     createdAt: new Date(),
+  });
+  await setDoc(doc(db, "", user.uid), {
+    master: [newGroupId],
   });
   await setDoc(doc(db, "users", user.uid), {
     master: [newGroupId],
   });
-}
+};
 
 export const getStudyGroupList = async () => {};
 

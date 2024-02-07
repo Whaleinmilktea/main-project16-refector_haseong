@@ -8,6 +8,7 @@ import { passwordTest } from "../../service/validator";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
 import { renderMessage } from "../atoms/password-vaild-render-msg";
+import { v4 as uuidv4 } from "uuid";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const SignUpForm = () => {
         photoURL: "default",
       });
       await setDoc(doc(db, "users", `${credential.user?.uid}`), {
+        uuid : uuidv4(),
         reference: [""],
         participated: [""],
         master: [""],
