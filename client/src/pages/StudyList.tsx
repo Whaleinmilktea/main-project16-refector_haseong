@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Search from "../components/molecules/search";
+import Card from "../components/atoms/card";
 
 const StudyList = () => {
   return (
@@ -11,6 +12,13 @@ const StudyList = () => {
           </div>
         </Top>
         <Search />
+        <List>
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+        </List>
       </Body>
     </Wrapper>
   );
@@ -39,15 +47,15 @@ const Body = styled.div`
 `;
 
 const Top = styled.div`
-  width: 960px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   margin: 20px 0px 20px 0px;
   div {
     text-align: start;
-    width: 100%;
+    width: 90%;
     padding: 10px;
     border-bottom: 1px solid #e1e4e8;
   }
@@ -57,6 +65,17 @@ const Top = styled.div`
     font-size: 1.75rem;
     font-weight: 800;
     color: #2759a2;
+  }
+`;
+
+const List = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 95%;
+  padding: 10px;
+  gap: 10px;
+  div {
+    width: 100%;
   }
 `;
 
