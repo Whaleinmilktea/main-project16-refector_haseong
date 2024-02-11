@@ -1,6 +1,10 @@
 import styled from "styled-components";
+import { studyData } from "../../data/study-data";
 
 const Card = () => {
+
+  console.log(studyData.javascript.icon);
+
   return (
     <Wrapper>
       <Image></Image>

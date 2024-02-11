@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Search from "../components/molecules/search";
 import Card from "../components/atoms/card";
 
+
 const StudyList = () => {
   return (
     <Wrapper>
@@ -19,6 +20,7 @@ const StudyList = () => {
           <Card />
           <Card />
         </List>
+
       </Body>
     </Wrapper>
   );

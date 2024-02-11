@@ -50,6 +50,7 @@
     "react-tag-input-component": "^2.0.2",
     "recoil": "^0.7.7",
     "recoil-persist": "^4.2.0",
+    "simple-icons": "^11.4.0",
     "styled-components": "^5.3.10",
     "uuid": "^9.0.1",
     "vite-plugin-top-level-await": "^1.4.1"

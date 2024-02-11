@@ -1,4 +1,4 @@
-import { studyColor } from "../data/study-color";
+import { studyData } from "../data/study-data";
 
 export const backgroundColor = (color: string | undefined) => {
   if (color === "" || color === undefined) {
