@@ -1,19 +1,19 @@
 import styled from "styled-components";
-import { studyData } from "../../data/study-data";
+import { SiReact } from "react-icons/si";
 
 const Card = () => {
 
-  console.log(studyData.javascript.icon);
-
   return (
     <Wrapper>
-      <Image></Image>
+      <Image>
+        <SiReact color="#61DAFB" size={24}/>
+      </Image>
       <Title></Title>
       <Date></Date>
       <Summary></Summary>
       <Like></Like>
       <View></View>
-    </Wrapper>
+    </Wrapper> 
   );
 };
 

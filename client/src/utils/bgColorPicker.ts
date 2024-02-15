@@ -5,6 +5,6 @@ export const backgroundColor = (color: string | undefined) => {
     return "#F6F6F6";
   } else {
     color = color.toLowerCase();
-    return studyColor[color];
+    return studyData[color];
   }
 };
